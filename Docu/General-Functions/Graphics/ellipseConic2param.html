@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ellipseConic2param</title>
+  <meta name="keywords" content="ellipseConic2param">
+  <meta name="description" content="% estimates values of parametric represenation of a 2D ellipse">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Graphics</a> &gt; ellipseConic2param.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Graphics&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>ellipseConic2param
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% estimates values of parametric represenation of a 2D ellipse</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function p = ellipseConic2param(C) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% estimates values of parametric represenation of a 2D ellipse
+
+ Usage:
+   p = ellipseConic2param(C)
+
+   C: double 3x3 ellipse-conic, det(Chh)!&gt;0
+   p: double 5x1, [x0,y0,a,b,phi]
+
+ 10.12.13 Susanne Wenzel
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="plot_ellipse.html" class="code" title="function h = plot_ellipse(ellipse,fmt)">plot_ellipse</a>	% plot_ellipse: plot 2D ellipse</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% estimates values of parametric represenation of a 2D ellipse</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage:</span>
+0004 <span class="comment">%   p = ellipseConic2param(C)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   C: double 3x3 ellipse-conic, det(Chh)!&gt;0</span>
+0007 <span class="comment">%   p: double 5x1, [x0,y0,a,b,phi]</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% 10.12.13 Susanne Wenzel</span>
+0010 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0011 
+0012 <a name="_sub0" href="#_subfunctions" class="code">function p = ellipseConic2param(C)</a>
+0013 
+0014 <span class="comment">% help values</span>
+0015 Chh = C(1:2,1:2);
+0016 
+0017 <span class="keyword">if</span> det(Chh)&lt;=0
+0018     keyboard
+0019 <span class="keyword">end</span>
+0020 
+0021 Chhinv = inv(Chh);
+0022 ch0 = C(1:2,  3);
+0023 c00 = C(  3,  3);
+0024 
+0025 <span class="comment">% centre point</span>
+0026 x0 = -Chhinv*ch0;
+0027 
+0028 <span class="comment">% eigenvalue decomposition of normalized homogeneous part of the conic</span>
+0029 Chhe = -Chh/(c00-ch0'*Chhinv*ch0); <span class="comment">%#ok&lt;MINV&gt;</span>
+0030 [R,Lambda] = eig( Chhe );
+0031 
+0032 l = diag(Lambda);
+0033 [minlambda,idx_min] = min(l);
+0034 maxlambda = max(l);
+0035 
+0036 <span class="comment">% main radii</span>
+0037 a = sqrt(1/minlambda);
+0038 b = sqrt(1/maxlambda);
+0039 
+0040 <span class="keyword">if</span>  abs(minlambda-maxlambda)&lt;eps
+0041     <span class="comment">% its a circle, orientation 0</span>
+0042     phi = 0;
+0043 <span class="keyword">else</span>
+0044     phi = atan2(R(2,idx_min),R(1,idx_min));
+0045     <span class="keyword">if</span> phi&lt;0
+0046         phi = phi+2*pi;
+0047     <span class="keyword">end</span>
+0048 <span class="keyword">end</span>
+0049 
+0050  p = [x0',a,b,phi];</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

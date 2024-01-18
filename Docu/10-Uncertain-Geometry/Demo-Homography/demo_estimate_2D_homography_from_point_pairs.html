@@ -1,0 +1,314 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_estimate_2D_homography_from_point_pairs</title>
+  <meta name="keywords" content="demo_estimate_2D_homography_from_point_pairs">
+  <meta name="description" content="% demo_estimate_2D_homography_from_point_pairs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">10-Uncertain-Geometry</a> &gt; <a href="Documentation.html">Demo-Homography</a> &gt; demo_estimate_2D_homography_from_point_pairs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 10-Uncertain-Geometry\Demo-Homography&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_estimate_2D_homography_from_point_pairs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% demo_estimate_2D_homography_from_point_pairs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% demo_estimate_2D_homography_from_point_pairs
+
+ generate 3x3 grid of points
+ transform them with a homography
+ add noise, possibly correlated between correspoinding points
+
+ estimate homography (algebraical and ML-estimation)
+
+ check estimation result (algebraic and ML-estimation)
+
+ show scatter plots for transformed points
+      with theoretical covariance matrices
+
+ see PCV Sect. 10.6.3, Fig. 10.28
+ choose correlation in lines 36 ff.
+
+ Wolfgang Förstner 2015
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li><li><a href="../../General-Functions/SUGR/Homography_2D/sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>	% create 2D homography</li><li><a href="../../General-Functions/SUGR/Homography_2D/sugr_estimation_algebraic_Homography_2D_from_point_pairs.html" class="code" title="function H = sugr_estimation_algebraic_Homography_2D_from_point_pairs(P)">sugr_estimation_algebraic_Homography_2D_from_point_pairs</a>	% Algebraic estimation of 2D homography from point pairs,</li><li><a href="../../General-Functions/SUGR/Homography_2D/sugr_estimation_ml_Homography_2D_from_point_pairs.html" class="code" title="function [H, sigma_0, R] = sugr_estimation_ml_Homography_2D_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_Homography_2D_from_point_pairs</a>	% ML estimate of 2D homography from point pairs</li><li><a href="../../General-Functions/SUGR/Homography_2D/sugr_generate_true_2D_point_pairs_homography.html" class="code" title="function PP = sugr_generate_true_2D_point_pairs_homography(H,N,br)">sugr_generate_true_2D_point_pairs_homography</a>	% Generate 2D point pairs from homography,</li><li><a href="../../General-Functions/SUGR/Homography_2D/sugr_get_Jacobian_Jrh_Homography_2D.html" class="code" title="function [Jrh,Jsh,Jks,Jrk] = sugr_get_Jacobian_Jrh_Homography_2D(H)">sugr_get_Jacobian_Jrh_Homography_2D</a>	% Get Jacobian Jrh dr/dh for estimating 2D Homography</li><li><a href="../../General-Functions/SUGR/Homography_2D/sugr_plot_Homography_2D.html" class="code" title="function sugr_plot_Homography_2D(H,center_type,bound_type,lw,factor,type)">sugr_plot_Homography_2D</a>	% plot uncertain homography 2D</li><li><a href="../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs.html" class="code" title="function PP = sugr_perturb_2D_point_pairs(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs</a>	% Perturb sampled 2D points pairs</li><li><a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>	% check estimation result, PCV Sect. 4.6.8</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% demo_estimate_2D_homography_from_point_pairs</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% generate 3x3 grid of points</span>
+0004 <span class="comment">% transform them with a homography</span>
+0005 <span class="comment">% add noise, possibly correlated between correspoinding points</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% estimate homography (algebraical and ML-estimation)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% check estimation result (algebraic and ML-estimation)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% show scatter plots for transformed points</span>
+0012 <span class="comment">%      with theoretical covariance matrices</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% see PCV Sect. 10.6.3, Fig. 10.28</span>
+0015 <span class="comment">% choose correlation in lines 36 ff.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Wolfgang Förstner 2015</span>
+0018 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0019 
+0020 
+0021 close all
+0022 clearvars
+0023 <span class="comment">%clear all</span>
+0024 
+0025 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0026 
+0027 <span class="keyword">global</span> plot_option
+0028 <span class="keyword">global</span> print_option
+0029 <span class="keyword">global</span> print_option_estimation
+0030 
+0031 disp(<span class="string">'========================================='</span>)
+0032 disp(<span class="string">'      Estimate 2D homography             '</span>)
+0033 disp(<span class="string">'-----------------------------------------'</span>)
+0034 <a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0035 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0036 
+0037 <span class="comment">%% control parameters</span>
+0038 
+0039 <span class="comment">% random seed</span>
+0040 init_rand      = 1;
+0041 <span class="comment">%rinit_rand      = 0;</span>
+0042 
+0043 <span class="comment">% number of cases</span>
+0044 <span class="comment">%N_samples     = 300;</span>
+0045 <span class="comment">%N_samples     = 100;</span>
+0046 N_samples     = 50;
+0047 <span class="comment">%N_samples     = 1;</span>
+0048 disp([<span class="string">'Number of samples                      : '</span>, num2str(N_samples)])
+0049 
+0050 sigma_x       = 0.001;
+0051 disp([<span class="string">'Standard deviation of directions       : '</span>, num2str(sigma_x)])
+0052 <span class="comment">% correlation between points</span>
+0053 <span class="comment">%rho           = -0.98;</span>
+0054 <span class="comment">%rho           =     0;</span>
+0055 rho           = +0.98;
+0056 
+0057 disp([<span class="string">'Correlation of homologeous points      : '</span>, num2str(rho)])
+0058 
+0059 <span class="comment">% Threshold for iteration</span>
+0060 T       = 10^(-8);
+0061 maxiter = 10;
+0062 
+0063 <span class="comment">%significance level</span>
+0064 S   = 0.999;
+0065 Slo = (1-S)/2;
+0066 Sup = 1-Slo;
+0067 
+0068 <span class="comment">%% random number intialization</span>
+0069 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0070 
+0071 <span class="comment">%% Generate points in unit square</span>
+0072 sigma_x       = 0.001;                  <span class="comment">% std. dev.</span>
+0073 sigma_y       = sigma_x;                  <span class="comment">% std. dev.</span>
+0074 N             = 9;                      <span class="comment">% number of lines</span>
+0075 H_tilde_e     = [1   -0.2  2.6;<span class="keyword">...</span>
+0076     0.1  1.2 -0.3; <span class="keyword">...</span>
+0077     0.25 0.2    1];          <span class="comment">% true homography matrix</span>
+0078 H_tilde       = <a href="../../General-Functions/SUGR/Homography_2D/sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>(H_tilde_e);   <span class="comment">% true homography</span>
+0079 factor_p      = 100;
+0080 b_random      = 0;                    <span class="comment">% random points in [-1,+1]^2</span>
+0081 
+0082 
+0083 print_option_estimation=1;
+0084 <span class="keyword">if</span> N_samples &gt;1
+0085     print_option_estimation=0;
+0086 <span class="keyword">end</span>
+0087 <span class="comment">% do not plot samples</span>
+0088 plot_option = 2;
+0089 print_option = 2;
+0090 <span class="keyword">if</span> N_samples &gt; 1
+0091     plot_option = 0;
+0092     print_option = 0;
+0093 <span class="keyword">end</span>
+0094 
+0095 
+0096 <span class="comment">% generate true points</span>
+0097 PPt = <a href="../../General-Functions/SUGR/Homography_2D/sugr_generate_true_2D_point_pairs_homography.html" class="code" title="function PP = sugr_generate_true_2D_point_pairs_homography(H,N,br)">sugr_generate_true_2D_point_pairs_homography</a>(H_tilde.H,N,b_random);
+0098 
+0099 
+0100 est_H_samples_a    = zeros(N_samples,9);
+0101 est_H_samples_ml   = zeros(N_samples,9);
+0102 sigma_0s           = zeros(N_samples,1);
+0103 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[20 ss(2)/3 ss(1)/3 ss(2)/2])
+0104 hold on
+0105 
+0106 start=cputime;
+0107 <span class="keyword">for</span> i=1:N_samples
+0108     <span class="keyword">if</span> N_samples &lt; 100
+0109         fprintf(num2str(i)),fprintf(<span class="string">','</span>)
+0110         <span class="keyword">if</span> mod(i,10)==0
+0111             disp(<span class="string">' '</span>)
+0112         <span class="keyword">end</span>
+0113     <span class="keyword">else</span>
+0114         <span class="keyword">if</span> mod(i,10)==0
+0115             fprintf(num2str(i)),fprintf(<span class="string">','</span>)
+0116         <span class="keyword">end</span>
+0117         <span class="keyword">if</span> mod(i,100)==0
+0118             disp(<span class="string">' '</span>)
+0119         <span class="keyword">end</span>
+0120     <span class="keyword">end</span>
+0121     <span class="comment">%disp(['sample: ',num2str(i)])</span>
+0122     <span class="comment">% perturb point pairs</span>
+0123     PP = <a href="../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs.html" class="code" title="function PP = sugr_perturb_2D_point_pairs(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs</a>(PPt,sigma_x,sigma_y,rho,factor_p);
+0124     
+0125     <span class="comment">%% Estimate point algebraically</span>
+0126     est_H_a = <a href="../../General-Functions/SUGR/Homography_2D/sugr_estimation_algebraic_Homography_2D_from_point_pairs.html" class="code" title="function H = sugr_estimation_algebraic_Homography_2D_from_point_pairs(P)">sugr_estimation_algebraic_Homography_2D_from_point_pairs</a>(PP);
+0127     
+0128     <span class="comment">%% Estimate point maximum likelihood</span>
+0129     [est_H_ml,sigma_0,R] = <a href="../../General-Functions/SUGR/Homography_2D/sugr_estimation_ml_Homography_2D_from_point_pairs.html" class="code" title="function [H, sigma_0, R] = sugr_estimation_ml_Homography_2D_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_Homography_2D_from_point_pairs</a>(PP,est_H_a.H,T,maxiter);
+0130     
+0131     est_H_samples_a(i,:)    = est_H_a.H(:);
+0132     est_H_samples_ml(i,:)   = est_H_ml.H(:);
+0133     sigma_0s(i)             = sigma_0;
+0134 <span class="keyword">end</span>
+0135 disp([<span class="string">'CPU time for '</span>, num2str(N_samples),<span class="string">' samples               : '</span>,num2str(cputime-start)]);
+0136 
+0137 
+0138 <span class="comment">%% evaluate result</span>
+0139 
+0140 
+0141 
+0142 <span class="keyword">if</span> N_samples &gt; 2
+0143     
+0144     <span class="comment">%% plot transferred points in 3x3 grid</span>
+0145     
+0146     k=0;
+0147     xp=zeros(N*N_samples,1);
+0148     yp=zeros(N*N_samples,1);
+0149     <span class="keyword">for</span> i=1:N_samples
+0150         <span class="keyword">for</span> n=1:N
+0151             <span class="comment">%       given noisy points</span>
+0152             <span class="comment">%[xn,yn,Cxy]   = sugr_select_Point_Pair_2D(PP,n);</span>
+0153             xn = PP.h(n,1:3)';
+0154             yn = PP.h(n,4:6)';
+0155             xne = xn(1:2)/xn(3);
+0156             <span class="comment">% true points as reference</span>
+0157             <span class="comment">%[xt,yt,Cxy] = sugr_select_Point_Pair_2D(PPt,n);</span>
+0158             xt = PPt.h(n,1:3)';
+0159             yt = PPt.h(n,4:6)';
+0160             xte = xt(1:2)/xt(3);
+0161             yte = yt(1:2)/yt(3);
+0162             <span class="comment">% true point transformed with estimated homography algebraic</span>
+0163             <span class="comment">%y_a = sugr_transform_with_Homography_2D(est_H,xt);</span>
+0164             est_H = reshape(est_H_samples_a(i,:),3,3);
+0165             y_a = est_H * xt;
+0166             <span class="comment">%ye_a = y_a.h(1:2)/y_a.h(3);</span>
+0167             ye_a = y_a(1:2)/y_a(3);
+0168             <span class="comment">%</span>
+0169             k=k+1;
+0170             xp(k) = yte(1)+factor_p*(ye_a(1)-yte(1));
+0171             yp(k) = yte(2)+factor_p*(ye_a(2)-yte(2));
+0172             <span class="comment">%plot(yte(1)+factor_p*(ye_a(1)-yte(1)),yte(2)+factor_p*(ye_a(2)-yte(2)),'.b');</span>
+0173         <span class="keyword">end</span>
+0174     <span class="keyword">end</span>
+0175     figure(1)
+0176     hold on
+0177     plot(xp,yp,<span class="string">'.b'</span>);
+0178     
+0179     
+0180     k=0;
+0181     xp=zeros(N*N_samples,1);
+0182     yp=zeros(N*N_samples,1);
+0183     <span class="keyword">for</span> i=1:N_samples
+0184         <span class="keyword">for</span> n=1:N
+0185             <span class="comment">%       given noisy points</span>
+0186             <span class="comment">%[xn,yn,Cxy]   = sugr_select_Point_Pair_2D(PP,n);</span>
+0187             xn = PP.h(n,1:3)';
+0188             yn = PP.h(n,4:6)';
+0189             xne = xn(1:2)/xn(3);
+0190             <span class="comment">% true points as reference</span>
+0191             <span class="comment">%[xt,yt,Cxy] = sugr_select_Point_Pair_2D(PPt,n);</span>
+0192             xt = PPt.h(n,1:3)';
+0193             yt = PPt.h(n,4:6)';
+0194             xte = xt(1:2)/xt(3);
+0195             yte = yt(1:2)/yt(3);
+0196             <span class="comment">% true point transformed with estimated homography algebraic</span>
+0197             <span class="comment">%y_a = sugr_transform_with_Homography_2D(est_H,xt);</span>
+0198             est_H = reshape(est_H_samples_ml(i,:),3,3);
+0199             y_a = est_H * xt;
+0200             <span class="comment">%ye_a = y_a.h(1:2)/y_a.h(3);</span>
+0201             ye_a = y_a(1:2)/y_a(3);
+0202             <span class="comment">%</span>
+0203             k=k+1;
+0204             xp(k) = yte(1)+factor_p*(ye_a(1)-yte(1));
+0205             yp(k) = yte(2)+factor_p*(ye_a(2)-yte(2));
+0206             <span class="comment">%plot(yte(1)+factor_p*(ye_a(1)-yte(1)),yte(2)+factor_p*(ye_a(2)-yte(2)),'.b');</span>
+0207         <span class="keyword">end</span>
+0208     <span class="keyword">end</span>
+0209     figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[100+ss(1)/3  ss(2)/3 ss(1)/3 ss(2)/2])
+0210     hold on
+0211     plot(xp,yp,<span class="string">'.b'</span>);
+0212     
+0213     
+0214     <span class="comment">%</span>
+0215     est_H_mean_ml = mean(est_H_samples_ml);
+0216     est_H_cov_ml  = cov(est_H_samples_ml);
+0217     est_H_mean_a = mean(est_H_samples_a);
+0218     est_H_cov_a  = cov(est_H_samples_a);
+0219     
+0220     est_H_ml_emp   = <a href="../../General-Functions/SUGR/Homography_2D/sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>(reshape(est_H_mean_ml,3,3),est_H_cov_ml);
+0221     est_H_a_emp   = <a href="../../General-Functions/SUGR/Homography_2D/sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>(reshape(est_H_mean_a,3,3),est_H_cov_a);
+0222     
+0223     
+0224     
+0225     figure(1)
+0226     <span class="comment">%sugr_plot_Homography_2D(est_H_a_emp,'ok','-k',1,3*factor_p,'H');</span>
+0227     <a href="../../General-Functions/SUGR/Homography_2D/sugr_plot_Homography_2D.html" class="code" title="function sugr_plot_Homography_2D(H,center_type,bound_type,lw,factor,type)">sugr_plot_Homography_2D</a>(est_H_a,<span class="string">'ok'</span>,<span class="string">'-k'</span>,1,3*factor_p,<span class="string">'H'</span>);
+0228     title(<span class="string">'ALG: samples with theoretical CovM'</span>)
+0229     axis equal
+0230     figure(2)
+0231     <a href="../../General-Functions/SUGR/Homography_2D/sugr_plot_Homography_2D.html" class="code" title="function sugr_plot_Homography_2D(H,center_type,bound_type,lw,factor,type)">sugr_plot_Homography_2D</a>(est_H_ml,<span class="string">'ok'</span>,<span class="string">'-k'</span>,1,3*factor_p,<span class="string">'H'</span>);
+0232     title(<span class="string">'ML: samples with theoretical CovM'</span>)
+0233     axis equal
+0234     
+0235     R = 2*N-8;
+0236     
+0237     <span class="comment">% for reducing the homography parameters (spectral normalization)</span>
+0238     Jhr = <a href="../../General-Functions/SUGR/Homography_2D/sugr_get_Jacobian_Jrh_Homography_2D.html" class="code" title="function [Jrh,Jsh,Jks,Jrk] = sugr_get_Jacobian_Jrh_Homography_2D(H)">sugr_get_Jacobian_Jrh_Homography_2D</a>(H_tilde.H);
+0239     <span class="comment">% Algebraic</span>
+0240     <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(R,zeros(8,1),est_H_a.Crr,ones(N_samples,1),<span class="keyword">...</span>
+0241         est_H_samples_a*Jhr',S,<span class="string">' ALG'</span>)
+0242     
+0243     
+0244     <span class="comment">% Maximum likelihood</span>
+0245     <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(R,zeros(8,1),est_H_ml.Crr,sigma_0s.^2,<span class="keyword">...</span>
+0246         est_H_samples_ml*Jhr',S,<span class="string">' ML'</span>);
+0247     
+0248 <span class="keyword">end</span>
+0249 
+0250 <span class="comment">% save(strcat('test_sugr_homography_estimation_a_ml_',num2str(rho*1000,'%4d')))</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

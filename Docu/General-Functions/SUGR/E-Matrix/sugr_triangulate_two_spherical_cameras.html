@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_triangulate_two_spherical_cameras</title>
+  <meta name="keywords" content="sugr_triangulate_two_spherical_cameras">
+  <meta name="description" content="% sugr_triangulate_two_spherical_cameras">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">E-Matrix</a> &gt; sugr_triangulate_two_spherical_cameras.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\E-Matrix&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_triangulate_two_spherical_cameras
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% sugr_triangulate_two_spherical_cameras</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [X_est, est_sigma_0, est_u, est_v, f] =sugr_triangulate_two_spherical_cameras(b, Rot, u, v, sigma, Tol, max_iter, k, print_option) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% sugr_triangulate_two_spherical_cameras 
+
+ Alg. 21: Optimal triangulation
+
+ [X,sigma0,est_u,est_v, f] = sugr_triangulate_two_spherical_cameras(...
+                   b,R,u,v,sigma,Tol, max_iter, k, print_option)
+
+ input:
+ b,Rot    = relative orientation
+ u,v      = 3x1 directions, spherically normalized
+ sigma    = radial error of direction
+ Tol      = tolerance for stopping iterations
+ max_iter = maximum iterations
+ k        = critical value
+ print_option = boolean, deciding on printout
+
+ output:
+ X       = 4x1 vector, 3d point
+ sigma0  = estimated sigma_0
+ est_u, est_v = fitted observations
+ f            = 0 at infinity
+              = 1 finite
+              = 2 backward
+              = 3 divergent
+
+ Wolfgang Förstner 2014/04/09
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li><li><a href="../../../General-Functions/SUGR/Triangulation/sugr_cov_matr_X.html" class="code" title="function X_est = sugr_cov_matr_X(X,sigma,est_u,est_w,rs)">sugr_cov_matr_X</a>	% determine CovM for triangulated point (cov_matr_X)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_triangulation_spherical.html" class="code" title="">demo_triangulation_spherical</a>	% demo triangulation</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% sugr_triangulate_two_spherical_cameras</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Alg. 21: Optimal triangulation</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% [X,sigma0,est_u,est_v, f] = sugr_triangulate_two_spherical_cameras(...</span>
+0006 <span class="comment">%                   b,R,u,v,sigma,Tol, max_iter, k, print_option)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% input:</span>
+0009 <span class="comment">% b,Rot    = relative orientation</span>
+0010 <span class="comment">% u,v      = 3x1 directions, spherically normalized</span>
+0011 <span class="comment">% sigma    = radial error of direction</span>
+0012 <span class="comment">% Tol      = tolerance for stopping iterations</span>
+0013 <span class="comment">% max_iter = maximum iterations</span>
+0014 <span class="comment">% k        = critical value</span>
+0015 <span class="comment">% print_option = boolean, deciding on printout</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% output:</span>
+0018 <span class="comment">% X       = 4x1 vector, 3d point</span>
+0019 <span class="comment">% sigma0  = estimated sigma_0</span>
+0020 <span class="comment">% est_u, est_v = fitted observations</span>
+0021 <span class="comment">% f            = 0 at infinity</span>
+0022 <span class="comment">%              = 1 finite</span>
+0023 <span class="comment">%              = 2 backward</span>
+0024 <span class="comment">%              = 3 divergent</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% Wolfgang Förstner 2014/04/09</span>
+0027 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0028 
+0029 <a name="_sub0" href="#_subfunctions" class="code">function [X_est, est_sigma_0, est_u, est_v, f] = </a><span class="keyword">...</span>
+0030     sugr_triangulate_two_spherical_cameras(<span class="keyword">...</span>
+0031     b, Rot, u, v, sigma, Tol, max_iter, k, print_option)
+0032       
+0033 <span class="comment">% essentiaol matrix</span>
+0034 E = <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(b)*Rot';
+0035 
+0036 <span class="comment">% critical value for constraint</span>
+0037 sigma_c= sigma*sqrt(u'*(E*E')*u+v'*(E'*E)*v);
+0038 crit_E = k*sigma_c;
+0039 
+0040 cgl = u'*E*v;
+0041 <span class="keyword">if</span> print_option &gt; 0
+0042     cgl=cgl                                                                <span class="comment">%#ok&lt;ASGSL,NOPRT&gt;</span>
+0043 <span class="keyword">end</span>
+0044 <span class="comment">% check for coplanarity</span>
+0045 <span class="keyword">if</span> abs(cgl) &gt; crit_E
+0046     X_est.h=zeros(4,1);
+0047     X_est.Crr=zeros(3);
+0048     X_est.type=3;
+0049     est_sigma_0 = 0;
+0050     f=2;
+0051     est_u=u;
+0052     est_v=v;
+0053     <span class="keyword">return</span>
+0054 <span class="keyword">end</span>
+0055 
+0056 <span class="comment">% initialize</span>
+0057 f  = 0;
+0058 ua = u;
+0059 va = v;
+0060 est_sigma_0=0;
+0061 
+0062 <span class="comment">% iterate</span>
+0063 <span class="keyword">for</span> nu = 1:max_iter
+0064     g = ua'*E*va;               <span class="comment">% constraint</span>
+0065     <span class="keyword">if</span> print_option &gt; 0
+0066         nu=nu                                                              <span class="comment">%#ok&lt;FXSET,ASGSL,NOPRT&gt;</span>
+0067         g=g                                                                <span class="comment">%#ok&lt;ASGSL,NOPRT&gt;</span>
+0068     <span class="keyword">end</span>
+0069     <span class="comment">% check for convergence</span>
+0070     <span class="keyword">if</span> abs(g) &lt; Tol*sigma
+0071         <span class="keyword">break</span>
+0072     <span class="keyword">end</span>
+0073     J1 = null(ua');              <span class="comment">% reducing Jacobians</span>
+0074     J2 = null(va');
+0075     l  = [J1'*u;J2'*v];          <span class="comment">% reduced observations</span>
+0076     B  = [J1'*E*va;J2'*E'*ua];   <span class="comment">% Jacobian of constraint</span>
+0077     cg = -cgl;                   <span class="comment">% residual constraint</span>
+0078     n = B'*B;
+0079     Deltal = l + cg/n*B;         <span class="comment">% corrections to reduced observations</span>
+0080     ua = ua+J1*Deltal(1:2);      <span class="comment">% updated approximate values</span>
+0081     va = va+J2*Deltal(3:4);
+0082     ua = ua/norm(ua);
+0083     va = va/norm(va);
+0084     est_sigma_0 = abs(cgl)/sigma_c; <span class="comment">%/sqrt(n);  % estimated sigma_0</span>
+0085 <span class="keyword">end</span>
+0086 <span class="comment">% determine homgeneous coordinates</span>
+0087 est_u = ua;                     <span class="comment">% final estimates</span>
+0088 est_v = va;
+0089 est_w = Rot'*est_v;               <span class="comment">% v in left system</span>
+0090 <span class="keyword">if</span> print_option &gt; 0
+0091     uvw= [est_u', est_v', est_w']                                          <span class="comment">%#ok&lt;NASGU,NOPRT&gt;</span>
+0092 <span class="keyword">end</span>
+0093 m = <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(<a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(b)*est_u)*b;
+0094 m = m /norm(m);                 <span class="comment">% auxiliary vector</span>
+0095 D = det([b, m, <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(est_u)*est_w]);
+0096 rs = m' * [est_w, est_u];
+0097 X = [rs(1)* est_u; D];
+0098 <span class="comment">%  Xe   = X'</span>
+0099 <span class="comment">%  uvw  = [est_u,est_v,est_w]</span>
+0100 <span class="comment">%  mDrs = [m',D,rs]</span>
+0101 X_est = <a href="../../../General-Functions/SUGR/Triangulation/sugr_cov_matr_X.html" class="code" title="function X_est = sugr_cov_matr_X(X,sigma,est_u,est_w,rs)">sugr_cov_matr_X</a>(X,sigma,est_u,est_w,rs);
+0102 
+0103 <span class="comment">% check for infinity</span>
+0104 
+0105 
+0106 <span class="comment">% critical value for Determinant</span>
+0107 sigma_D = 2*sigma;         <span class="comment">% conservative approximation</span>
+0108 crit_D  = k*sigma_D;
+0109 <span class="keyword">if</span> abs(D) &lt; eps
+0110     <span class="keyword">if</span> print_option &gt; 0
+0111         disp(<span class="string">'point at infinity'</span>)
+0112     <span class="keyword">end</span>    
+0113     <span class="keyword">return</span>
+0114 <span class="keyword">end</span>
+0115 d=rs/D;
+0116 <span class="comment">% check for backward direction and infinity</span>
+0117 <span class="keyword">if</span> sign(d(1)) &lt; 0 || sign(d(2)) &lt; 0
+0118     <span class="keyword">if</span> abs(D) &lt; crit_D
+0119         <span class="comment">% point at infinity</span>
+0120         <span class="keyword">if</span> print_option &gt; 0
+0121             disp(<span class="string">'point at infinity'</span>)
+0122         <span class="keyword">end</span>
+0123         
+0124         <span class="keyword">return</span>
+0125     <span class="keyword">else</span>
+0126         <span class="comment">% rays divergent</span>
+0127         f=1;
+0128         X_est.h=zeros(4,1);
+0129         X_est.Crr=zeros(3);
+0130         X_est.type=3;
+0131         <span class="keyword">if</span> print_option &gt; 0
+0132             disp(<span class="string">'backward point'</span>)
+0133         <span class="keyword">end</span>
+0134         <span class="comment">%dbstop</span>
+0135         <span class="keyword">return</span>
+0136     <span class="keyword">end</span>
+0137 <span class="keyword">else</span>
+0138     <span class="keyword">if</span> print_option &gt; 0
+0139         disp(<span class="string">'signs ok'</span>)
+0140     <span class="keyword">end</span>
+0141 <span class="keyword">end</span>
+0142 
+0143 
+0144</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

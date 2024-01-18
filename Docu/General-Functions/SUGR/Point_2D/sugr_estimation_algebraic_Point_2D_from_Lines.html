@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_estimation_algebraic_Point_2D_from_Lines</title>
+  <meta name="keywords" content="sugr_estimation_algebraic_Point_2D_from_Lines">
+  <meta name="description" content="% Algebraic estimate of intersection Point_2D from N Lines_2D">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Point_2D</a> &gt; sugr_estimation_algebraic_Point_2D_from_Lines.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Point_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_estimation_algebraic_Point_2D_from_Lines
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Algebraic estimate of intersection Point_2D from N Lines_2D</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [ex,sigma_0_est_D,sigma_0_est_O] = sugr_estimation_algebraic_Point_2D_from_Lines(lines,sph) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Algebraic estimate of intersection Point_2D from N Lines_2D
+
+ [x_est,sigma_0_est_D,sigma_0_est_O] =
+         sugr_algebraic_estimation_Point_2D_from_lines(lines,spherically)
+
+ lines = struct
+         lines.h    = N x 3 matrix of sherically normalized homogeneous coordinates
+         lines.Crr  = N x 2 x 2 array of reduced covariance matrices
+         lines.type = N x 1 vector of 2's
+ spherically = 1 use spherically normalized lines
+             = 0 use Euclideanly normalized lines
+
+ x_est       = structure of algebarically estimated intersection point |x_est|=1
+ sigma_0_est_O = estimated variance factor sqrt(v' Sigma^{-1} v /(N-2))
+ sigma_0_est_D = estimated variance factor sqrt(D33^2 /(N-2))
+                 from SVD of points
+
+ Wolfgang Förstner 2/2011
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>, sugr_Line_2D,  <a href="sugr_estimation_ml_Point_2D_from_Lines.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines</a>
+ <a href="sugr_estimation_geometric_Point_2D_from_Lines.html" class="code" title="function [xe,sigma_0,x] = sugr_estimation_geometric_Point_2D_from_Lines(lines)">sugr_estimation_geometric_Point_2D_from_Lines</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_estimate_Point_2D_from_Lines.html" class="code" title="">demo_estimate_Point_2D_from_Lines</a>	% demo_estimate_Point_2D_from_Lines</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Algebraic estimate of intersection Point_2D from N Lines_2D</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [x_est,sigma_0_est_D,sigma_0_est_O] =</span>
+0004 <span class="comment">%         sugr_algebraic_estimation_Point_2D_from_lines(lines,spherically)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% lines = struct</span>
+0007 <span class="comment">%         lines.h    = N x 3 matrix of sherically normalized homogeneous coordinates</span>
+0008 <span class="comment">%         lines.Crr  = N x 2 x 2 array of reduced covariance matrices</span>
+0009 <span class="comment">%         lines.type = N x 1 vector of 2's</span>
+0010 <span class="comment">% spherically = 1 use spherically normalized lines</span>
+0011 <span class="comment">%             = 0 use Euclideanly normalized lines</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% x_est       = structure of algebarically estimated intersection point |x_est|=1</span>
+0014 <span class="comment">% sigma_0_est_O = estimated variance factor sqrt(v' Sigma^{-1} v /(N-2))</span>
+0015 <span class="comment">% sigma_0_est_D = estimated variance factor sqrt(D33^2 /(N-2))</span>
+0016 <span class="comment">%                 from SVD of points</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Wolfgang Förstner 2/2011</span>
+0019 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% See also sugr_Point_2D, sugr_Line_2D,  sugr_estimation_ml_Point_2D_from_Lines</span>
+0022 <span class="comment">% sugr_estimation_geometric_Point_2D_from_Lines</span>
+0023 
+0024 
+0025 <a name="_sub0" href="#_subfunctions" class="code">function [ex,sigma_0_est_D,sigma_0_est_O] = sugr_estimation_algebraic_Point_2D_from_Lines(lines,sph)</a>
+0026 
+0027 lh   = lines.h;
+0028 lCrr = lines.Crr;
+0029 
+0030 [N,~] = size(lh);
+0031 Red = N-2;
+0032 
+0033 <span class="comment">% algebraic estimation</span>
+0034 <span class="comment">% Euclidean normalization changes</span>
+0035 <span class="keyword">if</span> sph==0
+0036     lh=lh./(sqrt(lh(:,1).^2+lh(:,2).^2)*[1,1,1]);
+0037 <span class="keyword">end</span>
+0038 [U,D,V]=svd(lh,<span class="string">'econ'</span>);
+0039 est_x = V(:,3);
+0040 
+0041 <span class="comment">% Covariance matrix: from c+v = A x, A = (l_n'), c = (c_n) = (l_n' x)</span>
+0042 <span class="comment">% dx = (A' A)^-1 A' c = A^+ c --&gt; Cxx = A^+ Ccc A^+', Ccc = (x' Clnn x)</span>
+0043 
+0044 <span class="comment">% Pseudoinverse of D</span>
+0045 invD = zeros(3);
+0046 <span class="keyword">for</span> i=1:2
+0047     invD(i,i) =1/D(i,i);
+0048 <span class="keyword">end</span>
+0049 <span class="comment">%pseudoinvers of A</span>
+0050 Ap = V * invD * U';                              <span class="comment">% pseudo inverse (N x 3)</span>
+0051 
+0052 Omega = 0;
+0053 Cxx   = zeros(3);
+0054 <span class="keyword">for</span> n=1:N
+0055     Jln      = null(lh(n,:));                       <span class="comment">% Jacobian l -&gt; l_r</span>
+0056     Clnn     = Jln * squeeze(lCrr(n,:,:)) * Jln';    <span class="comment">% Cl_nl_h</span>
+0057     cgn      = est_x' * lh(n,:)';                    <span class="comment">% cgn</span>
+0058     var_cgn  = est_x' * Clnn * est_x;               <span class="comment">% var(cgn)</span>
+0059 <span class="comment">%     c_sc =[cgn/sqrt(var_cgn)];</span>
+0060     Omega    = Omega + cgn^2/var_cgn;               <span class="comment">%</span>
+0061     Cxx      = Cxx + var_cgn * Ap(:,n) * Ap(:,n)';  <span class="comment">% Cxx update</span>
+0062 <span class="keyword">end</span>
+0063 <span class="keyword">if</span> Red &gt; 0
+0064     sigma_0_est_D = sqrt(D(3,3)^2/Red);
+0065     sigma_0_est_O = sqrt(Omega/Red);
+0066 <span class="keyword">else</span>
+0067     sigma_0_est_D = 1;
+0068     sigma_0_est_O = 1;
+0069 <span class="keyword">end</span>
+0070 
+0071 ex = <a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(est_x,Cxx);
+0072</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

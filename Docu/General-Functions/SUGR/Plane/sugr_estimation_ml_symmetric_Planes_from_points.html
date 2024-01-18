@@ -1,0 +1,292 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_estimation_ml_symmetric_Planes_from_points</title>
+  <meta name="keywords" content="sugr_estimation_ml_symmetric_Planes_from_points">
+  <meta name="description" content="% ML estiamte of plane from points">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Plane</a> &gt; sugr_estimation_ml_symmetric_Planes_from_points.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Plane&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_estimation_ml_symmetric_Planes_from_points
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% ML estiamte of plane from points</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [x, estl, sigma_0, R] =sugr_estimation_ml_symmetric_Planes_from_points(XL, XR, xa, T, maxiter) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% ML estiamte of plane from points
+
+ [x,sigma_0,R] = sugr_estimation_ml_symmetric_Planes_from_points(XL,XR,sigma,xa,T,maxiter)
+
+ * XL, XR  = points,
+ * xa      = vector, approximate value
+             xa(1:4),xa(5:8) for left and right plane
+ * sigma   = std.dev. of points
+ * T       = threshold for iteration
+ * maxiter = maximal iteration
+
+ * x         x.h estimated planes
+             x.Cxx joint covariance matrix
+ * sigma0 = estimated sigma0
+ * R = redundancy
+
+ Wolfgang Förstner 7/2012
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>	% GHM update spherically normalized vector</li><li><a href="sugr_ghm_cg_Plane_from_points.html" class="code" title="function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_Plane_from_points(l,le,xe,C)">sugr_ghm_cg_Plane_from_points</a>	% determines residuals etc. for estimating plane from points</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/demo_estimate_two_symmetric_planes_from_points.html" class="code" title="">demo_estimate_two_symmetric_planes_from_points</a>	% test_two_symmetric_planes_from_points</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% ML estiamte of plane from points</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [x,sigma_0,R] = sugr_estimation_ml_symmetric_Planes_from_points(XL,XR,sigma,xa,T,maxiter)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * XL, XR  = points,</span>
+0006 <span class="comment">% * xa      = vector, approximate value</span>
+0007 <span class="comment">%             xa(1:4),xa(5:8) for left and right plane</span>
+0008 <span class="comment">% * sigma   = std.dev. of points</span>
+0009 <span class="comment">% * T       = threshold for iteration</span>
+0010 <span class="comment">% * maxiter = maximal iteration</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% * x         x.h estimated planes</span>
+0013 <span class="comment">%             x.Cxx joint covariance matrix</span>
+0014 <span class="comment">% * sigma0 = estimated sigma0</span>
+0015 <span class="comment">% * R = redundancy</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Wolfgang Förstner 7/2012</span>
+0018 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0019 
+0020 <a name="_sub0" href="#_subfunctions" class="code">function [x, estl, sigma_0, R] = </a><span class="keyword">...</span>
+0021     sugr_estimation_ml_symmetric_Planes_from_points(XL, XR, xa, T, maxiter)
+0022 
+0023 <span class="keyword">global</span> print_option_estimation
+0024 <span class="keyword">global</span> min_redundancy
+0025 
+0026 <span class="comment">%% Initialization</span>
+0027 
+0028 NL = size(XL.h, 1);
+0029 NR = size(XR.h, 1);
+0030 N = NL + NR;
+0031 R = N - 4; <span class="comment">% redundancy</span>
+0032 <span class="keyword">if</span> R &lt; 0
+0033     <span class="keyword">return</span>
+0034 <span class="keyword">end</span>;
+0035 
+0036 lh = [XL.h; XR.h]; <span class="comment">% initialize estimated observations</span>
+0037 estl = lh;
+0038 
+0039 lCrr = zeros(N,3,3);
+0040 <span class="keyword">for</span> n = 1:N
+0041     <span class="keyword">if</span> n &lt;= NL
+0042         lCrr(n, :, :) = squeeze(XL.Crr(n, :, :));
+0043     <span class="keyword">else</span>
+0044         lCrr(n, :, :) = squeeze(XR.Crr(n - NL, :, :));
+0045     <span class="keyword">end</span>
+0046 <span class="keyword">end</span>
+0047 w_g = ones(N, 1); <span class="comment">% initial weights for robust estimate</span>
+0048 
+0049 estx = xa;
+0050 
+0051 s = 0; <span class="comment">% control variable for iterations</span>
+0052 residuals = zeros(N, 1); <span class="comment">% intial residuals</span>
+0053 
+0054 <span class="comment">%% Start iteration -------------------------------------</span>
+0055 <span class="keyword">for</span> nu = 1:maxiter
+0056     <span class="keyword">if</span> print_option_estimation &gt; 0
+0057         sprintf(<span class="string">'nu = %2'</span>, nu);
+0058     <span class="keyword">end</span>
+0059     Cr = zeros(N, 3, 3); <span class="comment">% reduced covariance matrices</span>
+0060     v_r = zeros(N, 3); <span class="comment">% reduced residuals</span>
+0061     A = zeros(N, 3); <span class="comment">% Jacobians c -&gt; x</span>
+0062     B = zeros(N, 3); <span class="comment">% Jacobians c -&gt; l</span>
+0063     W = zeros(N, 1); <span class="comment">% Weights of constraints</span>
+0064     cg = zeros(N, 1); <span class="comment">% constraint's residuals</span>
+0065     
+0066     N_matrix = zeros(8); <span class="comment">% normal equation matrix</span>
+0067     h_vector = zeros(8, 1); <span class="comment">% right hand sides</span>
+0068     
+0069     <span class="comment">%% Build design matrices</span>
+0070     <span class="keyword">for</span> n = 1:N
+0071         
+0072         estl_n = estl(n, :)';                  <span class="comment">% get estl</span>
+0073         l_n = lh(n, :)';                  <span class="comment">% get l</span>
+0074         Crr_n = squeeze(lCrr(n, :, :));
+0075         <span class="comment">%determine cg and Jacobians (checked)</span>
+0076         
+0077         <span class="keyword">if</span> n &lt;= NL
+0078             [lr_n, Cr_n, cg_n, atr_n, btr_n] = <span class="keyword">...</span>
+0079                 <a href="sugr_ghm_cg_Plane_from_points.html" class="code" title="function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_Plane_from_points(l,le,xe,C)">sugr_ghm_cg_Plane_from_points</a>(l_n, estl_n, estx(1:4), Crr_n);
+0080         <span class="keyword">else</span>
+0081             [lr_n, Cr_n, cg_n, atr_n, btr_n] = <span class="keyword">...</span>
+0082                 <a href="sugr_ghm_cg_Plane_from_points.html" class="code" title="function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_Plane_from_points(l,le,xe,C)">sugr_ghm_cg_Plane_from_points</a>(l_n, estl_n, estx(5:8), Crr_n);
+0083         <span class="keyword">end</span>
+0084         <span class="comment">% Store these</span>
+0085         A(n, :) = atr_n(:);
+0086         B(n, :) = btr_n(:);
+0087         Cr(n, :, :) = Cr_n;
+0088         v_r(n, :) = - lr_n';
+0089         cg(n) = cg_n;
+0090         
+0091         <span class="comment">% weight W_g_gamma of contraint</span>
+0092         bCovb_n = btr_n * Cr_n * btr_n';
+0093         W(n) = 1 / bCovb_n * w_g(n);
+0094         aW = atr_n' * W(n);
+0095         <span class="keyword">if</span> n &lt;= NL
+0096             N_matrix(1:3, 1:3) = N_matrix(1:3, 1:3) + aW * atr_n;
+0097             h_vector(1:3) = h_vector(1:3) + aW * cg_n;
+0098         <span class="keyword">else</span>
+0099             N_matrix(4:6, 4:6) = N_matrix(4:6, 4:6) + aW * atr_n;
+0100             h_vector(4:6) = h_vector(4:6) + aW * cg_n;
+0101         <span class="keyword">end</span>
+0102     <span class="keyword">end</span>
+0103     <span class="comment">% include constraints</span>
+0104     factor = trace(N_matrix(1:6, 1:6));
+0105     AL0 = estx(1:4);
+0106     AR0 = estx(5:8);
+0107     H = factor * <span class="keyword">...</span>
+0108         [2 * [- AL0(1) * AR0(3) ^ 2, <span class="keyword">...</span>
+0109         - AL0(2) * AR0(3) ^ 2, <span class="keyword">...</span>
+0110         + AL0(3) * (AR0(1) ^ 2 + AR0(2) ^ 2), <span class="keyword">...</span>
+0111         0] * null(AL0'),<span class="keyword">...</span>
+0112         2 * [+ AR0(1) * AL0(3) ^ 2, <span class="keyword">...</span>
+0113         + AR0(2) * AL0(3) ^ 2, <span class="keyword">...</span>
+0114         - AR0(3) * (AL0(1) ^ 2 + AL0(2) ^ 2), <span class="keyword">...</span>
+0115         0] * null(AR0'),<span class="keyword">...</span>
+0116         [[+ AR0(2), - AR0(1), 0, 0] * null(AL0'),<span class="keyword">...</span>
+0117         [- AL0(2), + AL0(1), 0, 0] * null(AR0')]];
+0118 <span class="comment">%     Hs = H / factor;</span>
+0119     N_matrix(7:8, 1:6) = H;
+0120     N_matrix(1:6, 7:8) = H';
+0121     h_vector(7:8) = factor * <span class="keyword">...</span>
+0122         [- (AL0(3) ^ 2 * (AR0(1) ^ 2 + AR0(2) ^ 2) - AR0(3) ^ 2 * (AL0(1) ^ 2 + AL0(2) ^ 2)); <span class="keyword">...</span>
+0123         - (AL0(1) * AR0(2) - AR0(1) * AL0(2))];
+0124 <span class="comment">%     N_matrix / factor</span>
+0125 <span class="comment">%     h_vector'/factor</span>
+0126 <span class="comment">%     hv78 = h_vector(7:8) / factor</span>
+0127 <span class="comment">%     N_matrix;</span>
+0128 <span class="comment">%     h_vector;</span>
+0129     
+0130     det(N_matrix);
+0131     
+0132     <span class="comment">%% Solve</span>
+0133     Cxrxr = inv(N_matrix);
+0134     estx_r = Cxrxr * h_vector;                                             <span class="comment">%#ok&lt;MINV&gt;</span>
+0135     
+0136     <span class="keyword">if</span> print_option_estimation &gt; 1
+0137         disp([<span class="string">'Result of estimation in iteration: '</span>, num2str(nu)]);
+0138         h_vector'                                                          <span class="comment">%#ok&lt;NOPRT&gt;</span>
+0139         estx_r'                                                            <span class="comment">%#ok&lt;NOPRT&gt;</span>
+0140     <span class="keyword">end</span>
+0141     
+0142     max(abs(estx_r(1:6)) ./ sqrt(diag(Cxrxr(1:6, 1:6))));
+0143     <span class="keyword">if</span> max(abs(estx_r(1:6)) ./ sqrt(diag(Cxrxr(1:6, 1:6)))) &lt; T
+0144         s = 2;
+0145     <span class="keyword">end</span>
+0146     
+0147     <span class="comment">%% Determine Updates</span>
+0148     Omega = 0;
+0149     check = zeros(3, 1);
+0150     <span class="keyword">for</span> n = 1:N
+0151         <span class="comment">% covariance matrix of observations (normalized)</span>
+0152         Clrlr = squeeze(Cr(n, :, :));
+0153         
+0154         <span class="comment">% corrections of reduced observations</span>
+0155         <span class="keyword">if</span> n &lt;= NL
+0156             delta_l_r = Clrlr * B(n, :)' * W(n) * <span class="keyword">...</span>
+0157                 (cg(n) - A(n, :) * estx_r(1:3)) - v_r(n, :)';
+0158         <span class="keyword">else</span>
+0159             delta_l_r = Clrlr * B(n, :)' * W(n) * <span class="keyword">...</span>
+0160                 (cg(n) - A(n, :) * estx_r(4:6)) - v_r(n, :)';
+0161         <span class="keyword">end</span>
+0162         ver_r = v_r(n, :)' + delta_l_r;
+0163         
+0164         <span class="comment">% sum of squared residuals</span>
+0165         <span class="keyword">if</span> w_g(n) &gt; 0
+0166             vvp_r = ver_r' * inv(Clrlr) * ver_r;                           <span class="comment">%#ok&lt;MINV&gt;</span>
+0167             Omega = Omega + vvp_r;
+0168             residuals(n) = vvp_r;
+0169             check = check + A(n, :)'*W(n)*B(n,:)*ver_r;
+0170             
+0171             <span class="comment">% eliminate observation by setting w_g=0</span>
+0172             <span class="keyword">if</span> vvp_r &gt; 10
+0173                 w_g(n) = 0;
+0174             <span class="keyword">end</span>
+0175         <span class="keyword">end</span>
+0176         <span class="comment">% updated estimates of observations</span>
+0177 <span class="comment">%         estl0 = estl;</span>
+0178         estl(n, :) = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>(estl(n, :)',delta_l_r)';
+0179         
+0180     <span class="keyword">end</span>
+0181     <span class="keyword">if</span> print_option_estimation &gt; 0
+0182         sigma_0 = sqrt(Omega / R)                                          <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0183     <span class="keyword">end</span>
+0184 <span class="comment">%     checkt = check';</span>
+0185     
+0186     <span class="comment">% update estimate of x</span>
+0187 <span class="comment">%     estx0 = estx;</span>
+0188     estx(1:4) = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>(estx(1:4), estx_r(1:3));
+0189     estx(5:8) = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>(estx(5:8), estx_r(4:6));
+0190     <span class="comment">%check_Atpv = (estl*estx.*w_g)';</span>
+0191     
+0192     <span class="comment">%% Stop iteration</span>
+0193     <span class="keyword">if</span> s == 2
+0194         <span class="keyword">break</span>
+0195     <span class="keyword">end</span>
+0196     
+0197 <span class="keyword">end</span>
+0198 <span class="comment">%% Evaluation of result ------------------------------</span>
+0199 <span class="comment">% determine Cxx</span>
+0200 Jrh = [null(estx(1:4)')' zeros(3, 4); zeros(3, 4) null(estx(5:8)')'];
+0201 Cxx = Jrh' * Cxrxr(1:6,1:6) * Jrh;
+0202 
+0203 <span class="comment">% determine sigma_0</span>
+0204 
+0205 <span class="keyword">if</span> R &gt; 0
+0206     sigma_0 = sqrt(Omega / R);
+0207 <span class="keyword">else</span>
+0208     sigma_0 = 1;
+0209 <span class="keyword">end</span>
+0210 <span class="comment">% residuals';</span>
+0211 
+0212 <span class="comment">% choose factor</span>
+0213 f = 1;
+0214 <span class="keyword">if</span> R &gt; min_redundancy
+0215     f = sigma_0;
+0216 <span class="keyword">end</span>
+0217 
+0218 <span class="comment">% estimated covariance matrix of estx</span>
+0219 estCxx = f ^ 2 * Cxx;
+0220 
+0221 <span class="comment">% estx;</span>
+0222 <span class="comment">% estCxx;</span>
+0223 
+0224 <span class="comment">% set output</span>
+0225 x.h = estx;
+0226 x.Cxx = estCxx;
+0227 
+0228</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

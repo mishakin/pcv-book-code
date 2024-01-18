@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_viewing_direction</title>
+  <meta name="keywords" content="calc_viewing_direction">
+  <meta name="description" content="% Viewing direction from P of perspective camera">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_viewing_direction.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_viewing_direction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Viewing direction from P of perspective camera</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function d = calc_viewing_direction(P) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Viewing direction from P of perspective camera
+
+ Usage:
+   d = calc_viewing_direction(P)
+  
+   P - 4 x 3-projection matrix P = K*R*[I|-Z] 
+
+   d - 3x1 vector viewing direction, not normalized
+
+ Wolfgang Förstner 4/2013
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_P_from_KRZ.html" class="code" title="function P = calc_P_from_KRZ (K,R,Z,K33)">calc_P_from_KRZ</a>, <a href="calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>, <a href="calc_Q_from_P.html" class="code" title="function Q = calc_Q_from_P (P)">calc_Q_from_P</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../12-Single-View-Geometry/Demo_Projection/demo_KRZ.html" class="code" title="">demo_KRZ</a>	% Demo partitioning of P into K, R, and Z</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Viewing direction from P of perspective camera</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage:</span>
+0004 <span class="comment">%   d = calc_viewing_direction(P)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   P - 4 x 3-projection matrix P = K*R*[I|-Z]</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   d - 3x1 vector viewing direction, not normalized</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Wolfgang Förstner 4/2013</span>
+0011 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See also calc_P_from_KRZ, calc_KRZ_from_P, calc_Q_from_P</span>
+0014 
+0015 <a name="_sub0" href="#_subfunctions" class="code">function d = calc_viewing_direction(P)</a>
+0016 
+0017 d = -P(3,1:3)'*det(P(:,1:3));</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

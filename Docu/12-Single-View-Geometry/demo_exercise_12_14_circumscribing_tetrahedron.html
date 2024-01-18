@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_exercise_12_14_circumscribing_tetrahedron</title>
+  <meta name="keywords" content="demo_exercise_12_14_circumscribing_tetrahedron">
+  <meta name="description" content="% Demo Barycentric coordinates of point cloud within minimal spanning">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">12-Single-View-Geometry</a> &gt; demo_exercise_12_14_circumscribing_tetrahedron.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 12-Single-View-Geometry&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>demo_exercise_12_14_circumscribing_tetrahedron
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Demo Barycentric coordinates of point cloud within minimal spanning</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Demo Barycentric coordinates of point cloud within minimal spanning
+ tetrahedron
+
+ see Kaseorg, A. (2014). 
+ How do I find the side of the largest cube completely contained inside a 
+ regular % tetrahedron of side s? 
+ https://www.quora.com/How-do-I-find..., last visited 10/2015. 538
+
+ see PCV exercise 12.14
+
+ Wolfgang Förstner 6/2016
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 04/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Demo Barycentric coordinates of point cloud within minimal spanning</span>
+0002 <span class="comment">% tetrahedron</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% see Kaseorg, A. (2014).</span>
+0005 <span class="comment">% How do I find the side of the largest cube completely contained inside a</span>
+0006 <span class="comment">% regular % tetrahedron of side s?</span>
+0007 <span class="comment">% https://www.quora.com/How-do-I-find..., last visited 10/2015. 538</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% see PCV exercise 12.14</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Wolfgang Förstner 6/2016</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% last changes: Susanne Wenzel 04/18</span>
+0015 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0016 
+0017 clc
+0018 close all
+0019 clearvars
+0020 
+0021 disp(<span class="string">'--------------------------------------------'</span>)
+0022 disp(<span class="string">'   Barycentric coordinates of point cloud   '</span>)
+0023 disp(<span class="string">'--------------------------------------------'</span>)
+0024 
+0025 <span class="comment">% set range of coordinates</span>
+0026 <span class="comment">% ddx=5;ddy=20;ddz=0.1;</span>
+0027 ddx=1;ddy=1;ddz=1;
+0028 
+0029 cube=0; <span class="comment">% Cube given by params dy, dy, dz or unitcube</span>
+0030 
+0031 <span class="keyword">if</span> cube == 1
+0032     disp(<span class="string">'Cube [-1,+1]^3'</span>)
+0033     X=[[-1,1,1,-1,-1,1,1,-1]*ddx;
+0034        [1,1,-1,-1,1,1,-1,-1]*ddy;
+0035        [-1,-1,-1,-1,1,1,1,1]*ddz];
+0036 <span class="keyword">else</span>
+0037     disp([<span class="string">'Cube '</span>,num2str(ddx),<span class="string">' x '</span>,num2str(ddy),<span class="string">' x '</span>,num2str(ddz)])
+0038     N = 1000;
+0039     X = [rand(1,N)*ddx;rand(1,N)*ddy;rand(1,N)*ddz];
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="comment">% determine minimal bounding box</span>
+0043 xmin = min(X(1,:));
+0044 ymin = min(X(2,:));
+0045 zmin = min(X(3,:));
+0046 xmax = max(X(1,:));
+0047 ymax = max(X(2,:));
+0048 zmax = max(X(3,:));
+0049 mx = ( xmax + xmin )/2;
+0050 my = ( ymax + ymin )/2;
+0051 mz = ( zmax + zmin )/2;
+0052 
+0053 <span class="comment">% four points of minimal spanning tetrahedron</span>
+0054 dx = xmax - xmin;
+0055 dy = ymax - ymin;
+0056 dz = zmax - zmin;
+0057 u = ( 2+sqrt(2) )/6;
+0058 v = u/sqrt(2);
+0059 T = [mx-u*dx, my, mz-v*dz;<span class="keyword">...</span>
+0060      mx+u*dx, my, mz-v*dz;<span class="keyword">...</span>
+0061      mx, my-u*dy, mz+v*dz;<span class="keyword">...</span>
+0062      mx, my+u*dy, mz+v*dz]';
+0063 disp(<span class="string">'Corners of Tetrahedron'</span>)
+0064 disp(num2str(T));
+0065 
+0066 Th = [T;ones(1,4)];
+0067 
+0068 <span class="comment">% check barycentric coordinates</span>
+0069 alpha = inv(Th)*[X;ones(1,N)];                                             <span class="comment">%#ok&lt;MINV&gt;</span>
+0070 
+0071 <span class="comment">% max alpha should be &lt; 1</span>
+0072 disp([<span class="string">'maximum absolute Barycentric coordinate ='</span>,num2str(max((alpha(:))))])
+0073 
+0074 figure
+0075 hold on
+0076 plot3(X(1,:),X(2,:),X(3,:),<span class="string">'.b'</span>)
+0077 plot3(  [ T(1,1), T(1,2), T(1,3), T(1,4), T(1,1), T(1,3), T(1,2), T(1,4)],<span class="keyword">...</span>
+0078         [ T(2,1), T(2,2), T(2,3), T(2,4), T(2,1), T(2,3), T(2,2), T(2,4)],<span class="keyword">...</span>
+0079         [ T(3,1), T(3,2), T(3,3), T(3,4), T(3,1), T(3,3), T(3,2), T(3,4)],<span class="keyword">...</span>
+0080         <span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,4' );
+0081</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

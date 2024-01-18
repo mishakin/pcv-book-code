@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_2_11_demo_scatter_histogram</title>
+  <meta name="keywords" content="fig_2_11_demo_scatter_histogram">
+  <meta name="description" content="% Fig. 2.11 page 56">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">02-Probability</a> &gt; fig_2_11_demo_scatter_histogram.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 02-Probability&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>fig_2_11_demo_scatter_histogram
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Fig. 2.11 page 56</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 2.11 page 56
+ example random number generation, scatterplot and histogram
+
+ Wolfgang Förstner 2015
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../General-Functions/Graphics/plot_ellipse.html" class="code" title="function h = plot_ellipse(ellipse,fmt)">plot_ellipse</a>	% plot_ellipse: plot 2D ellipse</li><li><a href="../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li><li><a href="../General-Functions/Statistics/rand_gauss.html" class="code" title="function ret = rand_gauss(mu, C, n)">rand_gauss</a>	% random numbers following a multivariate Gaussian  with</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 2.11 page 56</span>
+0002 <span class="comment">% example random number generation, scatterplot and histogram</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner 2015</span>
+0005 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0007 
+0008 close all
+0009 
+0010 addpath(genpath(<span class="string">'../General-Functions/'</span>));
+0011 
+0012 <span class="comment">% get current screensize, for proper positioning of figures and set default</span>
+0013 <span class="comment">% plot settings</span>
+0014 ss = <a href="../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0015 
+0016 <span class="comment">%% initialize random number generation by fixed seed</span>
+0017 <span class="comment">%  (0 would use a random initialization)</span>
+0018 <a href="../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(2);
+0019 
+0020 <span class="comment">%% 1D random variable following a univariate Gaussian distribution</span>
+0021 
+0022 <span class="comment">% parameters</span>
+0023 N = 225;         <span class="comment">% number of samples</span>
+0024 mu_y = 2;        <span class="comment">% mean</span>
+0025 sigma_y = 0.25;   <span class="comment">% standarddeviation</span>
+0026 
+0027 <span class="comment">%% a) generate sample</span>
+0028 
+0029 <span class="comment">% generate standard normal samples ~N(0,1)</span>
+0030 x = randn(N,1);
+0031 <span class="comment">% transform to desired Gaussian N(mu,sigma)</span>
+0032 y = mu_y*ones(N,1)+sigma_y*x;
+0033 
+0034 <span class="comment">% plot samples</span>
+0035 figure(<span class="string">'name'</span>,<span class="string">'Sample'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[0.1*ss(1),0.55*ss(2),0.35*ss(1),0.35*ss(2)]); hold on
+0036 <span class="keyword">for</span> n=1:N
+0037     plot([y(n),y(n)],[0,0.5],<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,1)
+0038 <span class="keyword">end</span>
+0039 plot([mu_y-4*sigma_y,mu_y+4*sigma_y],[0,0],<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,1);
+0040 plot([0,0],[0,1],<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,1);
+0041 xlim([mu_y-5*sigma_y,mu_y+5*sigma_y]); ylim([-0.1,1.1]);
+0042 xlabel(<span class="string">'$y$'</span>);
+0043 <span class="comment">% title(['Fig. 2.11a A sample of $N = 255$ normally distributed random variables $y\sim N(2,0.25)$'])</span>
+0044 title([<span class="string">'Fig. 2.11a A sample of $N = '</span>,num2str(N),<span class="string">'$ normally distributed random variables $y\sim N('</span><span class="keyword">...</span>
+0045     ,num2str(mu_y),<span class="string">','</span>,num2str(sigma_y),<span class="string">')$'</span>])
+0046 
+0047 <span class="comment">%% b) plot histogram (number of bins = sqrt(N))</span>
+0048 figure(<span class="string">'name'</span>,<span class="string">'Histogram'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[0.55*ss(1),0.55*ss(2),0.35*ss(1),0.35*ss(2)]); hold on;
+0049 
+0050 N_bin = floor(sqrt(N));       <span class="comment">% number of bins</span>
+0051 [NN,r]=hist(y,N_bin);         <span class="comment">% calculate histogram</span>
+0052 bar(r,NN)                     <span class="comment">% plot histogram</span>
+0053 
+0054 <span class="comment">% plot expected Gaussian / expected number of samples</span>
+0055 range = abs(r(N_bin)-r(1))*N_bin/(N_bin-1);     <span class="comment">% range of histogram</span>
+0056 plot(r,N_bin*range*normpdf(r,mu_y,sigma_y),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,4);     
+0057 xlim([mu_y-5*sigma_y,mu_y+5*sigma_y]);ylim([0,max(NN)*1.1]);
+0058 xlabel(<span class="string">'$y$'</span>);ylabel(<span class="string">'$\sim p_y(y)$'</span>)
+0059 title([<span class="string">'Fig. 2.11b Histogram of the sample with $'</span>,num2str(N_bin),<span class="string">'$ bins, overlayed with its probability density.'</span>])
+0060 
+0061 <span class="comment">%% 2d random vector with mean [0,0]</span>
+0062 
+0063 <span class="comment">% parameters</span>
+0064 sigma_x = 4.9;   <span class="comment">% std in x</span>
+0065 sigma_y = 3.2;   <span class="comment">% std in y</span>
+0066 rho = 0.7;       <span class="comment">% correlation</span>
+0067 N = 500;         <span class="comment">% number of samples</span>
+0068 
+0069 <span class="comment">% covariance matrix</span>
+0070 C = [sigma_x^2 sigma_x*sigma_y*rho; sigma_x*sigma_y*rho sigma_y^2];
+0071 <span class="comment">% generate sample</span>
+0072 x = <a href="../General-Functions/Statistics/rand_gauss.html" class="code" title="function ret = rand_gauss(mu, C, n)">rand_gauss</a>([0,0]',C,N)';
+0073 
+0074 <span class="comment">% plot samples with standard ellipse</span>
+0075 figure(<span class="string">'name'</span>,<span class="string">'2D Sample'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[0.25*ss(1),0.1*ss(2),0.35*ss(1),0.35*ss(2)]); hold on
+0076 <span class="comment">% standard ellipse</span>
+0077 <a href="../General-Functions/Graphics/plot_ellipse.html" class="code" title="function h = plot_ellipse(ellipse,fmt)">plot_ellipse</a>(struct(<span class="string">'mean'</span>,[0;0],<span class="string">'cov'</span>,C),<span class="string">'-k'</span>);
+0078 <span class="comment">% threefold standard ellipse</span>
+0079 <a href="../General-Functions/Graphics/plot_ellipse.html" class="code" title="function h = plot_ellipse(ellipse,fmt)">plot_ellipse</a>(struct(<span class="string">'mean'</span>,[0;0],<span class="string">'cov'</span>,9*C),<span class="string">'-g'</span>);  
+0080 <span class="comment">% x-axis</span>
+0081 plot([-4*sigma_x,+4*sigma_x],[0,0],<span class="string">'-k'</span>)
+0082 <span class="comment">% y-axis</span>
+0083 plot([0,0],[-4*sigma_y,+4*sigma_y],<span class="string">'-k'</span>)
+0084 <span class="comment">% samples</span>
+0085 plot(x(:,1),x(:,2),<span class="string">'.k'</span>)
+0086 
+0087 xlim([-5*sigma_x,+5*sigma_x]);ylim([-5*sigma_y,+5*sigma_y])
+0088 axis equal
+0089 title({<span class="string">'Fig. 2.11c Sample of 2d random vector'</span>,<span class="string">'standard ellipse (black), threefold standard ellipse (green)'</span>})</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

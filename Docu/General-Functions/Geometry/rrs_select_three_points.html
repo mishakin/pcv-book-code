@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rrs_select_three_points</title>
+  <meta name="keywords" content="rrs_select_three_points">
+  <meta name="description" content="% Select 3 points for spatial resection and possibly plot">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; rrs_select_three_points.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>rrs_select_three_points
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Select 3 points for spatial resection and possibly plot</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function p_selected = rrs_select_three_points(X,y,Tol) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Select 3 points for spatial resection and possibly plot
+
+ p_selected = rrs_select_three_points(X,y,Tol)
+ 
+ X    N-struct given scene points, possibly at infinity
+ y    N-struct given image directions
+ Tol  Tolerance for points to be not at infinity (eg 100)
+
+ X3   3x3 matrix with rows being scene points (X,Y,Z)
+ y3   3x3 matrix with rows being image directions</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Select 3 points for spatial resection and possibly plot</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% p_selected = rrs_select_three_points(X,y,Tol)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% X    N-struct given scene points, possibly at infinity</span>
+0006 <span class="comment">% y    N-struct given image directions</span>
+0007 <span class="comment">% Tol  Tolerance for points to be not at infinity (eg 100)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% X3   3x3 matrix with rows being scene points (X,Y,Z)</span>
+0010 <span class="comment">% y3   3x3 matrix with rows being image directions</span>
+0011 
+0012 
+0013 <a name="_sub0" href="#_subfunctions" class="code">function p_selected = rrs_select_three_points(X,y,Tol)</a>
+0014 
+0015 <span class="keyword">global</span> plot_option
+0016 <span class="keyword">global</span> print_option
+0017 
+0018 N = size(X.h,1);
+0019 <span class="comment">% number of trials of triplets</span>
+0020 K=30;
+0021 dmax = 0;
+0022 <span class="keyword">for</span> k=1:K
+0023     pe = randperm(N);
+0024     <span class="comment">% determinant of directions (should be large)</span>
+0025     d3 = abs(det([y.h(pe(1),:);y.h(pe(2),:);y.h(pe(3),:);]));
+0026     <span class="comment">% no point should be far away</span>
+0027     X_f_1 = abs(X.h(pe(1),4)) &gt; 1/Tol;
+0028     X_f_2 = abs(X.h(pe(2),4)) &gt; 1/Tol;
+0029     X_f_3 = abs(X.h(pe(3),4)) &gt; 1/Tol;
+0030     <span class="keyword">if</span> d3 &gt; dmax &amp;&amp; X_f_1*X_f_2*X_f_3 == 1
+0031         three = pe;
+0032         dmax= d3;
+0033         pe_selected = pe;
+0034         X3 = [X.h(pe(1),1:3)/X.h(pe(1),4);<span class="keyword">...</span>
+0035               X.h(pe(2),1:3)/X.h(pe(2),4);<span class="keyword">...</span>
+0036               X.h(pe(3),1:3)/X.h(pe(3),4)];
+0037         y3 = [y.h(pe(1),:);<span class="keyword">...</span>
+0038               y.h(pe(2),:);<span class="keyword">...</span>
+0039               y.h(pe(3),:)];
+0040     <span class="keyword">end</span>
+0041 <span class="keyword">end</span>
+0042 <span class="keyword">if</span> dmax &lt; 0.00001 
+0043     display(<span class="string">'no adequate triple found'</span>)
+0044     <span class="keyword">return</span>
+0045 <span class="keyword">end</span>
+0046 
+0047 <span class="keyword">if</span> print_option &gt; 0
+0048     display([<span class="string">'Points for approximate values : '</span>,num2str(pe_selected(1:3))])
+0049 <span class="keyword">end</span>
+0050 <span class="keyword">if</span> plot_option &gt; 0
+0051     figure
+0052     subplot(1,2,1)
+0053     hold on
+0054     plot3(0,0,0,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0055     <span class="keyword">for</span> n=1:3
+0056         plot3(X3(n,1),X3(n,2),X3(n,3),<span class="string">'.r'</span>,<span class="string">'MarkerSize'</span>,15)
+0057     <span class="keyword">end</span>
+0058     axis equal
+0059     subplot(1,2,2)
+0060     hold on
+0061     plot3(0,0,0,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0062     <span class="keyword">for</span> n=1:3
+0063         plot3(y3(n,1),y3(n,2),y3(n,3),<span class="string">'.r'</span>,<span class="string">'MarkerSize'</span>,15)
+0064         plot3([0,y3(n,1)],[0,y3(n,2)],[0,y3(n,3)],<span class="string">'-r'</span>)
+0065     <span class="keyword">end</span>
+0066     axis equal
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">% selected points</span>
+0070 p_selected=pe(1:3);
+0071 
+0072 <span class="keyword">end</span>
+0073</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

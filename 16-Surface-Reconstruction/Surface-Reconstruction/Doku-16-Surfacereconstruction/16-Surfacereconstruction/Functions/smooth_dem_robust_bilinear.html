@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of smooth_dem_robust_bilinear</title>
+  <meta name="keywords" content="smooth_dem_robust_bilinear">
+  <meta name="description" content="% smooth_dem_robust_bilinear">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">16-Surfacereconstruction</a> &gt; <a href="index.html">Functions</a> &gt; smooth_dem_robust_bilinear.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>smooth_dem_robust_bilinear
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% smooth_dem_robust_bilinear</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% smooth_dem_robust_bilinear
+
+ reconstruct surface with 
+   energy = sum_m rho(l_m-a_m)/sigma_n) + 
+             1/sigma_d sum_ij d_ii^2+2d_ij^2+djj^2
+ l_m = observed heights, interpolated bilinearly
+ a_m unknown grid heights, d_ij second derivatives
+ 
+ function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,W] = ...
+    smooth_dem_robust_bilinear...
+    (points,BB,delta_x,sigma_k,out_C,out_print,type_robust,type_data)
+
+ points  = Nx4-matrix of (x,y,h,sigma) values, 
+ BB      = [xmin,ymin,xmax,ymax] boundin,g box of square grid
+ delta_x = grid size, squared 
+           xmax, ymax will be adapted, not decreased
+           points not incide BB will be discarded
+ sigms_k = std. dev. of curvature of surface, referring to delta_x
+ out_C   = 0 no covariance matrix as output, (default if U&gt;1600)
+           1 covariance matrix as output
+ out_print = 0 no output
+             1 little output
+             2 much output
+ type_robust = 0,1,2,3 (00,01,10,11) for points and dem
+
+ dem_smoothe = Nr x Mc matrix of smoothed heigths
+ S           = corresponding standard deviations, if required
+ Sigma       = full covariance matrix. if required
+ Np          = number of points
+ Nr, Mc      = number of grid points in x- and y-direction
+ v           = residuals (Np + (Nr-2)*Mc + Nr*(Mc-2) + (Nr-1)*(Mc-1)) for
+               points
+               second derivatives cc
+               second derivatives rr
+               torsion
+ A           = design matrix (sparse) 
+ weights     = weight-factors after robust estimation (0 or 1)
+ W           = weight of observations including both, uncertainty and robust factor 
+
+ grid is matrix Nr x Mc and stored column wise
+
+ wf 7/2014</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="estimate_dem_robust.html" class="code" title="function [A,weights,dx,v,W,Nmatrix]=estimate_dem_robust(N,U,Np,Nr,Mc,poi,xa,weights,sigma_k,iter,type_robust,L1,out_in,print_type,plot_type);">estimate_dem_robust</a>	% robustly estimate correction to dem</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="test_smooth_dem_robust_bilinear.html" class="code" title="">test_smooth_dem_robust_bilinear</a>	% test dem smoothing</li><li><a href="test_smooth_dem_robust_bilinear_square.html" class="code" title="">test_smooth_dem_robust_bilinear_square</a>	% test dem smoothing</li><li><a href="../../16-Surfacereconstruction/eq_15_120_theoretical_accuracy.html" class="code" title="">eq_15_120_theoretical_accuracy</a>	% eq_15_120_theoretical accuracy</li><li><a href="../../16-Surfacereconstruction/fig_16_20_demo_surface_reconstruction.html" class="code" title="">fig_16_20_demo_surface_reconstruction</a>	% Fig. 16.20 page 761</li><li><a href="../../16-Surfacereconstruction/fig_16_21_quality_surface_reconstruction.html" class="code" title="">fig_16_21_quality_surface_reconstruction</a>	% Fig. 16.21 theoretical quality  of surface reconstruction</li><li><a href="../../16-Surfacereconstruction/fig_16_22_demo_robust_surface_reconstruction.html" class="code" title="">fig_16_22_demo_robust_surface_reconstruction</a>	% Fig. 16.22 page 762</li><li><a href="../../16-Surfacereconstruction/fig_16_23_aurelo_result.html" class="code" title="">fig_16_23_aurelo_result</a>	% Fig. 16.23 page 764</li><li><a href="../../16-Surfacereconstruction/fig_16_9b_demo_surface_reconstruction.html" class="code" title="">fig_16_9b_demo_surface_reconstruction</a>	% Fig. 16.9 bottom page 740</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% smooth_dem_robust_bilinear</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% reconstruct surface with</span>
+0004 <span class="comment">%   energy = sum_m rho(l_m-a_m)/sigma_n) +</span>
+0005 <span class="comment">%             1/sigma_d sum_ij d_ii^2+2d_ij^2+djj^2</span>
+0006 <span class="comment">% l_m = observed heights, interpolated bilinearly</span>
+0007 <span class="comment">% a_m unknown grid heights, d_ij second derivatives</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,W] = ...</span>
+0010 <span class="comment">%    smooth_dem_robust_bilinear...</span>
+0011 <span class="comment">%    (points,BB,delta_x,sigma_k,out_C,out_print,type_robust,type_data)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% points  = Nx4-matrix of (x,y,h,sigma) values,</span>
+0014 <span class="comment">% BB      = [xmin,ymin,xmax,ymax] boundin,g box of square grid</span>
+0015 <span class="comment">% delta_x = grid size, squared</span>
+0016 <span class="comment">%           xmax, ymax will be adapted, not decreased</span>
+0017 <span class="comment">%           points not incide BB will be discarded</span>
+0018 <span class="comment">% sigms_k = std. dev. of curvature of surface, referring to delta_x</span>
+0019 <span class="comment">% out_C   = 0 no covariance matrix as output, (default if U&gt;1600)</span>
+0020 <span class="comment">%           1 covariance matrix as output</span>
+0021 <span class="comment">% out_print = 0 no output</span>
+0022 <span class="comment">%             1 little output</span>
+0023 <span class="comment">%             2 much output</span>
+0024 <span class="comment">% type_robust = 0,1,2,3 (00,01,10,11) for points and dem</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% dem_smoothe = Nr x Mc matrix of smoothed heigths</span>
+0027 <span class="comment">% S           = corresponding standard deviations, if required</span>
+0028 <span class="comment">% Sigma       = full covariance matrix. if required</span>
+0029 <span class="comment">% Np          = number of points</span>
+0030 <span class="comment">% Nr, Mc      = number of grid points in x- and y-direction</span>
+0031 <span class="comment">% v           = residuals (Np + (Nr-2)*Mc + Nr*(Mc-2) + (Nr-1)*(Mc-1)) for</span>
+0032 <span class="comment">%               points</span>
+0033 <span class="comment">%               second derivatives cc</span>
+0034 <span class="comment">%               second derivatives rr</span>
+0035 <span class="comment">%               torsion</span>
+0036 <span class="comment">% A           = design matrix (sparse)</span>
+0037 <span class="comment">% weights     = weight-factors after robust estimation (0 or 1)</span>
+0038 <span class="comment">% W           = weight of observations including both, uncertainty and robust factor</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% grid is matrix Nr x Mc and stored column wise</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% wf 7/2014</span>
+0043 <span class="comment">%</span>
+0044  
+0045 <a name="_sub0" href="#_subfunctions" class="code">function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] = </a><span class="keyword">...</span>
+0046     smooth_dem_robust_bilinear<span class="keyword">...</span>
+0047     (points,BB,delta_x,sigma_k,out_C,type_robust,type_data,<span class="keyword">...</span>
+0048     out_in,print_type,plot_type)
+0049     
+0050 
+0051 <span class="comment">%% number of points, preliminary --&gt; final (which are in BB)</span>
+0052 [Npp,tmp] = size(points);
+0053 
+0054 xmin = BB(1);
+0055 ymin = BB(2);
+0056 xmax = BB(3);
+0057 ymax = BB(4);
+0058 Nr =ceil((xmax-xmin)/delta_x)+1;
+0059 Mc =ceil((ymax-ymin)/delta_x)+1;
+0060 
+0061 
+0062 Np = 0;
+0063 <span class="keyword">for</span> p=1:Npp
+0064     <span class="keyword">if</span> points(p,1) &gt;= xmin &amp;&amp; <span class="keyword">...</span>
+0065             points(p,1) &lt; xmax &amp;&amp; <span class="keyword">...</span>
+0066             points(p,2) &gt;= ymin &amp;&amp; <span class="keyword">...</span>
+0067             points(p,2) &lt; ymax
+0068         Np=Np+1;
+0069         poi(Np,:) = [(points(p,1)-xmin)/delta_x,(points(p,2)-ymin)/delta_x,points(p,3:4)];
+0070         
+0071     <span class="keyword">end</span>
+0072 <span class="keyword">end</span>
+0073             
+0074 <span class="comment">%% number of unknowns and observations incl. prior</span>
+0075 U = Nr*Mc;
+0076 N = Np + (Nr-2)*Mc + Nr*(Mc-2) + (Nr-1)*(Mc-1);
+0077             <span class="keyword">if</span> print_type &gt; 0
+0078                 number_of_unknowns = U <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0079             <span class="keyword">end</span>
+0080 
+0081 <span class="comment">%% do not give covariance matrix for U&gt;10000.</span>
+0082             <span class="keyword">if</span> U &gt; 40401
+0083                 out_C = 0;
+0084             <span class="keyword">end</span>
+0085             <span class="keyword">if</span> print_type &gt; 0 
+0086                 tic
+0087             <span class="keyword">end</span>
+0088 <span class="comment">%% estimate iteratively</span>
+0089 
+0090 iter_switch=3;
+0091 <span class="keyword">if</span> type_robust == 0
+0092     N_iter = 1;
+0093 <span class="keyword">else</span>
+0094     N_iter=6;
+0095 <span class="keyword">end</span>
+0096 
+0097 xa = zeros(U,1);               <span class="comment">% initial unknown parameters</span>
+0098 weights   = ones(N,1);         <span class="comment">% weight-factors for robust estimation</span>
+0099 weights_f = weights;
+0100 sigma_k0  = sigma_k;
+0101 gain=1.0;
+0102 
+0103 <span class="keyword">for</span> iter = 1:N_iter
+0104     L1 = 0;
+0105     <span class="keyword">if</span> type_robust &gt; 0 &amp;&amp; iter &lt;= iter_switch
+0106         L1=1;
+0107     <span class="keyword">else</span>
+0108         L1=0;
+0109     <span class="keyword">end</span>
+0110     sigma_k=sigma_k0*gain^(N_iter-iter);     <span class="comment">% adapt prior sigma</span>
+0111     
+0112     [A,weights,dx,v,W,Nmatrix]=<a href="estimate_dem_robust.html" class="code" title="function [A,weights,dx,v,W,Nmatrix]=estimate_dem_robust(N,U,Np,Nr,Mc,poi,xa,weights,sigma_k,iter,type_robust,L1,out_in,print_type,plot_type);">estimate_dem_robust</a><span class="keyword">...</span>
+0113         (N,U,Np,Nr,Mc,poi,xa,weights,sigma_k,iter,type_robust,L1,<span class="keyword">...</span>
+0114         out_in,print_type,plot_type);
+0115     
+0116     xa = xa + dx;
+0117      
+0118     <span class="keyword">if</span> print_type &gt; 0
+0119         iter_dx = [iter,norm(dx)] <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0120     <span class="keyword">end</span>
+0121     <span class="comment">%%</span>
+0122                 <span class="keyword">if</span> plot_type &gt; 0
+0123                     <span class="keyword">if</span> iter == 1
+0124                         <span class="keyword">if</span> type_robust &gt; 0
+0125                         figure
+0126                         hold on
+0127                         title(<span class="string">'surf'</span>)
+0128                         X=([4*Nr:4*Nr+Nr-1]'*ones(1,Mc))*delta_x+BB(1);
+0129                         Y=(ones(Nr,1)*[0:Mc-1])*delta_x+BB(2);
+0130 
+0131                             <span class="keyword">if</span> type_data ~=5 
+0132                                 colormap(gray)
+0133                                 surf(X,Y,reshape(xa,Nr,Mc));
+0134                                 alpha(0.3);
+0135                                 <span class="comment">%mesh(ds);</span>
+0136                                 view([-29,65])
+0137                                 plot3(points(:,1)+4*Nr*delta_x,points(:,2),points(:,3),<span class="string">'.r'</span>,<span class="string">'MarkerSize'</span>,3);
+0138 
+0139                             <span class="keyword">else</span>
+0140                                 subplot(1,3,2)
+0141                                 <span class="comment">%imagesc(reshape(xa,Nr,Mc));</span>
+0142                                 imshow(reshape(xa,Nr,Mc));
+0143                                 colormap(gray)
+0144                                 view(0,90)
+0145                                 title(<span class="string">'1.iteration'</span>)
+0146                             <span class="keyword">end</span>
+0147                             title(strcat(<span class="string">'iteration='</span>,num2str(iter),<span class="string">' fitted dem'</span>))
+0148 
+0149                             axis equal
+0150                         <span class="keyword">end</span>
+0151                     <span class="keyword">else</span>
+0152                         figure
+0153                         subplot(2,2,1)
+0154                         hold on
+0155                         X=([0:Nr-1]'*ones(1,Mc))*delta_x+BB(1);
+0156                         Y=(ones(Nr,1)*[0:Mc-1])*delta_x+BB(2);
+0157                         colormap(gray)
+0158                         mesh(X,Y,reshape(xa,Nr,Mc),<span class="string">'EdgeColor'</span>,[0,0,0])<span class="comment">%  %mesh(ds,'EdgeColor',[0,0,0])</span>
+0159                         <span class="comment">%axis equal</span>
+0160                         view([-29,65])
+0161                         zlim([0,60])
+0162                         grid off
+0163                         <span class="comment">%alpha(0.3);</span>
+0164                         <span class="comment">%mesh(ds);</span>
+0165                         <span class="comment">%plot3(points(:,1),points(:,2),points(:,3),'.r','MarkerSize',5);</span>
+0166 
+0167                         title(strcat(<span class="string">'iteration='</span>,num2str(iter),<span class="string">' fitted dem'</span>))
+0168 
+0169                         <span class="keyword">if</span> type_data ~= 5
+0170                             axis equal
+0171                         <span class="keyword">end</span>
+0172                         Icc = Np;                    <span class="comment">% first index for column curvatures</span>
+0173                         Irr = Np + (Nr-2)*Mc;        <span class="comment">% first index for row curvature</span>
+0174                         Irc = Np + (Nr-2)*Mc + Nr*(Mc-2);    <span class="comment">% first index for torsion</span>
+0175                         subplot(2,2,2)
+0176                         imagesc(reshape(weights(Icc+1:Irr),Nr-2,Mc));
+0177                         subplot(2,2,3)
+0178                         <span class="keyword">if</span> type_robust ~= 2
+0179                             imagesc(reshape(weights(Irr+1:Irc),Nr,Mc-2));
+0180                         <span class="keyword">else</span>
+0181                             rr=floor(sqrt(Np));
+0182                             imagesc(reshape(1-weights(1:rr^2),rr,rr))
+0183                         <span class="keyword">end</span>
+0184                         subplot(2,2,4)
+0185                         <span class="keyword">if</span> type_robust ~= 2
+0186                             imagesc(reshape(weights(Irc+1:end),Nr-1,Mc-1));
+0187                         <span class="keyword">else</span>
+0188                             rr=floor(sqrt(Np));
+0189                             imagesc(reshape(out_in(1:rr^2),rr,rr))
+0190                         <span class="keyword">end</span>
+0191                     <span class="keyword">end</span>
+0192                 <span class="keyword">end</span>
+0193 
+0194 
+0195 <span class="keyword">end</span>
+0196 <span class="keyword">if</span> type_robust &gt; 0
+0197     <span class="comment">%final estimate</span>
+0198     weights_f = 0.9999*ceil(weights-0.5)+0.0001;
+0199     <span class="keyword">if</span> print_type &gt; 1
+0200         weights_final = weights_f(1:20)' <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0201     <span class="keyword">end</span>
+0202     xa=zeros(length(xa),1);
+0203     
+0204     [A,weights_f,dx,v,W,Nmatrix]=<a href="estimate_dem_robust.html" class="code" title="function [A,weights,dx,v,W,Nmatrix]=estimate_dem_robust(N,U,Np,Nr,Mc,poi,xa,weights,sigma_k,iter,type_robust,L1,out_in,print_type,plot_type);">estimate_dem_robust</a><span class="keyword">...</span>
+0205         (N,U,Np,Nr,Mc,poi,xa,weights_f,sigma_k,1,0,0,<span class="keyword">...</span>
+0206         out_in,print_type,plot_type);
+0207     
+0208     xa = xa + dx;
+0209                 <span class="keyword">if</span> print_type &gt; 0
+0210                     iter_dx = [iter+1,norm(dx)] <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0211                 <span class="keyword">end</span>
+0212 
+0213                 <span class="keyword">if</span> plot_type &gt; 0
+0214                 figure
+0215                     subplot(2,2,1)
+0216                     hold on
+0217                     X=([0:Nr-1]'*ones(1,Mc))*delta_x+BB(1);
+0218                     Y=(ones(Nr,1)*[0:Mc-1])*delta_x+BB(2);
+0219                     colormap(gray)
+0220                     mesh(X,Y,reshape(xa,Nr,Mc),<span class="string">'EdgeColor'</span>,[0,0,0])<span class="comment">%  %mesh(ds,'EdgeColor',[0,0,0])</span>
+0221                     <span class="comment">%axis equal</span>
+0222                     view([-29,65])
+0223                     zlim([0,60])
+0224                     grid off
+0225                     <span class="comment">%alpha(0.3);</span>
+0226                     <span class="comment">%mesh(ds);</span>
+0227                     <span class="comment">%plot3(points(:,1),points(:,2),points(:,3),'.r','MarkerSize',5);</span>
+0228 
+0229                     title(strcat(<span class="string">'last iteration, fitted dem'</span>))
+0230 
+0231                     <span class="keyword">if</span> type_data ~= 5
+0232                         axis equal
+0233                     <span class="keyword">end</span>
+0234                     Icc = Np;                    <span class="comment">% first index for column curvatures</span>
+0235                     Irr = Np + (Nr-2)*Mc;        <span class="comment">% first index for row curvature</span>
+0236                     Irc = Np + (Nr-2)*Mc + Nr*(Mc-2);    <span class="comment">% first index for torsion</span>
+0237                     subplot(2,2,2)
+0238                     imagesc(reshape(weights_f(Icc+1:Irr),Nr-2,Mc));
+0239                     subplot(2,2,3)
+0240                     <span class="keyword">if</span> type_robust ~= 2
+0241                         imagesc(reshape(weights(Irr+1:Irc),Nr,Mc-2));
+0242                     <span class="keyword">else</span>
+0243                        rr=floor(sqrt(Np));
+0244                        imagesc(reshape(1-weights(1:rr^2),rr,rr))
+0245                     <span class="keyword">end</span>
+0246                     subplot(2,2,4)       
+0247                     <span class="keyword">if</span> type_robust ~= 2
+0248                        imagesc(reshape(weights(Irc+1:end),Nr-1,Mc-1));
+0249                     <span class="keyword">else</span>
+0250                        rr=floor(sqrt(Np));
+0251                        imagesc(reshape(out_in(1:rr^2),rr,rr))
+0252                     <span class="keyword">end</span>
+0253                 <span class="keyword">end</span>
+0254 <span class="keyword">end</span>
+0255 
+0256 dem_smoothed = reshape(xa,Nr,Mc);
+0257 
+0258 <span class="comment">%% determine covariance matrix for quality analysis</span>
+0259 Sigma=0;
+0260 S = 0;
+0261 
+0262 <span class="keyword">if</span> out_C &gt; 0    
+0263                   
+0264     Sigma = sparseinv(Nmatrix);       <span class="comment">% use sparse inverse</span>
+0265                 
+0266     S     = full(reshape(diag(Sigma),Nr,Mc));
+0267 <span class="keyword">end</span>
+0268 
+0269 
+0270 
+0271 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

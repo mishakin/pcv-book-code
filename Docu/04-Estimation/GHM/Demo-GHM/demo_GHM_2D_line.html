@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_GHM_2D_line</title>
+  <meta name="keywords" content="demo_GHM_2D_line">
+  <meta name="description" content="% Demo nonlinear GHM without constraints">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GHM</a> &gt; <a href="Documentation.html">Demo-GHM</a> &gt; demo_GHM_2D_line.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GHM\Demo-GHM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>demo_GHM_2D_line
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Demo nonlinear GHM without constraints</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Demo nonlinear GHM without constraints
+
+ Wolfgang Förstner 6/6/2016
+ wfoerstn@uni-bonn.de
+
+ g = ^l2 - a ^l1 -b = 0 straight line  y_i - (a x_i + b) = 0</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../04-Estimation/GHM/Functions-GHM/GaussHelmertModel.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2] =GaussHelmertModel(lv,Cov_ll,cg_f,xa,sx,Tx,maxiter,rU)">GaussHelmertModel</a>	% Gauss Helmert Model</li><li><a href="../../../04-Estimation/GHM/Functions-GHM/cg_2D_line.html" class="code" title="function  [cg,A,B] = cg_2D_line(lv,lnu,xa)">cg_2D_line</a>	% determines constraint value and Jacobians for 2D line estimation</li><li><a href="../../../General-Functions/Graphics/plot_ellipse.html" class="code" title="function h = plot_ellipse(ellipse,fmt)">plot_ellipse</a>	% plot_ellipse: plot 2D ellipse</li><li><a href="../../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li><li><a href="../../../General-Functions/Statistics/rand_gauss.html" class="code" title="function ret = rand_gauss(mu, C, n)">rand_gauss</a>	% random numbers following a multivariate Gaussian  with</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Demo nonlinear GHM without constraints</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Wolfgang Förstner 6/6/2016</span>
+0004 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% g = ^l2 - a ^l1 -b = 0 straight line  y_i - (a x_i + b) = 0</span>
+0007 <span class="comment">%</span>
+0008 clearvars
+0009 close all
+0010 
+0011 addpath(genpath(<span class="string">'../../../General-Functions/'</span>));
+0012 addpath(genpath(<span class="string">'../Functions-GHM/'</span>));
+0013 
+0014 <span class="comment">% initialization of random numbers</span>
+0015 <span class="comment">% = 0 CPU-time dependent</span>
+0016 <span class="comment">% &gt; 0 fixed</span>
+0017 <span class="comment">%init_rand  = 0;</span>
+0018 init_rand   = 15;     <span class="comment">% standard = 15</span>
+0019 init_rand = <a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0020 
+0021 disp(<span class="string">' ============================================='</span>)
+0022 disp(<span class="string">' ----------  Demo GHM fitting line -----------'</span>)
+0023 disp(<span class="string">' ----------- y_i - (a x_i + b) = 0 -----------'</span>)
+0024 disp(<span class="string">' ---------------------------------------------'</span>)
+0025 disp([<span class="string">'Seed for random numbers                              = '</span> ,num2str(init_rand)]);
+0026 
+0027 <span class="comment">% choose type of covariance matrix</span>
+0028 <span class="comment">% cov_type = 0; % homogeneous, isotropic, uncorrelated</span>
+0029 <span class="comment">% cov_type = 1; % homogeneous, anisotropic, uncorrelated</span>
+0030 cov_type = 2; <span class="comment">% inhomogeneous, anisotropic, uncorrelated</span>
+0031 <span class="comment">%cov_type = 3; % random, correlated</span>
+0032 
+0033 <span class="comment">% choose type of approximate values</span>
+0034 xa = [0.8,1.0]';
+0035 <span class="comment">% appr_type=0;</span>
+0036 appr_type = 1;
+0037 
+0038 <span class="comment">%% generate data</span>
+0039 
+0040 <span class="comment">% line parameters</span>
+0041 a = 1;
+0042 b = 2;
+0043 disp([<span class="string">'true parameters  [a, b]                              = ['</span>, num2str(a),<span class="string">','</span>,num2str(b),<span class="string">']'</span>])
+0044 
+0045 <span class="comment">% number of observations</span>
+0046 N = 4; <span class="keyword">...</span><span class="comment">. cannot be changed</span>
+0047     
+0048 <span class="comment">% true observations</span>
+0049 l1_t  = randn(N,1);
+0050 l2_t  = a*l1_t + b;
+0051 <span class="comment">% covariance matrix</span>
+0052 
+0053 <span class="keyword">switch</span> cov_type
+0054     <span class="keyword">case</span> 0 <span class="comment">% l1 and l2 independent, isotropic</span>
+0055         sigma_1 = 0.03;
+0056         Cov_ll = [sigma_1^2*eye(N), zeros(N);zeros(N),sigma_1^2*eye(N)];
+0057         <span class="comment">% standard deviations</span>
+0058         disp([<span class="string">'Standard deviations for x_i and y_i                  =  '</span>, num2str(sigma_1)])
+0059         
+0060     <span class="keyword">case</span> 1
+0061         <span class="comment">% l1 and l2 independent, isotropic</span>
+0062         <span class="comment">% standard deviations</span>
+0063         sigma_1 = 0.02;
+0064         sigma_2 = 0.05;
+0065         Cov_ll = [sigma_1^2*eye(N), zeros(N);zeros(N),sigma_2^2*eye(N)];
+0066         disp([<span class="string">'Standard deviations for x_i and y_i                  =  '</span>, num2str(sigma_1),<span class="string">','</span>,num2str(sigma_2)])
+0067         
+0068     <span class="keyword">case</span> 2
+0069         <span class="comment">% l1 and l2 independend, non isotropic</span>
+0070         var=[1,2,3,4,5,6,7,8];
+0071         sigma_1=0.02;
+0072         Cov_ll = diag(var)*sigma_1^2;
+0073         disp([<span class="string">'Standard deviations for observations                 =  '</span>, num2str(sqrt(var))])
+0074     <span class="keyword">case</span> 3
+0075         <span class="comment">% fully correlated</span>
+0076         sigma_1=0.01;
+0077         A = randn(8);
+0078         Cov_ll=(3*eye(8)+A*A')*sigma_1^2;
+0079         disp(<span class="string">'Standard deviations for observations                 =  random'</span>)
+0080 <span class="keyword">end</span>
+0081 
+0082 <span class="comment">% all observations</span>
+0083 lvt = [l1_t;l2_t];
+0084 <span class="comment">% noisy observations</span>
+0085 lv = <a href="../../../General-Functions/Statistics/rand_gauss.html" class="code" title="function ret = rand_gauss(mu, C, n)">rand_gauss</a>(lvt,Cov_ll,1);
+0086 l1 = lv(1:N);
+0087 l2 = lv(N+1:2*N);
+0088 
+0089 
+0090 ScrS = <a href="../../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0091 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[100 100  ScrS+[ -600 -300]])
+0092 hold on
+0093 plot(l1,l2,<span class="string">'.r'</span>,<span class="string">'MarkerSize'</span>,5)
+0094 <span class="keyword">for</span> n=1:N
+0095     ell.cov  = Cov_ll([n,n+4],[n,n+4]);
+0096     ell.mean = [l1(n);l2(n)];
+0097     <a href="../../../General-Functions/Graphics/plot_ellipse.html" class="code" title="function h = plot_ellipse(ellipse,fmt)">plot_ellipse</a>(ell,<span class="string">'-b'</span>);
+0098 <span class="keyword">end</span>
+0099 title(<span class="string">'Given points with standard ellipses, fitted line'</span>)
+0100 axis equal
+0101 
+0102 r_U     = 1;                         <span class="comment">% we are interested in the slope only</span>
+0103 <span class="comment">%% determine approximate values</span>
+0104 <span class="keyword">if</span> appr_type ==1 <span class="comment">% estimate approximate values</span>
+0105     x0    = mean([l1,l2])';
+0106     C0    = cov([l1,l2]);
+0107     phi   = 0.5*atan2(2*C0(1,2),C0(2,2)-C0(1,1));
+0108     xa(1) = tan(phi);
+0109     xa(2) = x0(2) - x0(1) * xa(1); <span class="comment">% xa(1) = tan(phi) = (x0(2)-xa(2))/(x0(1)-0)</span>
+0110 <span class="keyword">end</span>
+0111 disp([<span class="string">'approximate values                                   = ['</span>, num2str(xa(1)),<span class="string">','</span>,num2str(xa(2)),<span class="string">']'</span>])
+0112 
+0113 <span class="comment">%% estimate</span>
+0114 
+0115 sx      = [sigma_1,sigma_1]/sqrt(N); <span class="comment">% approxmate standard deviations</span>
+0116 Tx      = 0.02;                     <span class="comment">% theshold for convergence</span>
+0117 maxiter = 10;                        <span class="comment">% maximum number of iterations</span>
+0118 
+0119 [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]<span class="keyword">...</span>
+0120     = <a href="../../../04-Estimation/GHM/Functions-GHM/GaussHelmertModel.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2] =GaussHelmertModel(lv,Cov_ll,cg_f,xa,sx,Tx,maxiter,rU)">GaussHelmertModel</a>(lv,Cov_ll,@<a href="../../../04-Estimation/GHM/Functions-GHM/cg_2D_line.html" class="code" title="function  [cg,A,B] = cg_2D_line(lv,lnu,xa)">cg_2D_line</a>,xa,sx,Tx,maxiter,r_U);
+0121 
+0122 <span class="comment">%% provide result</span>
+0123 disp(<span class="string">' '</span>)
+0124 disp([<span class="string">'estimated parameters  [a, b]   = ['</span>, num2str(est_x(1)),<span class="string">','</span>,num2str(est_x(2)),<span class="string">']'</span>])
+0125 disp([<span class="string">'estimated sigms_0              =  '</span>, num2str(sqrt(sigma_0q))])
+0126 disp([<span class="string">'Covariance matrix              = ['</span>,num2str(Cov_xx(1,:)),<span class="string">']'</span>])
+0127 disp([<span class="string">'                               = ['</span>,num2str(Cov_xx(2,:)),<span class="string">']'</span>])
+0128 disp([<span class="string">'Standard deviations for [a, b] =  '</span>, num2str(sqrt(Cov_xx(1,1))),<span class="string">', '</span>,num2str(sqrt(Cov_xx(2,2)))])
+0129 
+0130 xmin=min(l1)-0.2;
+0131 xmax=max(l1)+0.2;
+0132 ymin=min(l2);
+0133 ymax=max(l2);
+0134 
+0135 plot([xmin,xmax],[est_x(1)*xmin+est_x(2),est_x(1)*xmax+est_x(2)],<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2);
+0136 xlim([xmin-0.2,xmax+0.2])
+0137 ylim([ymin-0.2,ymax+0.2])</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

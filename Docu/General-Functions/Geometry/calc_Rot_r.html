@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_Rot_r</title>
+  <meta name="keywords" content="calc_Rot_r">
+  <meta name="description" content="% Cayley rotation matrix">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_Rot_r.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_Rot_r
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Cayley rotation matrix</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function R = calc_Rot_r(r) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Cayley rotation matrix
+ R = (I-S_r)^-1*(I+S_r)
+ see PCV (8.62)
+ 
+ Usage:
+   R = calc_Rot_r(r)
+ 
+   r - double 3x1
+   R - double 3x3, 3D rotation matrix (rotates by 2|r|)
+
+ Wolfgang Förstner 10/2011
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_R_from_opq_kraus.html" class="code" title="function R = calc_R_from_opq_kraus(omega,phi,kappa)">calc_R_from_opq_kraus</a>, <a href="calc_r_phi_from_R.html" class="code" title="function [r,p]= calc_r_phi_from_R(R)">calc_r_phi_from_R</a>, <a href="calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>,
+ <a href="calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>, <a href="calc_Rot_rod.html" class="code" title="function R = calc_Rot_rod(q)">calc_Rot_rod</a>, <a href="calc_Rot_rp.html" class="code" title="function R = calc_Rot_rp(r,p)">calc_Rot_rp</a>, <a href="calc_Mq.html" class="code" title="function M = calc_Mq(q)">calc_Mq</a>, <a href="calc_Mq_comm.html" class="code" title="function M=calc_Mq_comm(q)">calc_Mq_comm</a>, <a href="calc_opq_from_R_Kraus.html" class="code" title="function [o,p,q] = calc_opq_from_R_Kraus(R)">calc_opq_from_R_Kraus</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../05-08-Geometry/demo_single_image_geometry.html" class="code" title="">demo_single_image_geometry</a>	% DEMO single image geometry</li><li><a href="../../10-Uncertain-Geometry/Demo-Plane/demo_direct_plane_fit.html" class="code" title="">demo_direct_plane_fit</a>	% demo plane fitting direct method</li><li><a href="../../13-Two-View-Geometry/Demo-E-Matrix/demo_bR_from_UVuv.html" class="code" title="">demo_bR_from_UVuv</a>	% demo: bR from (U,V,xs,xss)</li><li><a href="../../13-Two-View-Geometry/Demo-E-Matrix/demo_estimate_E_Matrix_from_point_pairs.html" class="code" title="">demo_estimate_E_Matrix_from_point_pairs</a>	% test_estimate_E_Matrix_from_point_pairs</li><li><a href="../../13-Two-View-Geometry/Demo-E-Matrix/demo_triangulation_spherical.html" class="code" title="">demo_triangulation_spherical</a>	% demo triangulation</li><li><a href="../../13-Two-View-Geometry/example_p_579_relative_orientation_mirror.html" class="code" title="">example_p_579_relative_orientation_mirror</a>	% test mirror image</li><li><a href="../../General-Functions/SUGR/E-Matrix/demo_sugr_E_matrix.html" class="code" title="">demo_sugr_E_matrix</a>	% test sugr_E_matrix</li><li><a href="../../General-Functions/SUGR/E-Matrix/e_from_bR.html" class="code" title="function  e = e_from_bR(dbR,bR)">e_from_bR</a>	% get e (= vec E) from [db_r,dr]</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Cayley rotation matrix</span>
+0002 <span class="comment">% R = (I-S_r)^-1*(I+S_r)</span>
+0003 <span class="comment">% see PCV (8.62)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Usage:</span>
+0006 <span class="comment">%   R = calc_Rot_r(r)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   r - double 3x1</span>
+0009 <span class="comment">%   R - double 3x3, 3D rotation matrix (rotates by 2|r|)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Wolfgang Förstner 10/2011</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also calc_R_from_opq_kraus, calc_r_phi_from_R, calc_Rot_ab,</span>
+0015 <span class="comment">% calc_Rot_q, calc_Rot_rod, calc_Rot_rp, calc_Mq, calc_Mq_comm, calc_opq_from_R_Kraus</span>
+0016 
+0017 <a name="_sub0" href="#_subfunctions" class="code">function R = calc_Rot_r(r)</a>
+0018 
+0019 R = inv(eye(3)-<a href="calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(r))*(eye(3)+<a href="calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(r));                               <span class="comment">%#ok&lt;MINV&gt;</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

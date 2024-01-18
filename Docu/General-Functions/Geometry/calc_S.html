@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_S</title>
+  <meta name="keywords" content="calc_S">
+  <meta name="description" content="% skew matrix of 3-vector">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_S.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_S
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% skew matrix of 3-vector</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function S = calc_S(x) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% skew matrix of 3-vector
+ see PCV (A.34)
+ 
+ Usage:
+   S = calc_S(x)
+
+   x - 3x1 vector
+   S - 3x3 skew matrix
+
+ let x = [a b c], than
+     S = [  0 -c  b |
+         | -c  0 -a |
+         | -b  a  0 ]
+
+ Wolfgang Förstner 1/2011
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_S_reduced.html" class="code" title="function [S , R] = calc_S_reduced(x)">calc_S_reduced</a>, <a href="calc_v_from_S.html" class="code" title="function x = calc_v_from_S(S)">calc_v_from_S</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../05-08-Geometry/demo_2D_geometry.html" class="code" title="">demo_2D_geometry</a>	% DEMO 2D projective geometry</li><li><a href="../../13-Two-View-Geometry/Demo-E-Matrix/demo_bR_from_UVuv.html" class="code" title="">demo_bR_from_UVuv</a>	% demo: bR from (U,V,xs,xss)</li><li><a href="../../13-Two-View-Geometry/example_p_579_relative_orientation_mirror.html" class="code" title="">example_p_579_relative_orientation_mirror</a>	% test mirror image</li><li><a href="calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>	% Cayley rotation matrix</li><li><a href="calc_Rot_rp.html" class="code" title="function R = calc_Rot_rp(r,p)">calc_Rot_rp</a>	% Rotation matrix from axis and angle</li><li><a href="calc_S_reduced.html" class="code" title="function [S , R] = calc_S_reduced(x)">calc_S_reduced</a>	% Skew matrix with independent selected rows</li><li><a href="calc_distance_3D_point_from_3D_line.html" class="code" title="function d = calc_distance_3D_point_from_3D_line(X,L)">calc_distance_3D_point_from_3D_line</a>	% distance 3D point from 3D line</li><li><a href="../../General-Functions/Graphics/plot_2D_line.html" class="code" title="function varargout = plot_2D_line(h,varargin)">plot_2D_line</a>	% plots a 2D line from homogeneous vector h [3x1]</li><li><a href="../../General-Functions/SUGR/E-Matrix/e_from_bR.html" class="code" title="function  e = e_from_bR(dbR,bR)">e_from_bR</a>	% get e (= vec E) from [db_r,dr]</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_CovM_E_matrix.html" class="code" title="function CovM = sugr_CovM_E_matrix(X, Cpp, B, R)">sugr_CovM_E_matrix</a>	% Covariance matrix of parameters of essential matrix</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>	% create E-matrix</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_bR_from_UVuv.html" class="code" title="function [be,Re] = sugr_bR_from_UVuv(U,V,u,v)">sugr_bR_from_UVuv</a>	% Determine bR from (U,V,u,v</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_estimation_ml_E_Matrix_from_point_pairs.html" class="code" title="function [E, sigma_0, R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_E_Matrix_from_point_pairs</a>	% ML estimation of E-Matrix from point pairs</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_get_CbRbR_JebR_from_b_R_Cee.html" class="code" title="function [EbR,CbRbR,JebR] = sugr_get_CbRbR_JebR_from_b_R_Cee(b,R,Cee)">sugr_get_CbRbR_JebR_from_b_R_Cee</a>	% Determine CbRbR from Cee for given Relative Orientaion</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_get_Cee_JebR_from_b_R_CbRbR.html" class="code" title="function [EbR,Cee,JebR] = sugr_get_Cee_JebR_from_b_R_CbRbR(b,R,CbRbR)">sugr_get_Cee_JebR_from_b_R_CbRbR</a>	% Determine Cee from CbRbR for given Relative Orientaion</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_ghm_cg_E_matrix_from_point_pairs.html" class="code" title="function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_E_matrix_from_point_pairs(l,le,xe,C)">sugr_ghm_cg_E_matrix_from_point_pairs</a>	% Constraints and Jacobians for GHM for estimating E-matrix from point pairs</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_select_bR_from_E_UV_uv.html" class="code" title="function [be,Re] = sugr_select_bR_from_E_UV_uv(U,V,u,v)">sugr_select_bR_from_E_UV_uv</a>	% Select bR from E</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_triangulate_two_spherical_cameras.html" class="code" title="function [X_est, est_sigma_0, est_u, est_v, f] =sugr_triangulate_two_spherical_cameras(b, Rot, u, v, sigma, Tol, max_iter, k, print_option)">sugr_triangulate_two_spherical_cameras</a>	% sugr_triangulate_two_spherical_cameras</li><li><a href="../../General-Functions/SUGR/F-Matrix/sugr_estimate_F_and_epipoles_algebraically.html" class="code" title="function [F, Cff, el, Cll, er, Crr] = sugr_estimate_F_and_epipoles_algebraically(X, Cxx)">sugr_estimate_F_and_epipoles_algebraically</a>	% Algebraic estimate F-matrix and epipoles: from n > 7 points</li><li><a href="../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_E_Matrix.html" class="code" title="function estx = sugr_ghm_update_E_Matrix(estx,estx_r)">sugr_ghm_update_E_Matrix</a>	% GHM update params relative orientation/E-matrix</li><li><a href="../../General-Functions/SUGR/Homography_2D/sugr_estimation_algebraic_Homography_2D_from_point_pairs.html" class="code" title="function H = sugr_estimation_algebraic_Homography_2D_from_point_pairs(P)">sugr_estimation_algebraic_Homography_2D_from_point_pairs</a>	% Algebraic estimation of 2D homography from point pairs,</li><li><a href="../../General-Functions/SUGR/Homography_2D/sugr_ghm_cg_2D_homography_from_point_pairs.html" class="code" title="function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_2D_homography_from_point_pairs(l,le,xe,C)">sugr_ghm_cg_2D_homography_from_point_pairs</a>	% determines residuals etc. for 2D homography from point pairs</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_construct_join_Line_2D.html" class="code" title="function Line_2D = sugr_construct_join_Line_2D(x,y)">sugr_construct_join_Line_2D</a>	% Construct 2D line joining two points x and y</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_construct_midline_Line_2D.html" class="code" title="function Line_2D = sugr_construct_midline_Line_2D(x,y)">sugr_construct_midline_Line_2D</a>	% Construct midline of two 2D points x and y</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_construct_parallel_lx_Line_2D.html" class="code" title="function Line_2D = sugr_construct_parallel_lx_Line_2D(l,x)">sugr_construct_parallel_lx_Line_2D</a>	% Construct 2D line parallel to line l through point x</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_construct_footpoint_Ol_Point_2D.html" class="code" title="function Point_2D = sugr_construct_footpoint_Ol_Point_2D(l)">sugr_construct_footpoint_Ol_Point_2D</a>	% Foot point from 2D origin O to uncertain line l</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_construct_footpoint_xl_Point_2D.html" class="code" title="function Point_2D = sugr_construct_footpoint_xl_Point_2D(x,l)">sugr_construct_footpoint_xl_Point_2D</a>	% Foot point from Point_2D x onto line l</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_construct_intersection_Point_2D.html" class="code" title="function Point_2D = sugr_construct_intersection_Point_2D(l,m)">sugr_construct_intersection_Point_2D</a>	% Intersection 2D point two lines l and m</li><li><a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs.html" class="code" title="function P = sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs(X,y)">sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs</a>	% Algebraic estimate of Projection from corresponding 3D-2D point pairs</li><li><a href="../../General-Functions/SUGR/Triangulation/sugr_cov_matr_X.html" class="code" title="function X_est = sugr_cov_matr_X(X,sigma,est_u,est_w,rs)">sugr_cov_matr_X</a>	% determine CovM for triangulated point (cov_matr_X)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% skew matrix of 3-vector</span>
+0002 <span class="comment">% see PCV (A.34)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Usage:</span>
+0005 <span class="comment">%   S = calc_S(x)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   x - 3x1 vector</span>
+0008 <span class="comment">%   S - 3x3 skew matrix</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% let x = [a b c], than</span>
+0011 <span class="comment">%     S = [  0 -c  b |</span>
+0012 <span class="comment">%         | -c  0 -a |</span>
+0013 <span class="comment">%         | -b  a  0 ]</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Wolfgang Förstner 1/2011</span>
+0016 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% See also calc_S_reduced, calc_v_from_S</span>
+0019 
+0020 <a name="_sub0" href="#_subfunctions" class="code">function S = calc_S(x)</a>
+0021 S = [<span class="keyword">...</span>
+0022      0    -x(3)  x(2);<span class="keyword">...</span>
+0023      x(3)    0  -x(1);<span class="keyword">...</span>
+0024     -x(2)  x(1)    0 <span class="keyword">...</span>
+0025     ];</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

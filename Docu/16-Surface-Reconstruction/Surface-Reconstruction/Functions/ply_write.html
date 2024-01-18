@@ -1,0 +1,392 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ply_write</title>
+  <meta name="keywords" content="ply_write">
+  <meta name="description" content="*****************************************************************************80">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="../Documentation.html">Surface-Reconstruction</a> &gt; <a href="Documentation.html">Functions</a> &gt; ply_write.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Surface-Reconstruction\Functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>ply_write
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>*****************************************************************************80</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function ply_write ( Elements, Path, Format, Str ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">*****************************************************************************80
+
+% PLY_WRITE writes 3D data as a PLY file.
+
+   PLY_WRITE(DATA,FILENAME) writes the structure DATA as a binary
+   PLY file.  Every field of DATA is interpreted as an element
+   and every subfield as an element property.  Each subfield of
+   property data must either be an array or a cell array of
+   arrays.  All property data in an element must have the same
+   length.
+
+   A common PLY data structure has the following fields:
+      DATA.vertex.x = x coordinates, [Nx1] real array
+      DATA.vertex.y = y coordinates, [Nx1] real array
+      DATA.vertex.z = z coordinates, [Nx1] real array
+
+      DATA.face.vertex_indices = vertex index lists,
+         an {Mx1} cell array where each cell holds a one-
+         dimesional array (of any length) of vertex indices.
+   Some other common data fields:
+      DATA.vertex.nx = x coordinate of normal, [Nx1] real array
+      DATA.vertex.ny = y coordinate of normal, [Nx1] real array
+      DATA.vertex.nz = z coordinate of normal, [Nx1] real array
+
+      DATA.edge.vertex1 = index to a vertex, [Px1] integer array
+      DATA.edge.vertex2 = second vertex index, [Px1] integer array
+   Many other fields and properties can be added.  The PLY format
+   is not limited to the naming in the examples above -- they are
+   only the conventional naming.
+
+   PLY_WRITE(DATA,FILENAME,FORMAT) write the PLY with a specified
+   data format, where FORMAT is
+      'ascii'                  ASCII text data
+      'binary_little_endian'   binary data, little endian
+      'binary_big_endian'      binary data, big endian (default)
+
+   PLY_WRITE(DATA,FILENAME,FORMAT,'double') or
+
+   PLY_WRITE(DATA,FILENAME,'double') write floating-point data as
+   double precision rather than in the default single precision.
+
+   Example:
+   % make a cube
+   clear Data;
+   Data.vertex.x = [0;0;0;0;1;1;1;1];
+   Data.vertex.y = [0;0;1;1;0;0;1;1];
+   Data.vertex.z = [0;1;1;0;0;1;1;0];
+   Data.face.vertex_indices = {[0,1,2,3],[7,6,5,4], ...
+         [0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]};
+   plywrite(Data,'cube.ply','ascii');
+
+  Licensing:
+
+    This code is distributed under the GNU LGPL license.
+
+  Modified:
+
+    01 March 2007
+
+  Author:
+
+    Pascal Getreuer 2004</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ply_write ( Elements, Path, Format, Str )</a>
+0002 
+0003 <span class="comment">%*****************************************************************************80</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%% PLY_WRITE writes 3D data as a PLY file.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   PLY_WRITE(DATA,FILENAME) writes the structure DATA as a binary</span>
+0008 <span class="comment">%   PLY file.  Every field of DATA is interpreted as an element</span>
+0009 <span class="comment">%   and every subfield as an element property.  Each subfield of</span>
+0010 <span class="comment">%   property data must either be an array or a cell array of</span>
+0011 <span class="comment">%   arrays.  All property data in an element must have the same</span>
+0012 <span class="comment">%   length.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   A common PLY data structure has the following fields:</span>
+0015 <span class="comment">%      DATA.vertex.x = x coordinates, [Nx1] real array</span>
+0016 <span class="comment">%      DATA.vertex.y = y coordinates, [Nx1] real array</span>
+0017 <span class="comment">%      DATA.vertex.z = z coordinates, [Nx1] real array</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%      DATA.face.vertex_indices = vertex index lists,</span>
+0020 <span class="comment">%         an {Mx1} cell array where each cell holds a one-</span>
+0021 <span class="comment">%         dimesional array (of any length) of vertex indices.</span>
+0022 <span class="comment">%   Some other common data fields:</span>
+0023 <span class="comment">%      DATA.vertex.nx = x coordinate of normal, [Nx1] real array</span>
+0024 <span class="comment">%      DATA.vertex.ny = y coordinate of normal, [Nx1] real array</span>
+0025 <span class="comment">%      DATA.vertex.nz = z coordinate of normal, [Nx1] real array</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%      DATA.edge.vertex1 = index to a vertex, [Px1] integer array</span>
+0028 <span class="comment">%      DATA.edge.vertex2 = second vertex index, [Px1] integer array</span>
+0029 <span class="comment">%   Many other fields and properties can be added.  The PLY format</span>
+0030 <span class="comment">%   is not limited to the naming in the examples above -- they are</span>
+0031 <span class="comment">%   only the conventional naming.</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%   PLY_WRITE(DATA,FILENAME,FORMAT) write the PLY with a specified</span>
+0034 <span class="comment">%   data format, where FORMAT is</span>
+0035 <span class="comment">%      'ascii'                  ASCII text data</span>
+0036 <span class="comment">%      'binary_little_endian'   binary data, little endian</span>
+0037 <span class="comment">%      'binary_big_endian'      binary data, big endian (default)</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%   PLY_WRITE(DATA,FILENAME,FORMAT,'double') or</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%   PLY_WRITE(DATA,FILENAME,'double') write floating-point data as</span>
+0042 <span class="comment">%   double precision rather than in the default single precision.</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%   Example:</span>
+0045 <span class="comment">%   % make a cube</span>
+0046 <span class="comment">%   clear Data;</span>
+0047 <span class="comment">%   Data.vertex.x = [0;0;0;0;1;1;1;1];</span>
+0048 <span class="comment">%   Data.vertex.y = [0;0;1;1;0;0;1;1];</span>
+0049 <span class="comment">%   Data.vertex.z = [0;1;1;0;0;1;1;0];</span>
+0050 <span class="comment">%   Data.face.vertex_indices = {[0,1,2,3],[7,6,5,4], ...</span>
+0051 <span class="comment">%         [0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]};</span>
+0052 <span class="comment">%   plywrite(Data,'cube.ply','ascii');</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%  Licensing:</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%    This code is distributed under the GNU LGPL license.</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">%  Modified:</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">%    01 March 2007</span>
+0061 <span class="comment">%</span>
+0062 <span class="comment">%  Author:</span>
+0063 <span class="comment">%</span>
+0064 <span class="comment">%    Pascal Getreuer 2004</span>
+0065 <span class="comment">%</span>
+0066   <span class="keyword">if</span> ( nargin &lt; 4 )
+0067 
+0068     Str = <span class="string">''</span>;
+0069 
+0070     <span class="keyword">if</span> ( nargin &lt; 3 )
+0071       Format = <span class="string">'binary_big_endian'</span>;
+0072     <span class="keyword">elseif</span> strcmpi(Format,<span class="string">'double'</span>)
+0073       Str = <span class="string">'double'</span>;
+0074       Format = <span class="string">'binary_big_endian'</span>;
+0075     <span class="keyword">end</span>
+0076 
+0077   <span class="keyword">end</span>
+0078 
+0079   [ fid, Msg ] = fopen ( Path, <span class="string">'wt'</span> );
+0080 
+0081   <span class="keyword">if</span> ( fid == -1 )
+0082     error(Msg);
+0083   <span class="keyword">end</span>
+0084 
+0085   PlyTypeNames = {<span class="string">'char'</span>,<span class="string">'uchar'</span>,<span class="string">'short'</span>,<span class="string">'ushort'</span>,<span class="string">'int'</span>,<span class="string">'uint'</span>,<span class="string">'float'</span>,<span class="string">'double'</span>, <span class="keyword">...</span>
+0086     <span class="string">'char8'</span>,<span class="string">'uchar8'</span>,<span class="string">'short16'</span>,<span class="string">'ushort16'</span>,<span class="string">'int32'</span>,<span class="string">'uint32'</span>,<span class="string">'float32'</span>,<span class="string">'double64'</span>};
+0087   FWriteTypeNames = {<span class="string">'schar'</span>,<span class="string">'uchar'</span>,<span class="string">'int16'</span>,<span class="string">'uint16'</span>,<span class="string">'int32'</span>,<span class="string">'uint32'</span>,<span class="string">'single'</span>,<span class="string">'double'</span>};
+0088   MatlabTypeNames = {<span class="string">'int8'</span>,<span class="string">'uint8'</span>,<span class="string">'int16'</span>,<span class="string">'uint16'</span>,<span class="string">'int32'</span>,<span class="string">'uint32'</span>,<span class="string">'single'</span>,<span class="string">'double'</span>};
+0089   PrintfTypeChar = {<span class="string">'%d'</span>,<span class="string">'%u'</span>,<span class="string">'%d'</span>,<span class="string">'%u'</span>,<span class="string">'%d'</span>,<span class="string">'%u'</span>,<span class="string">'%-.6f'</span>,<span class="string">'%-.14e'</span>};
+0090   IntegerDataMin = [-128,0,-2^15,-2^31,0];
+0091   IntegerDataMax = [127,255,2^16-1,2^31-1,2^32-1];
+0092 <span class="comment">%</span>
+0093 <span class="comment">%  write PLY header</span>
+0094 <span class="comment">%</span>
+0095   fprintf(fid,<span class="string">'ply\nformat %s 1.0\ncomment created by MATLAB ply_write\n'</span>,Format);
+0096   ElementNames = fieldnames(Elements);
+0097   NumElements = length(ElementNames);
+0098   Data = cell(NumElements,1);
+0099 
+0100   <span class="keyword">for</span> i = 1 : NumElements
+0101 
+0102     eval([<span class="string">'tmp=isa(Elements.'</span>,ElementNames{i},<span class="string">',''struct'');'</span>]);
+0103 
+0104     <span class="keyword">if</span> ( tmp )
+0105       eval([<span class="string">'PropertyNames{i}=fieldnames(Elements.'</span>,ElementNames{i},<span class="string">');'</span>]);
+0106     <span class="keyword">else</span>
+0107       PropertyNames{i} = [];
+0108     <span class="keyword">end</span>
+0109 
+0110     <span class="keyword">if</span> ( ~isempty(PropertyNames{i}) )
+0111       eval([<span class="string">'Data{i}{1}=Elements.'</span>,ElementNames{i},<span class="string">'.'</span>,PropertyNames{i}{1},<span class="string">';'</span>]);
+0112       ElementCount(i) = prod(size(Data{i}{1}));
+0113       Type{i} = zeros(length(PropertyNames{i}),1);
+0114     <span class="keyword">else</span>
+0115       ElementCount(i) = 0;
+0116     <span class="keyword">end</span>
+0117 
+0118     fprintf(fid,<span class="string">'element %s %u\n'</span>,ElementNames{i},ElementCount(i));
+0119 
+0120     <span class="keyword">for</span> j = 1 : length(PropertyNames{i})
+0121 
+0122       eval([<span class="string">'Data{i}{j}=Elements.'</span>,ElementNames{i},<span class="string">'.'</span>,PropertyNames{i}{j},<span class="string">';'</span>]);
+0123 
+0124       <span class="keyword">if</span> ( ElementCount(i) ~= prod(size(Data{i}{j})) )
+0125         fclose(fid);
+0126         error(<span class="string">'All property data in an element must have the same length.'</span>);
+0127       <span class="keyword">end</span>
+0128 
+0129       <span class="keyword">if</span> ( iscell(Data{i}{j}) )
+0130         Type{i}(j) = 9;
+0131         Data{i}{j} = Data{i}{j}{1};
+0132       <span class="keyword">end</span>
+0133 
+0134       <span class="keyword">for</span> k = 1 : length(MatlabTypeNames)
+0135         <span class="keyword">if</span> ( isa(Data{i}{j},MatlabTypeNames{k}) )
+0136           Type{i}(j) = Type{i}(j) + k;
+0137           <span class="keyword">break</span>;
+0138         <span class="keyword">end</span>
+0139       <span class="keyword">end</span>
+0140 
+0141       <span class="keyword">if</span> ( ~rem(Type{i}(j),9) )
+0142         fclose(fid);
+0143         error(<span class="string">'Unsupported data structure.'</span>);
+0144       <span class="keyword">end</span>
+0145 <span class="comment">%</span>
+0146 <span class="comment">%  Try to convert float data to integer data</span>
+0147 <span class="comment">%</span>
+0148 <span class="comment">%  Array data.</span>
+0149 <span class="comment">%</span>
+0150       <span class="keyword">if</span> ( Type{i}(j) &lt;= 8 )
+0151         <span class="keyword">if</span> any(strcmp({<span class="string">'single'</span>,<span class="string">'double'</span>},MatlabTypeNames{Type{i}(j)}))
+0152           <span class="keyword">if</span> ~any(floor(Data{i}{j}) ~= Data{i}{j})  <span class="comment">% data is integer</span>
+0153             MinValue = min(min(Data{i}{j}));
+0154             MaxValue = max(max(Data{i}{j}));
+0155 
+0156                <span class="comment">% choose smallest possible integer data format</span>
+0157             tmp = max(min(find(MinValue &gt;= IntegerDataMin)),min(find(MaxValue &lt;= IntegerDataMax)));
+0158 
+0159             <span class="keyword">if</span> ~isempty(tmp)
+0160               Type{i}(j) = tmp;
+0161             <span class="keyword">end</span>
+0162           <span class="keyword">end</span>
+0163         <span class="keyword">end</span>
+0164       <span class="keyword">else</span>        <span class="comment">% cell array data</span>
+0165         eval([<span class="string">'Data{i}{j}=Elements.'</span>,ElementNames{i},<span class="string">'.'</span>,PropertyNames{i}{j},<span class="string">';'</span>]);
+0166         tmp = 1;
+0167 
+0168         <span class="keyword">for</span> k = 1:prod(size(Data{i}{j}))
+0169           tmp = tmp &amp; all(floor(Data{i}{j}{k}) == Data{i}{j}{k});
+0170         <span class="keyword">end</span>
+0171 
+0172         <span class="keyword">if</span> tmp  <span class="comment">% data is integer</span>
+0173           MinValue = inf;
+0174           MaxValue = -inf;
+0175 
+0176           <span class="keyword">for</span> k = 1:prod(size(Data{i}{j}))
+0177             MinValue = min(MinValue,min(Data{i}{j}{k}));
+0178             MaxValue = max(MaxValue,max(Data{i}{j}{k}));
+0179           <span class="keyword">end</span>
+0180 
+0181             <span class="comment">% choose smallest possible integer data format</span>
+0182           tmp = max(min(find(MinValue &gt;= IntegerDataMin)),min(find(MaxValue &lt;= IntegerDataMax)));
+0183 
+0184           <span class="keyword">if</span> ~isempty(tmp)
+0185             Type{i}(j) = tmp + 9;
+0186           <span class="keyword">end</span>
+0187 
+0188         <span class="keyword">end</span>
+0189       <span class="keyword">end</span>
+0190 
+0191       <span class="comment">% convert double to single if specified</span>
+0192       <span class="keyword">if</span> rem(Type{i}(j),9) == 8 &amp; ~strcmpi(Str,<span class="string">'double'</span>)
+0193         Type{i}(j) = Type{i}(j) - 1;
+0194       <span class="keyword">end</span>
+0195 
+0196       <span class="keyword">if</span> Type{i}(j) &lt;= 8
+0197         fprintf(fid,<span class="string">'property %s %s\n'</span>,PlyTypeNames{Type{i}(j)},PropertyNames{i}{j});
+0198       <span class="keyword">else</span>
+0199         fprintf(fid,<span class="string">'property list uchar %s %s\n'</span>,PlyTypeNames{Type{i}(j)-9},PropertyNames{i}{j});
+0200       <span class="keyword">end</span>
+0201     <span class="keyword">end</span>
+0202   <span class="keyword">end</span>
+0203 
+0204   fprintf(fid,<span class="string">'end_header\n'</span>);
+0205 
+0206   <span class="keyword">switch</span> Format
+0207     <span class="keyword">case</span> <span class="string">'ascii'</span>
+0208       Format = 0;
+0209     <span class="keyword">case</span> <span class="string">'binary_little_endian'</span>
+0210       fclose(fid);
+0211       fid = fopen(Path,<span class="string">'a'</span>,<span class="string">'ieee-le'</span>);
+0212       Format = 1;
+0213     <span class="keyword">case</span> <span class="string">'binary_big_endian'</span>
+0214       fclose(fid);
+0215       fid = fopen(Path,<span class="string">'a'</span>,<span class="string">'ieee-be'</span>);
+0216       Format = 2;
+0217   <span class="keyword">end</span>
+0218 
+0219   <span class="keyword">for</span> i = 1 : NumElements
+0220     <span class="keyword">if</span> ~isempty(PropertyNames{i})
+0221       <span class="keyword">if</span> ~Format          <span class="comment">% write ASCII data</span>
+0222         <span class="keyword">for</span> k = 1:ElementCount(i)
+0223           <span class="keyword">for</span> j = 1:length(PropertyNames{i})
+0224             <span class="keyword">if</span> Type{i}(j) &lt;= 8
+0225               fprintf(fid,[PrintfTypeChar{Type{i}(j)},<span class="string">' '</span>],Data{i}{j}(k));
+0226             <span class="keyword">else</span>
+0227               fprintf(fid,<span class="string">'%u%s '</span>,length(Data{i}{j}{k}),sprintf([<span class="string">' '</span>,PrintfTypeChar{Type{i}(j)-9}],Data{i}{j}{k}));
+0228             <span class="keyword">end</span>
+0229           <span class="keyword">end</span>
+0230 
+0231           fprintf(fid,<span class="string">'\n'</span>);
+0232         <span class="keyword">end</span>
+0233       <span class="keyword">else</span>            <span class="comment">% write binary data</span>
+0234         <span class="keyword">if</span> all(Type{i} &lt;= 8) &amp; all(Type{i} == Type{i}(1))
+0235           <span class="comment">% property data without list types (fast)</span>
+0236           tmp = zeros(length(PropertyNames{i}),ElementCount(i));
+0237 
+0238           <span class="keyword">for</span> j = 1:length(PropertyNames{i})
+0239             tmp(j,:) = Data{i}{j}(:)';
+0240           <span class="keyword">end</span>
+0241 
+0242           fwrite(fid,tmp,FWriteTypeNames{Type{i}(j)});
+0243         <span class="keyword">elseif</span> all(Type{i} &gt; 8)
+0244         <span class="comment">% only list types</span>
+0245           Type{i} = Type{i} - 9;
+0246 
+0247           <span class="keyword">if</span> length(PropertyNames{i}) == 1
+0248            <span class="comment">% only one list property</span>
+0249             tmp = FWriteTypeNames{Type{i}(1)};
+0250 
+0251             <span class="keyword">for</span> k = 1:ElementCount(i)
+0252               fwrite(fid,length(Data{i}{1}{k}),<span class="string">'uchar'</span>);
+0253               fwrite(fid,Data{i}{1}{k},tmp);
+0254             <span class="keyword">end</span>
+0255           <span class="keyword">else</span>
+0256            <span class="comment">% multiple list properties</span>
+0257             <span class="keyword">for</span> k = 1:ElementCount(i)
+0258               <span class="keyword">for</span> j = 1:length(PropertyNames{i})
+0259                 fwrite(fid,length(Data{i}{j}{k}),<span class="string">'uchar'</span>);
+0260                 fwrite(fid,Data{i}{j}{k},FWriteTypeNames{Type{i}(j)});
+0261               <span class="keyword">end</span>
+0262             <span class="keyword">end</span>
+0263           <span class="keyword">end</span>
+0264         <span class="keyword">else</span>
+0265         <span class="comment">% mixed type</span>
+0266           <span class="keyword">for</span> k = 1:ElementCount(i)
+0267             <span class="keyword">for</span> j = 1:length(PropertyNames{i})
+0268               <span class="keyword">if</span> Type{i}(j) &lt;= 8
+0269                 fwrite(fid,Data{i}{j}(k),FWriteTypeNames{Type{i}(j)});
+0270               <span class="keyword">else</span>
+0271                 fwrite(fid,length(Data{i}{j}{k}),<span class="string">'uchar'</span>);
+0272                 fwrite(fid,Data{i}{j}{k},FWriteTypeNames{Type{i}(j)-9});
+0273               <span class="keyword">end</span>
+0274             <span class="keyword">end</span>
+0275           <span class="keyword">end</span>
+0276         <span class="keyword">end</span>
+0277       <span class="keyword">end</span>
+0278     <span class="keyword">end</span>
+0279   <span class="keyword">end</span>
+0280 
+0281   fclose(fid);
+0282 
+0283   <span class="keyword">return</span>
+0284 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

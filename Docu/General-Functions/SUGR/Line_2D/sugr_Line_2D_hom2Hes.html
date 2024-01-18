@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_Line_2D_hom2Hes</title>
+  <meta name="keywords" content="sugr_Line_2D_hom2Hes">
+  <meta name="description" content="% Uncertain Hessian line from homogeneous line">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Line_2D</a> &gt; sugr_Line_2D_hom2Hes.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Line_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_Line_2D_hom2Hes
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Uncertain Hessian line from homogeneous line</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [e,Cee] = sugr_Line_2D_hom2Hes(ul) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Uncertain Hessian line from homogeneous line
+
+ [e,Cee] = sugr_Line_2D_hom2Hes(l)
+
+ * l    =  2D line struct {l.h,l.Crr}
+
+ * e    = line parameters [phi, d]'
+ * Cee  = 2 x 2 covariance matrix
+
+
+ Jochen Meidow, Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_Line_2D.html" class="code" title="function Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)">sugr_Line_2D</a>, <a href="sugr_Line_2D_hom2cen.html" class="code" title="function [x0,p,sp,sq] = sugr_Line_2D_hom2cen(l)">sugr_Line_2D_hom2cen</a>,
+ <a href="sugr_Line_2D_Hes2hom.html" class="code" title="function [h,Chh] = sugr_Line_2D_Hes2hom(e,Cee)">sugr_Line_2D_Hes2hom</a>, <a href="sugr_Line_2D_Hes2cen.html" class="code" title="function [x0,p,sp,sq]= sugr_Line_2D_Hes2cen(e,Cee)">sugr_Line_2D_Hes2cen</a>, <a href="sugr_Line_2D_cen2hom.html" class="code" title="function [h,Chh] = sugr_Line_2D_cen2hom(x0,p,sp,sq)">sugr_Line_2D_cen2hom</a>,
+ <a href="sugr_get_Euclidean_Line_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Line_2D(l)">sugr_get_Euclidean_Line_2D</a>, <a href="sugr_get_centroid_Line_2D.html" class="code" title="function [x0,p,sp,sq] = sugr_get_centroid_Line_2D(l)">sugr_get_centroid_Line_2D</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>	% get CovM of homogeneous vector x.h</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_Line_2D_hom2cen.html" class="code" title="function [x0,p,sp,sq] = sugr_Line_2D_hom2cen(l)">sugr_Line_2D_hom2cen</a>	% Uncertain centered line from uncertain homogeneous line</li><li><a href="../../../General-Functions/SUGR/Point_2D/sugr_estimation_geometric_Point_2D_from_Lines.html" class="code" title="function [xe,sigma_0,x] = sugr_estimation_geometric_Point_2D_from_Lines(lines)">sugr_estimation_geometric_Point_2D_from_Lines</a>	% Geometric estimate of intersection Point_2D from N Lines_2D</li><li><a href="../../../General-Functions/SUGR/Point_2D/sugr_estimation_ml_Point_2D_from_Lines_Hessian.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines_Hessian(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines_Hessian</a>	% ML estimate of intersection Point_2D from N Lines_2D</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Uncertain Hessian line from homogeneous line</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [e,Cee] = sugr_Line_2D_hom2Hes(l)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * l    =  2D line struct {l.h,l.Crr}</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% * e    = line parameters [phi, d]'</span>
+0008 <span class="comment">% * Cee  = 2 x 2 covariance matrix</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Jochen Meidow, Wolfgang Förstner</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also sugr_Line_2D, sugr_Line_2D_hom2cen,</span>
+0015 <span class="comment">% sugr_Line_2D_Hes2hom, sugr_Line_2D_Hes2cen, sugr_Line_2D_cen2hom,</span>
+0016 <span class="comment">% sugr_get_Euclidean_Line_2D, sugr_get_centroid_Line_2D</span>
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function [e,Cee] = sugr_Line_2D_hom2Hes(ul)</a>
+0019 
+0020 l   = ul.h;
+0021 Cll = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>(ul);
+0022 
+0023 a = l(1);
+0024 b = l(2);
+0025 c = l(3);
+0026 
+0027 p   = atan2(b,a);
+0028 s2  = a^2+b^2;
+0029 s   = sqrt(s2);
+0030 d   = -c/s;
+0031 e   = [p;d];
+0032 
+0033 J   = [  -b/s2 ,   a/s2 ,   0  ;<span class="keyword">...</span>
+0034         c*a/s^3, c*b/s^3, -1/s];
+0035 
+0036 Cee = J*Cll*J';
+0037</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

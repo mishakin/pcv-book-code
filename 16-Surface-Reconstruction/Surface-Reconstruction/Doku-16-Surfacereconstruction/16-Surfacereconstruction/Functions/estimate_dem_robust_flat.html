@@ -1,0 +1,344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of estimate_dem_robust_flat</title>
+  <meta name="keywords" content="estimate_dem_robust_flat">
+  <meta name="description" content="% robustly estimate correction to dem, flatness">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">16-Surfacereconstruction</a> &gt; <a href="index.html">Functions</a> &gt; estimate_dem_robust_flat.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>estimate_dem_robust_flat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% robustly estimate correction to dem, flatness</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [A,weights,dx,v,W]=estimate_dem_robust_flat(N,U,Np,Nr,Mc,poi,xa,weights,sigma_s,iter,type_robust,L1,out_in,print_type,plot_type); </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% robustly estimate correction to dem, flatness
+
+ [A,dx,v,W]=...
+   estimate_dem_slope_dependent...
+   (N,U,Np,Nr,Mc,poi,xa,weights,sigma_k,iter,out_print,type_robust);
+ 
+ N         = number of observations (points+second derivatives)
+ U         = number of unknowns (dem)
+ Np        = number of points
+ Nr        = number of rows
+ Mc        = number oc columns 
+ poi       = Npx4 matrix of points (x,y,h,sigma), x,y, referring to grid
+ xa        = approximate values for dem
+ weights   = Nx1 vector of weights in [0,1]
+ sigma_s   = standard deviation of first derivatives
+ out_print = 0,1,2
+ type_robust = 0,1,2,3, (00,01,10,11) for points and dem
+
+ A         = NxU sparse designa matrix
+ weights   = new weights
+ dx        = delta dem
+ v         = normalized residuals
+ W         = weigths of obs. combining uncertainty and robust factor
+
+ wf 10/2014</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="smooth_dem_robust_bilinear_flat.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,W] =smooth_dem_robust_bilinear_flat(points,BB,delta_x,sigma_s,out_C,type_robust,type_data,out_in,print_type,plot_type);">smooth_dem_robust_bilinear_flat</a>	% smooth_dem_robust_bilinear, sparse data on grid, flatness</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% robustly estimate correction to dem, flatness</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [A,dx,v,W]=...</span>
+0004 <span class="comment">%   estimate_dem_slope_dependent...</span>
+0005 <span class="comment">%   (N,U,Np,Nr,Mc,poi,xa,weights,sigma_k,iter,out_print,type_robust);</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% N         = number of observations (points+second derivatives)</span>
+0008 <span class="comment">% U         = number of unknowns (dem)</span>
+0009 <span class="comment">% Np        = number of points</span>
+0010 <span class="comment">% Nr        = number of rows</span>
+0011 <span class="comment">% Mc        = number oc columns</span>
+0012 <span class="comment">% poi       = Npx4 matrix of points (x,y,h,sigma), x,y, referring to grid</span>
+0013 <span class="comment">% xa        = approximate values for dem</span>
+0014 <span class="comment">% weights   = Nx1 vector of weights in [0,1]</span>
+0015 <span class="comment">% sigma_s   = standard deviation of first derivatives</span>
+0016 <span class="comment">% out_print = 0,1,2</span>
+0017 <span class="comment">% type_robust = 0,1,2,3, (00,01,10,11) for points and dem</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% A         = NxU sparse designa matrix</span>
+0020 <span class="comment">% weights   = new weights</span>
+0021 <span class="comment">% dx        = delta dem</span>
+0022 <span class="comment">% v         = normalized residuals</span>
+0023 <span class="comment">% W         = weigths of obs. combining uncertainty and robust factor</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% wf 10/2014</span>
+0026 <span class="comment">%</span>
+0027 
+0028 <a name="_sub0" href="#_subfunctions" class="code">function [A,weights,dx,v,W]=</a><span class="keyword">...</span>
+0029     estimate_dem_robust_flat<span class="keyword">...</span>
+0030     (N,U,Np,Nr,Mc,poi,xa,weights,sigma_s,iter,type_robust,L1,<span class="keyword">...</span>
+0031     out_in,print_type,plot_type);
+0032     
+0033 
+0034 <span class="comment">%% update weights indicating outliers</span>
+0035 k=3;
+0036 
+0037 <span class="keyword">if</span> print_type &gt; 0
+0038     display(<span class="string">'estimate_dem_robust_flat'</span>)
+0039     start=[iter,type_robust,min(weights(Np+1,end))]
+0040 <span class="keyword">end</span>
+0041 <span class="comment">%% start estimation</span>
+0042 <span class="comment">% initiate size of A</span>
+0043 <span class="keyword">if</span> print_type &gt; 0
+0044     tic
+0045 <span class="keyword">end</span>
+0046 A = spalloc(N,U,6*N);
+0047 b = zeros(N,1);
+0048 W = spalloc(N,N,N);
+0049 
+0050 iter_switch=10;
+0051 
+0052 <span class="comment">% observations, normalized with 1/sqrt of variances</span>
+0053 <span class="keyword">for</span> p = 1:Np
+0054     x = poi(p,1);
+0055     y = poi(p,2);
+0056     h = poi(p,3);
+0057     w = sqrt(weights(p));
+0058     s = poi(p,4);
+0059     i = floor(x);
+0060     j = floor(y);
+0061     aa = x-i;
+0062     bb = y-j;
+0063     <span class="comment">%delta_x</span>
+0064     A(p,i+j*Nr+1)       = (1-aa)*(1-bb)/s*w;
+0065     A(p,i+j*Nr+2)       =    aa *(1-bb)/s*w;
+0066 
+0067     A(p,i+(j+1)*Nr+1)   = (1-aa)* bb   /s*w;
+0068     A(p,i+(j+1)*Nr+2)   =    aa * bb   /s*w;
+0069     delta_l =  h - <span class="keyword">...</span>
+0070         ((1-aa)*(1-bb)*xa(i+j*Nr+1)    +<span class="keyword">...</span>
+0071         aa *(1-bb)*xa(i+j*Nr+2)    +<span class="keyword">...</span>
+0072         (1-aa)* bb   *xa(i+(j+1)*Nr+1)+<span class="keyword">...</span>
+0073         aa * bb   *xa(i+(j+1)*Nr+2));
+0074     b(p)                =   delta_l   /s*w;
+0075     W(p,p)=1/s*w;
+0076 <span class="keyword">end</span>
+0077 
+0078 
+0079 <span class="keyword">if</span> print_type &gt; 0
+0080     time_for_building_An=toc
+0081 <span class="keyword">end</span>
+0082 
+0083 <span class="comment">%% priors</span>
+0084 <span class="keyword">if</span> print_type &gt; 0
+0085     tic
+0086 <span class="keyword">end</span>
+0087 Icc = Np;                    <span class="comment">% first index for column curvatures</span>
+0088 Irr = Np + (Nr-1)*Mc;        <span class="comment">% first index for row curvature</span>
+0089 <span class="comment">% coefficients for column curvature</span>
+0090 <span class="comment">% cc  1</span>
+0091 <span class="comment">%    -1</span>
+0092 Jcc = [0,+1];  <span class="comment">% index vector</span>
+0093 Vcc = [-1 1];                    <span class="comment">% coefficients</span>
+0094 wcc = 1/sigma_s/sqrt(2);  <span class="comment">% /norm(Vcc)</span>
+0095 <span class="comment">% coefficients for row curvature</span>
+0096 <span class="comment">% rr  1 -1</span>
+0097 Jrr = [0,+Nr];  <span class="comment">% index vector</span>
+0098 Vrr = [-1  1];                    <span class="comment">% coefficients</span>
+0099 wrr = 1/sigma_s/sqrt(2); <span class="comment">% /norm(Vrr)</span>
+0100 
+0101 <span class="comment">% built up of priors in A</span>
+0102 <span class="comment">% column slope</span>
+0103 <span class="keyword">for</span> j=1:Mc
+0104     <span class="keyword">for</span> i=1:Nr-1
+0105         IU  = i+(j-1)*Nr;
+0106         <span class="comment">%[i,j,IU]</span>
+0107         Icc = Icc+1;
+0108         A(Icc,IU+Jcc)= Vcc * wcc * sqrt(weights(Icc));
+0109         delta_cc     = 0-xa(IU+Jcc)' * Vcc';
+0110         b(Icc)       = delta_cc * wcc * sqrt(weights(Icc));
+0111         W(Icc,Icc)   = wcc * sqrt(weights(Icc));
+0112     <span class="keyword">end</span>
+0113 <span class="keyword">end</span>
+0114 <span class="comment">% row slope</span>
+0115 <span class="keyword">for</span> j=1:Mc-1
+0116     <span class="keyword">for</span> i=1:Nr
+0117         IU  = i+(j-1)*Nr;
+0118         <span class="comment">%[i,j,IU]</span>
+0119         Irr = Irr+1;
+0120         A(Irr,IU+Jrr)= Vrr * wrr * sqrt(weights(Irr));
+0121         delta_rr     = 0-xa(IU+Jrr)' * Vrr';
+0122         b(Irr)       = delta_rr * wrr * sqrt(weights(Irr));
+0123         W(Irr,Irr)=wrr * sqrt(weights(Irr));
+0124     <span class="keyword">end</span>
+0125 <span class="keyword">end</span>
+0126 <span class="comment">%</span>
+0127 <span class="keyword">if</span> print_type &gt; 0 
+0128     time_for_building_A=toc
+0129 <span class="keyword">end</span>
+0130 <span class="keyword">if</span> print_type &gt; 1
+0131     <span class="keyword">if</span> U &lt; 1000
+0132         Ab = 2*[full(A)]
+0133         null_A_prior = U-rank(full(A(U+1:<span class="keyword">end</span>,:)))
+0134         rankA= rank(full(A(U+1:<span class="keyword">end</span>,:)))
+0135     <span class="keyword">end</span>
+0136 
+0137 
+0138         figure
+0139         spy(A);
+0140 
+0141 
+0142 <span class="keyword">end</span>
+0143 <span class="keyword">if</span> print_type &gt; 0
+0144     time_for_building_Ae=toc
+0145     start_time = cputime
+0146 <span class="keyword">end</span>
+0147 <span class="comment">%% solve</span>
+0148 <span class="comment">% no sort</span>
+0149 <span class="comment">% tic</span>
+0150 <span class="comment">% [C,R]=qr(A,b,0);</span>
+0151 <span class="comment">% dx = R\C;</span>
+0152 <span class="comment">% time_for_QR_original=toc</span>
+0153 <span class="comment">% % dx_unsorted = dx;</span>
+0154 
+0155 
+0156 <span class="comment">% sort</span>
+0157 <span class="keyword">if</span> print_type &gt; 0
+0158     tic
+0159 <span class="keyword">end</span>
+0160 Nmatrix  = A'*A;
+0161 
+0162 <span class="keyword">if</span> print_type &gt; 0
+0163     size_N_matrix = size(Nmatrix)
+0164     non_zeros_N_matrix =nnz(Nmatrix)
+0165 <span class="keyword">end</span>
+0166 <span class="keyword">if</span> iter==1 &amp;&amp; plot_type &gt; 0
+0167     figure
+0168     subplot(1,3,1)
+0169     spy(Nmatrix)
+0170 <span class="keyword">end</span>
+0171 
+0172 <span class="comment">%permx    = symrcm(Nmatrix);</span>
+0173 permx    = symamd(Nmatrix);
+0174 Aperm    = A(:,permx);
+0175 
+0176 <span class="keyword">if</span> iter==1 &amp;&amp; plot_type &gt; 0
+0177     subplot(1,3,2)
+0178     spy(Aperm'*Aperm)
+0179 <span class="keyword">end</span>
+0180 
+0181 [C,R]    = qr(Aperm,b,0);
+0182 dxperm   = R\C;
+0183 Pm       = speye(U);
+0184 Pm       = Pm(:,permx);
+0185 dx       = Pm*dxperm;
+0186 <span class="keyword">if</span> print_type &gt; 0
+0187     time_for_QR_sorted=toc
+0188 <span class="keyword">end</span>
+0189 <span class="keyword">if</span> iter==1 &amp;&amp; plot_type &gt; 0
+0190     subplot(1,3,3)
+0191     spy(R)
+0192     fill_in = nnz(R)-(nnz(Nmatrix)/2+U/2);
+0193     percentage_nnz   = nnz(R)/(U*(U+1)/2)
+0194     relative_fill_in = fill_in/(nnz(Nmatrix)/2+U/2)-1
+0195 <span class="keyword">end</span>
+0196 
+0197 dx_sorted = dx;
+0198 
+0199 <span class="comment">% comparison</span>
+0200 <span class="comment">% comparison=[permx;dx_unsorted';dx_sorted';dx_sorted'-dx_unsorted';dxperm']</span>
+0201 
+0202 <span class="keyword">if</span> U &lt; 1600 &amp;&amp; plot_type &gt; 0
+0203     Aqt = R\A';
+0204     figure
+0205     spy(Aqt')
+0206 <span class="keyword">end</span>
+0207 <span class="comment">% xo=xa;</span>
+0208 <span class="comment">% [ xa, err, iter, flag ] = jacobi_iterative_solution(A'*A, xa, A'*b, 200, 10^(-4))</span>
+0209 <span class="comment">% dx=xa-xo;</span>
+0210 
+0211 <span class="keyword">if</span> print_type &gt; 0
+0212     time_for_solution=cputime-start_time
+0213 <span class="keyword">end</span>
+0214 
+0215 <span class="comment">% residuals (normalized)</span>
+0216 v = A*dx-b;
+0217 <span class="comment">% estimated variance factor</span>
+0218 <span class="keyword">if</span> print_type &gt; 0
+0219     eso = norm(v)/sqrt(N-U)
+0220 <span class="keyword">end</span>
+0221 
+0222 
+0223 eso_p=median(abs(v(1:Np)))*1.48;
+0224 eso_s=median(abs(v(Np+1:end)))*1.48;
+0225 <span class="keyword">if</span> print_type &gt; 0
+0226     est_s0_s0p_s0k=[eso,eso_p,eso_s]
+0227 <span class="keyword">end</span>
+0228 
+0229 check_AtV_null=norm((A'*v));
+0230 max_v_points = max(abs(v(1:Np)));
+0231 max_v_slope  = max(abs(v(Np+1,end)));
+0232 
+0233 <span class="comment">% update weights indicating outliers</span>
+0234 
+0235 kp = k*eso_p;
+0236 kp = k;
+0237 ks = k*eso_s;
+0238 <span class="keyword">if</span> print_type &gt; 0
+0239     criticalvalue_kp_sigmap_ks_sigmas=[kp,poi(1,4),ks,sigma_s]
+0240 
+0241     display(<span class="string">'vor Regewichtung'</span>)
+0242     initial=[iter,type_robust,iter_switch,max(abs(v(Np+1:end)))]
+0243 <span class="keyword">end</span>
+0244 
+0245 <span class="keyword">if</span> iter == 1 &amp;&amp; type_robust &gt; 0
+0246     weights=ones(N,1);
+0247 <span class="keyword">else</span>
+0248     <span class="keyword">if</span> type_robust &gt; 0 &amp;&amp; L1
+0249         <span class="keyword">if</span> type_robust == 1 | type_robust == 3
+0250             weights(Np+1:end) = min(1,1./(abs(v(Np+1:end))/ks+eps));
+0251             check=[iter,type_robust,min(weights(Np+1:end))];
+0252         <span class="keyword">end</span>
+0253         <span class="keyword">if</span> type_robust == 2 | type_robust ==3
+0254             weights(1:Np) = min(1,1./(abs(v(1:Np))/kp+eps));
+0255         <span class="keyword">end</span>
+0256     <span class="keyword">else</span>
+0257         <span class="keyword">if</span> type_robust == 1 | type_robust == 3
+0258             weights(Np+1:end) = exp(-abs(v(Np+1:end))/ks);
+0259         <span class="keyword">end</span>
+0260         <span class="keyword">if</span> type_robust == 2 | type_robust ==3
+0261             weights(1:Np) = exp(-abs(v(1:Np))/kp);
+0262         <span class="keyword">end</span>
+0263     <span class="keyword">end</span>
+0264 <span class="keyword">end</span>
+0265 abs_dx = norm(dx);
+0266 min_w_p=min(weights(1:Np));
+0267 min_w_c=min(weights(Np+1:end));
+0268 
+0269 <span class="keyword">if</span> print_type &gt; 1
+0270     full(inv(W)*A)
+0271 <span class="keyword">end</span>
+0272 
+0273 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

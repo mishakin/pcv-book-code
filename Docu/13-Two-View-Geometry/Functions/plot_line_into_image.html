@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_line_into_image</title>
+  <meta name="keywords" content="plot_line_into_image">
+  <meta name="description" content="plot a line into an image if possible with error bound">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">13-Two-View-Geometry</a> &gt; <a href="Documentation.html">Functions</a> &gt; plot_line_into_image.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>plot_line_into_image
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>plot a line into an image if possible with error bound</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function plot_line_into_image(Image,line,C,f1,f2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> plot a line into an image if possible with error bound
+
+ Image  = Image
+ line   = homogeneous line coordinates
+ C      = covariance matrix of homogeneous coordinates
+
+ plot_line_into_image(Image_r,lss);
+
+ Wolfgang Förstner 10/2010
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% plot a line into an image if possible with error bound</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Image  = Image</span>
+0004 <span class="comment">% line   = homogeneous line coordinates</span>
+0005 <span class="comment">% C      = covariance matrix of homogeneous coordinates</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% plot_line_into_image(Image_r,lss);</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Wolfgang Förstner 10/2010</span>
+0010 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0011 
+0012 <a name="_sub0" href="#_subfunctions" class="code">function plot_line_into_image(Image,line,C,f1,f2)</a>
+0013 
+0014 <span class="comment">% default widths</span>
+0015 <span class="keyword">if</span> nargin &lt; 4
+0016     f1 = 4;
+0017     f2 = 2;
+0018 <span class="keyword">end</span>
+0019 
+0020 <span class="comment">% normalized normal vector</span>
+0021 n = line(1:2)/norm(line(1:2));
+0022 
+0023 <span class="comment">% size of image</span>
+0024 [N,M,~] = size(Image);
+0025 
+0026 <span class="comment">% plot clipped line</span>
+0027 [x1,y1,x2,y2] = clipline(line(1:2),line(3),[0,M,0,N]);
+0028 plot([x1,x2],[y1,y2],<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,f1);
+0029 plot([x1,x2],[y1,y2],<span class="string">'-y'</span>,<span class="string">'LineWidth'</span>,f2);
+0030 
+0031 <span class="keyword">if</span> C(1,1) ~= 0
+0032     <span class="comment">% plot hyperbolic band</span>
+0033     L = 30;
+0034     alpha = 1:-1/(L-1):0;
+0035 
+0036     <span class="comment">% initiate reference point</span>
+0037     xah = [x1,y1,1]';
+0038     sqa = sqrt(xah'*C*xah/norm(line(1:2))^2);
+0039     <span class="comment">% left and right point</span>
+0040     xal = [x1;y1]+n*sqa;
+0041     xar = [x1;y1]-n*sqa;
+0042     <span class="keyword">for</span> l = 1:L-1
+0043         <span class="comment">% 2. reference point</span>
+0044         xe = alpha(l+1)*x1+(1-alpha(l+1))*x2;
+0045         ye = alpha(l+1)*y1+(1-alpha(l+1))*y2;
+0046         xeh = [xe,ye,1]';
+0047         sqe = sqrt(xeh'*C*xeh/norm(line(1:2))^2);
+0048         <span class="comment">% left right point</span>
+0049         xel = [xe;ye]+n*sqe;
+0050         xer = [xe;ye]-n*sqe;
+0051         <span class="comment">% left right line</span>
+0052 
+0053         <span class="comment">% plot clipped line left and right</span>
+0054         plot([xal(1),xel(1)],[xal(2),xel(2)],<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,f1);
+0055         plot([xal(1),xel(1)],[xal(2),xel(2)],<span class="string">'-y'</span>,<span class="string">'LineWidth'</span>,f2);
+0056         plot([xar(1),xer(1)],[xar(2),xer(2)],<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,f1);
+0057         plot([xar(1),xer(1)],[xar(2),xer(2)],<span class="string">'-y'</span>,<span class="string">'LineWidth'</span>,f2);
+0058 
+0059         <span class="comment">% transfer</span>
+0060         <span class="comment">% left and right point</span>
+0061         xal = xel;
+0062         xar = xer;
+0063 
+0064     <span class="keyword">end</span>
+0065 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

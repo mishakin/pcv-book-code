@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_distance_3D_point_from_3D_line</title>
+  <meta name="keywords" content="calc_distance_3D_point_from_3D_line">
+  <meta name="description" content="% distance 3D point from 3D line">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_distance_3D_point_from_3D_line.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_distance_3D_point_from_3D_line
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% distance 3D point from 3D line</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function d = calc_distance_3D_point_from_3D_line(X,L) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% distance 3D point from 3D line
+
+ Usage:
+   d = calc_distance_3D_point_from_3D_line(X,L)
+
+   X  - 4 x 1 homogeneous vector of 3D point
+   L  - 6 x 1 Plücker coordinates 
+
+   d  - Euclidean distance, inf if distance infinite
+
+ Wolfgang Förstner 2010/02/14
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_distance_3D_point_from_linesegment.html" class="code" title="function dist = calc_distance_3D_point_from_linesegment(T,X,Y)">calc_distance_3D_point_from_linesegment</a>, <a href="calc_distance_3D_point_from_triangle.html" class="code" title="function dist = calc_distance_3D_point_from_triangle(T,X,Y,Z)">calc_distance_3D_point_from_triangle</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../05-08-Geometry/demo_3D_Points_distances.html" class="code" title="">demo_3D_Points_distances</a>	% demo distanc 3D point</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% distance 3D point from 3D line</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage:</span>
+0004 <span class="comment">%   d = calc_distance_3D_point_from_3D_line(X,L)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   X  - 4 x 1 homogeneous vector of 3D point</span>
+0007 <span class="comment">%   L  - 6 x 1 Plücker coordinates</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   d  - Euclidean distance, inf if distance infinite</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Wolfgang Förstner 2010/02/14</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also calc_distance_3D_point_from_linesegment, calc_distance_3D_point_from_triangle</span>
+0015 
+0016 <a name="_sub0" href="#_subfunctions" class="code">function d = calc_distance_3D_point_from_3D_line(X,L)</a>
+0017 
+0018 <span class="comment">% homogeneous parts</span>
+0019 Xh = X(4);
+0020 Lh = L(1:3);
+0021 <span class="comment">% check for elements at infinity</span>
+0022 <span class="keyword">if</span> Xh == 0 || norm(Lh) == 0
+0023     d = inf;
+0024 <span class="keyword">else</span>
+0025     <span class="comment">% distance</span>
+0026     d = norm(<a href="calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(X(1:3))*Lh-Xh*L(4:6))/norm(Xh*Lh);
+0027 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

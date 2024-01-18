@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_perturb_2D_point_pairs</title>
+  <meta name="keywords" content="sugr_perturb_2D_point_pairs">
+  <meta name="description" content="% Perturb sampled 2D points pairs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Point_Pair_2D</a> &gt; sugr_perturb_2D_point_pairs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Point_Pair_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_perturb_2D_point_pairs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Perturb sampled 2D points pairs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function PP = sugr_perturb_2D_point_pairs(PP_true,sigma_x,sigma_y,rho,fp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Perturb sampled 2D points pairs
+
+ PP = sugr_perturb_2D_point_pairs(PP_true,sigma_x,sigma_y,rho,fp);
+
+ PP_true = struct, sugr point pairs 2D, true point pairs
+              .h(N,6)  homogeneous coordinates of N point pairs stored in each row [x1_n', x2_n']
+              .Crr(N,4,4) according reduced CovM
+ sigma_x   = standard deviation for perturbation of x's: CovM = sigma_x^2 I_2
+ sigma_y   = standard deviation for perturbation of y's: CovM = sigma_x^2 I_2
+ rho       = correlation coefficient
+ fp        = magnification factor for plot
+
+ PP perturbed point pairs
+
+ Wolfgang Förstner 2/2011
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_perturb_2D_point_pairs_spherical.html" class="code" title="function PP = sugr_perturb_2D_point_pairs_spherical(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs_spherical</a>, sugr_perturb_3D_2D_point_pairs,
+ sugr_perturb_Lines_2D</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Statistics/sugr_rand_gauss.html" class="code" title="function ret = sugr_rand_gauss(Mu, Cll, n)">sugr_rand_gauss</a>	% rand_gauss</li><li><a href="../../../General-Functions/SUGR/Line_2D/sugr_construct_join_Line_2D.html" class="code" title="function Line_2D = sugr_construct_join_Line_2D(x,y)">sugr_construct_join_Line_2D</a>	% Construct 2D line joining two points x and y</li><li><a href="../../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>	% Plot uncertain 2D line with standard hyperbola</li><li><a href="../../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li><li><a href="../../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>	% Plot 2D point with standard ellipse</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Homography/demo_estimate_2D_homography_from_point_pairs.html" class="code" title="">demo_estimate_2D_homography_from_point_pairs</a>	% demo_estimate_2D_homography_from_point_pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Perturb sampled 2D points pairs</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% PP = sugr_perturb_2D_point_pairs(PP_true,sigma_x,sigma_y,rho,fp);</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% PP_true = struct, sugr point pairs 2D, true point pairs</span>
+0006 <span class="comment">%              .h(N,6)  homogeneous coordinates of N point pairs stored in each row [x1_n', x2_n']</span>
+0007 <span class="comment">%              .Crr(N,4,4) according reduced CovM</span>
+0008 <span class="comment">% sigma_x   = standard deviation for perturbation of x's: CovM = sigma_x^2 I_2</span>
+0009 <span class="comment">% sigma_y   = standard deviation for perturbation of y's: CovM = sigma_x^2 I_2</span>
+0010 <span class="comment">% rho       = correlation coefficient</span>
+0011 <span class="comment">% fp        = magnification factor for plot</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% PP perturbed point pairs</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Wolfgang Förstner 2/2011</span>
+0016 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% See also sugr_perturb_2D_point_pairs_spherical, sugr_perturb_3D_2D_point_pairs,</span>
+0019 <span class="comment">% sugr_perturb_Lines_2D</span>
+0020 
+0021 <a name="_sub0" href="#_subfunctions" class="code">function PP = sugr_perturb_2D_point_pairs(PP_true,sigma_x,sigma_y,rho,fp)</a>
+0022 
+0023 <span class="keyword">global</span> plot_option
+0024 
+0025 Pth   = PP_true.h;
+0026 
+0027 N = size(Pth,1);
+0028 
+0029 Cppe     = [sigma_x^2*eye(2) sigma_x*sigma_y*rho*eye(2);<span class="keyword">...</span>
+0030     sigma_x*sigma_y*rho*eye(2) sigma_y^2*eye(2)];
+0031 <span class="keyword">for</span> n=1:N
+0032     <span class="comment">% true Euclidean coordinates</span>
+0033     x_true_e = Pth(n,1:2)'/Pth(n,3);
+0034     y_true_e = Pth(n,4:5)'/Pth(n,6);
+0035     p_true_e = [x_true_e;y_true_e];
+0036     <span class="comment">% perturbed point pair</span>
+0037     pe       = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_rand_gauss.html" class="code" title="function ret = sugr_rand_gauss(Mu, Cll, n)">sugr_rand_gauss</a>(p_true_e,Cppe, 1);
+0038     <span class="comment">%pp       = sugr_Point_Pair_2D(pe,Cppe);</span>
+0039     <span class="comment">%     PP.h(n,:)     = pp.h';</span>
+0040     <span class="comment">%     PP.Crr(n,:,:) = pp.Crr;</span>
+0041     <span class="comment">%     PP.type(n)    = 8;</span>
+0042     <span class="comment">%</span>
+0043     <span class="comment">% homogeneous coordinates</span>
+0044     x1h = [pe(1:2);1];
+0045     n1  = norm(x1h);
+0046     x2h = [pe(3:4);1];
+0047     n2  = norm(x2h);
+0048     ph   = [x1h/n1;x2h/n2];
+0049     <span class="comment">% covariance matrix</span>
+0050     Chh  = [Cppe(1:2,1:2) zeros(2,1) Cppe(1:2,3:4) zeros(2,1);<span class="keyword">...</span>
+0051         zeros(1,6);<span class="keyword">...</span>
+0052         Cppe(3:4,1:2) zeros(2,1) Cppe(3:4,3:4) zeros(2,1);<span class="keyword">...</span>
+0053         zeros(1,6)];
+0054     J    = [null(x1h')/n1, zeros(3,2); <span class="keyword">...</span>
+0055         zeros(3,2), null(x2h')/n2];
+0056     Crr    = J' * Chh * J;               <span class="comment">% CovM of reduced vector</span>
+0057     <span class="comment">%</span>
+0058     PP.h(n,:)     = ph';
+0059     PP.Crr(n,:,:) = Crr;
+0060     
+0061 <span class="keyword">end</span>
+0062 
+0063 
+0064 <span class="keyword">for</span> n=1:N
+0065     xh = PP.h(n,1:3)';
+0066     yh = PP.h(n,4:6)';
+0067     Cxx = null(xh') * squeeze(PP.Crr(n,1:2,1:2)) * null(xh')';
+0068     Cyy = null(yh') * squeeze(PP.Crr(n,3:4,3:4)) * null(yh')';
+0069     x = <a href="../../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(xh,Cxx);
+0070     y = <a href="../../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(yh,Cyy);
+0071     <span class="keyword">if</span> plot_option &gt; 0
+0072         <a href="../../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(x,<span class="string">'.k'</span>,<span class="string">'-r'</span>,2,fp);
+0073         <a href="../../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(y,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,fp);
+0074         l = <a href="../../../General-Functions/SUGR/Line_2D/sugr_construct_join_Line_2D.html" class="code" title="function Line_2D = sugr_construct_join_Line_2D(x,y)">sugr_construct_join_Line_2D</a>(x,y);
+0075         <a href="../../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>(l,<span class="string">'-k'</span>,<span class="string">'-w'</span>,1,5,[0,0]);
+0076     <span class="keyword">end</span>
+0077     
+0078 <span class="keyword">end</span>
+0079 
+0080</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

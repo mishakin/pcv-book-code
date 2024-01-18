@@ -1,0 +1,659 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_estimate_Point_2D_from_Lines</title>
+  <meta name="keywords" content="demo_estimate_Point_2D_from_Lines">
+  <meta name="description" content="% demo_estimate_Point_2D_from_Lines">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">10-Uncertain-Geometry</a> &gt; <a href="Documentation.html">Demo-Point-2D</a> &gt; demo_estimate_Point_2D_from_Lines.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 10-Uncertain-Geometry\Demo-Point-2D&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_estimate_Point_2D_from_Lines
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% demo_estimate_Point_2D_from_Lines</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% demo_estimate_Point_2D_from_Lines
+
+ see Sect. 10.6.2.1, Figs. 10.24-10.26
+
+ four types of estimation of intersection point (vanishing point)
+       ALGe algebraic Euclideanly
+       ALGs algebraic spherically
+       SSDe geometric Euclideanly
+       MLEe ML Euclideanly
+       MLEs ML spherically
+
+ comparison of empirical and theoretical covariance matrices
+ 
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 06/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_generate_true_Lines_2D_one_Point.html" class="code" title="function lines = sugr_generate_true_Lines_2D_one_Point(x0,d,N,lengthq,resolution)">sugr_generate_true_Lines_2D_one_Point</a>	sugr_generate_true_2d_lines_one_point: generates image lines through one point</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>	% Perturbes given image lines through one point</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_estimation_algebraic_Point_2D_from_Lines.html" class="code" title="function [ex,sigma_0_est_D,sigma_0_est_O] = sugr_estimation_algebraic_Point_2D_from_Lines(lines,sph)">sugr_estimation_algebraic_Point_2D_from_Lines</a>	% Algebraic estimate of intersection Point_2D from N Lines_2D</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_estimation_geometric_Point_2D_from_Lines.html" class="code" title="function [xe,sigma_0,x] = sugr_estimation_geometric_Point_2D_from_Lines(lines)">sugr_estimation_geometric_Point_2D_from_Lines</a>	% Geometric estimate of intersection Point_2D from N Lines_2D</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_estimation_ml_Point_2D_from_Lines.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines</a>	% ML estimate of intersection Point_2D from N Lines_2D</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_estimation_ml_Point_2D_from_Lines_Hessian.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines_Hessian(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines_Hessian</a>	% ML estimate of intersection Point_2D from N Lines_2D</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>	% Get Euclidean coordinates with CovM</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>	% Plot 2D point with standard ellipse</li><li><a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>	% check estimation result, PCV Sect. 4.6.8</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% demo_estimate_Point_2D_from_Lines</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% see Sect. 10.6.2.1, Figs. 10.24-10.26</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% four types of estimation of intersection point (vanishing point)</span>
+0006 <span class="comment">%       ALGe algebraic Euclideanly</span>
+0007 <span class="comment">%       ALGs algebraic spherically</span>
+0008 <span class="comment">%       SSDe geometric Euclideanly</span>
+0009 <span class="comment">%       MLEe ML Euclideanly</span>
+0010 <span class="comment">%       MLEs ML spherically</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% comparison of empirical and theoretical covariance matrices</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Wolfgang Förstner</span>
+0015 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% last changes: Susanne Wenzel 06/18</span>
+0018 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0019 
+0020 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0021 
+0022 <span class="keyword">global</span> min_redundancy
+0023 <span class="keyword">global</span> plot_option
+0024 <span class="keyword">global</span> print_option
+0025 <span class="keyword">global</span> print_option_estimation
+0026 
+0027 close all
+0028 <span class="comment">% clear all</span>
+0029 clearvars
+0030 clc
+0031 
+0032 <a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0033 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0034 min_redundancy=100000;
+0035 
+0036 disp(<span class="string">'====================================================================='</span>)
+0037 disp(<span class="string">'   Point estimation (geometric, ALG, ML; Euclideanly, spherically)   '</span>)
+0038 disp(<span class="string">'                    Figures 10.24 - 10.26                            '</span>)
+0039 disp(<span class="string">'---------------------------------------------------------------------'</span>)
+0040 
+0041 <span class="comment">%% Control parameters</span>
+0042 N_samples     = 100;                  <span class="comment">% number of cases (for first trial)</span>
+0043 <span class="comment">%N_samples     = 1000;                  % number of cases</span>
+0044 disp(strcat(<span class="string">'Number of samples            : '</span> , num2str(N_samples)));
+0045 
+0046 <span class="comment">% sample sizes</span>
+0047 N             = 50;                   <span class="comment">% number of lines per case</span>
+0048 disp(strcat(<span class="string">'Number of lines              : '</span> , num2str(N)));
+0049 
+0050 <span class="comment">% parameters for line generation</span>
+0051 d             = 1.0;                  <span class="comment">% size of square [-d,+d]^2 image wrt c=1</span>
+0052 resolution    = 1000;                 <span class="comment">% number of pixels per d</span>
+0053 
+0054 
+0055 disp(strcat(<span class="string">'Size of image                : '</span> , num2str(resolution)));
+0056 
+0057 <span class="comment">%</span>
+0058 lengthq       = 200;                  <span class="comment">% average length of line segments</span>
+0059 disp(strcat(<span class="string">'Average length of lines      : '</span> , num2str(lengthq)));
+0060 sigma         = 1.0;                  <span class="comment">% std. dev. of pixels on line</span>
+0061 disp(strcat(<span class="string">'Std. dev. of pixels on lines : '</span> , num2str(sigma)));
+0062 
+0063 <span class="comment">% initial seed</span>
+0064 init_rand      = 11;                  <span class="comment">% random seed</span>
+0065 
+0066 <span class="comment">% type of simulation</span>
+0067 sim_type = 0; <span class="comment">% close unknown point  --&gt;  Figs. 10.24-10.25</span>
+0068 <span class="comment">%sim_type = 1; % far unknown point     --&gt;  Fig.  10.26</span>
+0069 
+0070 <span class="comment">% factor for plotting the standard ellipses</span>
+0071 factor_p      = 1000;   
+0072 
+0073 <span class="comment">% rigorous variance propagation for observed line segment</span>
+0074 <span class="comment">%rigorous      = 0;</span>
+0075 rigorous      = 1;
+0076 
+0077 <span class="comment">%% initialize random seed</span>
+0078 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0079 
+0080 <span class="comment">%% Generate lines</span>
+0081 
+0082 <span class="keyword">if</span> N_samples &gt;1 
+0083     print_option_estimation=0;
+0084 <span class="keyword">end</span>
+0085 <span class="comment">%</span>
+0086 <span class="keyword">switch</span> sim_type
+0087     <span class="keyword">case</span> 0
+0088         x_tilde_e      =[1.3;1.7];
+0089     <span class="keyword">case</span> 1
+0090         x_tilde_e     = [0,200]';
+0091 <span class="keyword">end</span>
+0092 disp(strcat(<span class="string">'True point                   : ['</span>,num2str(x_tilde_e(1)),<span class="string">','</span>,num2str(x_tilde_e(2)),<span class="string">']'</span>));
+0093 
+0094 <span class="comment">%</span>
+0095 x_tilde       = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(x_tilde_e,10^-10*eye(2));   <span class="comment">% true point</span>
+0096 
+0097 <span class="comment">% -------------------------------------------------------------------------</span>
+0098 <span class="comment">% generate true lines</span>
+0099 lines = <a href="../../General-Functions/SUGR/Line_2D/sugr_generate_true_Lines_2D_one_Point.html" class="code" title="function lines = sugr_generate_true_Lines_2D_one_Point(x0,d,N,lengthq,resolution)">sugr_generate_true_Lines_2D_one_Point</a>(x_tilde.h,d,N,lengthq,resolution);
+0100 
+0101 <span class="comment">% show representatative result</span>
+0102 plot_option = 2;                                                           <span class="comment">%#ok&lt;NASGU&gt;</span>
+0103 print_option = 2;                                                          <span class="comment">%#ok&lt;NASGU&gt;</span>
+0104 
+0105 <span class="keyword">if</span> sim_type == 0    
+0106     
+0107     figure(<span class="string">'name'</span>,<span class="string">'estimate intersection points'</span>,<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[10,50,0.5*ss(1),0.85*ss(2)])
+0108     subplot(3,2,1)
+0109     hold on
+0110     <a href="../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>(x_tilde.h,d,lines,resolution,sigma,rigorous);    
+0111     title(<span class="string">'Original line segments'</span>)
+0112     
+0113     subplot(3,2,2)
+0114     hold on
+0115     <a href="../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>(x_tilde.h,d,lines,resolution,sigma,rigorous);
+0116     
+0117     subplot(3,2,3)
+0118     hold on
+0119     <a href="../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>(x_tilde.h,d,lines,resolution,sigma,rigorous);
+0120         
+0121     subplot(3,2,4)
+0122     hold on
+0123     <a href="../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>(x_tilde.h,d,lines,resolution,sigma,rigorous);
+0124         
+0125     subplot(3,2,5)
+0126     hold on
+0127     <a href="../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>(x_tilde.h,d,lines,resolution,sigma,rigorous);
+0128     
+0129     subplot(3,2,6)
+0130     hold on
+0131     <a href="../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>(x_tilde.h,d,lines,resolution,sigma,rigorous);
+0132     
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="comment">% do not plot samples in the following</span>
+0136 plot_option  = 0;
+0137 print_option = 0;
+0138 <span class="comment">% -------------------------------------------------------</span>
+0139 est_x_samples_aE = zeros(N_samples,2);
+0140 sigma_2_aE_D     = zeros(N_samples,1);
+0141 sigma_2_aE_O     = zeros(N_samples,1);
+0142 
+0143 est_x_samples_a = zeros(N_samples,2);
+0144 sigma_2_a_D     = zeros(N_samples,1);
+0145 sigma_2_a_O     = zeros(N_samples,1);
+0146 
+0147 est_x_samples_g = zeros(N_samples,2);
+0148 sigma_2_g_D     = zeros(N_samples,1);
+0149 sigma_2_g_O     = zeros(N_samples,1);
+0150 
+0151 est_x_samples_g_x = zeros(N_samples,2);
+0152 sigma_2_g         = zeros(N_samples,1);
+0153 
+0154 est_x_samples_ml = zeros(N_samples,2);
+0155 sigma_2_ml        = zeros(N_samples,1);
+0156 sigma_2_ml_D     = zeros(N_samples,1);
+0157 sigma_2_ml_O     = zeros(N_samples,1);
+0158 
+0159 est_x_samples_mH = zeros(N_samples,2);
+0160 sigma_2_mH        = zeros(N_samples,1);
+0161 sigma_2_mH_D     = zeros(N_samples,1);
+0162 sigma_2_mH_O     = zeros(N_samples,1);
+0163 
+0164 start = cputime;
+0165 <span class="keyword">for</span> n = 1:N_samples
+0166      <span class="keyword">if</span> N_samples &lt; 100
+0167         fprintf(num2str(n)),fprintf(<span class="string">','</span>)
+0168         <span class="keyword">if</span> mod(n,10) == 0
+0169             disp(<span class="string">' '</span>)
+0170         <span class="keyword">end</span>
+0171     <span class="keyword">else</span>
+0172         <span class="keyword">if</span> mod(n,10) == 0
+0173             fprintf(num2str(n)),fprintf(<span class="string">','</span>)
+0174         <span class="keyword">end</span>
+0175         <span class="keyword">if</span> mod(n,100) == 0
+0176             disp(<span class="string">' '</span>)
+0177         <span class="keyword">end</span>
+0178     <span class="keyword">end</span>
+0179     <span class="comment">% perturb lines</span>
+0180     lstruct = <a href="../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>(x_tilde.h,d,lines,resolution,sigma,rigorous);
+0181     
+0182     
+0183     <span class="comment">%% Estimate point algebraically - Euclideanly</span>
+0184     [est_p_aE,sigma_0_est_DE,sigma_0_est_OE] = <span class="keyword">...</span>
+0185         <a href="../../General-Functions/SUGR/Point_2D/sugr_estimation_algebraic_Point_2D_from_Lines.html" class="code" title="function [ex,sigma_0_est_D,sigma_0_est_O] = sugr_estimation_algebraic_Point_2D_from_Lines(lines,sph)">sugr_estimation_algebraic_Point_2D_from_Lines</a>(lstruct,0);
+0186     est_x_aE_e = est_p_aE.h(1:2)'/est_p_aE.h(3);
+0187     est_x_samples_aE(n,:) = est_x_aE_e;
+0188     sigma_2_aE_D(n) = sigma_0_est_DE^2;
+0189     sigma_2_aE_O(n) = sigma_0_est_OE^2;    
+0190     
+0191     <span class="keyword">if</span> sim_type == 0
+0192         plot([-2,-2,2,2,-2],[-2,2,2,-2,-2],<span class="string">'-b'</span>)
+0193         
+0194         subplot(3,2,2)
+0195         hold on
+0196         plot(x_tilde_e(1)+factor_p*(est_x_aE_e(1)-x_tilde_e(1))/3,<span class="keyword">...</span>
+0197             x_tilde_e(2)+factor_p*(est_x_aE_e(2)-x_tilde_e(2))/3,<span class="string">'.g'</span>);
+0198     <span class="keyword">end</span>
+0199     
+0200     <span class="comment">%% Estimate point algebraically - spherically</span>
+0201     [est_p_a,sigma_0_est_D,sigma_0_est_O] = <span class="keyword">...</span>
+0202         <a href="../../General-Functions/SUGR/Point_2D/sugr_estimation_algebraic_Point_2D_from_Lines.html" class="code" title="function [ex,sigma_0_est_D,sigma_0_est_O] = sugr_estimation_algebraic_Point_2D_from_Lines(lines,sph)">sugr_estimation_algebraic_Point_2D_from_Lines</a>(lstruct,1);
+0203     est_x_a_e = est_p_a.h(1:2)'/est_p_a.h(3);
+0204     est_x_samples_a(n,:) = est_x_a_e;
+0205     sigma_2_a_D(n) = sigma_0_est_D^2;
+0206     sigma_2_a_O(n) = sigma_0_est_O^2;    
+0207     
+0208     <span class="keyword">if</span> sim_type == 0
+0209         plot([-2,-2,2,2,-2],[-2,2,2,-2,-2],<span class="string">'-b'</span>)        
+0210         
+0211         subplot(3,2,3)
+0212         hold on
+0213         plot(x_tilde_e(1)+factor_p*(est_x_a_e(1)-x_tilde_e(1))/3,<span class="keyword">...</span>
+0214             x_tilde_e(2)+factor_p*(est_x_a_e(2)-x_tilde_e(2))/3,<span class="string">'.g'</span>);
+0215     <span class="keyword">end</span>
+0216     
+0217     <span class="comment">%% Estimate point geometrically</span>
+0218     [est_p_g,sigma_0_g,xe] = <a href="../../General-Functions/SUGR/Point_2D/sugr_estimation_geometric_Point_2D_from_Lines.html" class="code" title="function [xe,sigma_0,x] = sugr_estimation_geometric_Point_2D_from_Lines(lines)">sugr_estimation_geometric_Point_2D_from_Lines</a>(lstruct);
+0219     est_x_g_e              = est_p_g.h(1:2)'/est_p_g.h(3);
+0220     est_x_samples_g(n,:)   = est_x_g_e;
+0221     est_x_samples_g_x(n,:) = xe;
+0222     sigma_2_g(n)           = sigma_0_g^2;
+0223     
+0224     <span class="keyword">if</span> sim_type == 0
+0225         plot([-2,-2,2,2,-2],[-2,2,2,-2,-2],<span class="string">'-b'</span>)        
+0226         
+0227         subplot(3,2,4)
+0228         hold on
+0229         plot(x_tilde_e(1)+factor_p*(est_x_g_e(1)-x_tilde_e(1))/3,<span class="keyword">...</span>
+0230             x_tilde_e(2)+factor_p*(est_x_g_e(2)-x_tilde_e(2))/3,<span class="string">'.g'</span>);
+0231     <span class="keyword">end</span>
+0232     
+0233     <span class="comment">%% estimate ML</span>
+0234     T = 0.01;
+0235     maxiter = 3;
+0236     [est_p_ml,sigma_0_ml,~] = <a href="../../General-Functions/SUGR/Point_2D/sugr_estimation_ml_Point_2D_from_Lines.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines</a>(lstruct,est_p_a.h,T,maxiter);
+0237     [est_x_ml_e,Cxx_ml]     = <a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(est_p_ml);
+0238     est_x_samples_ml(n,:)   = est_x_ml_e;
+0239     sigma_2_ml(n)           = sigma_0_ml^2;
+0240     
+0241     <span class="keyword">if</span> sim_type == 0
+0242         plot([-2,-2,2,2,-2],[-2,2,2,-2,-2],<span class="string">'-b'</span>)
+0243         
+0244         subplot(3,2,5)
+0245         hold on
+0246         plot(x_tilde_e(1)+factor_p*(est_x_ml_e(1)-x_tilde_e(1))/3,<span class="keyword">...</span>
+0247             x_tilde_e(2)+factor_p*(est_x_ml_e(2)-x_tilde_e(2))/3,<span class="string">'.g'</span>);
+0248     <span class="keyword">end</span>
+0249     <span class="comment">%% estimate ML-Hessian</span>
+0250     T = 0.01;
+0251     maxiter = 3;
+0252     [est_p_mH,sigma_0_mH,R] = <a href="../../General-Functions/SUGR/Point_2D/sugr_estimation_ml_Point_2D_from_Lines_Hessian.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines_Hessian(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines_Hessian</a>(lstruct,est_p_a.h,T,maxiter);
+0253     [est_x_mH_e,Cxx_mH]  = <a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(est_p_mH);
+0254     est_x_samples_mH(n,:) = est_x_mH_e;
+0255     sigma_2_mH(n) = sigma_0_mH^2;    
+0256     
+0257     <span class="keyword">if</span> sim_type == 0
+0258         plot([-2,-2,2,2,-2],[-2,2,2,-2,-2],<span class="string">'-b'</span>)        
+0259         
+0260         subplot(3,2,6)
+0261         hold on
+0262         plot(x_tilde_e(1)+factor_p*(est_x_mH_e(1)-x_tilde_e(1))/3,<span class="keyword">...</span>
+0263              x_tilde_e(2)+factor_p*(est_x_mH_e(2)-x_tilde_e(2))/3,<span class="string">'.g'</span>);        
+0264         
+0265         plot([-2,-2,2,2,-2],[-2,2,2,-2,-2],<span class="string">'-b'</span>)
+0266     <span class="keyword">end</span>
+0267 <span class="keyword">end</span>
+0268 disp([<span class="string">'CPU time for '</span>, num2str(N_samples),<span class="string">' samples              : '</span>,num2str(cputime-start)]);
+0269 
+0270 <span class="comment">%% Analyse samples</span>
+0271 [x_aE_e,Cxx_aE_e] = <a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(est_p_aE);
+0272 [x_a_e, Cxx_a_e]  = <a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(est_p_a);
+0273 [x_g_e, Cxx_g_e]  = <a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(est_p_g);
+0274 [x_ml_e,Cxx_ml_e] = <a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(est_p_ml);
+0275 [x_mH_e,Cxx_mH_e] = <a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(est_p_mH);
+0276 
+0277 <span class="keyword">if</span> N_samples &gt; 2
+0278     <span class="comment">%% determine empirtical means and covariance matrices</span>
+0279     est_x_mean_aE  = mean(est_x_samples_aE);
+0280     est_x_cov_aE   = cov(est_x_samples_aE);
+0281     est_x_mean_a   = mean(est_x_samples_a);
+0282     est_x_cov_a    = cov(est_x_samples_a);
+0283     est_x_mean_g   = mean(est_x_samples_g);
+0284     est_x_cov_g    = cov(est_x_samples_g);
+0285     est_x_mean_ml  = mean(est_x_samples_ml);
+0286     est_x_cov_ml   = cov(est_x_samples_ml);
+0287     est_x_mean_mH  = mean(est_x_samples_mH);
+0288     est_x_cov_mH   = cov(est_x_samples_mH);
+0289     
+0290     mean_sigma_2_a_OE = mean(sigma_2_aE_O);
+0291     mean_sigma_2_a_DE = mean(sigma_2_aE_D);
+0292     mean_sigma_2_a_O  = mean(sigma_2_a_O);
+0293     mean_sigma_2_a_D  = mean(sigma_2_a_D);
+0294     mean_sigma_2_g    = mean(sigma_2_g);
+0295     mean_sigma_2_ml_Euclidean   = mean(sigma_2_ml);
+0296     mean_sigma_2_ml_spherical   = mean(sigma_2_mH);
+0297     
+0298     <span class="comment">%%</span>
+0299     est_p_aE_emp    = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(est_x_mean_aE', est_x_cov_aE);
+0300     est_p_a_emp     = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(est_x_mean_a', est_x_cov_a);
+0301     est_p_g_emp     = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(est_x_mean_g', est_x_cov_g);
+0302     est_p_ml_emp    = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(est_x_mean_ml',est_x_cov_ml);
+0303     est_p_mH_emp    = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(est_x_mean_mH',est_x_cov_mH);    
+0304     
+0305     <span class="keyword">if</span> sim_type == 0
+0306         subplot(3,2,1)
+0307         <span class="keyword">if</span> sim_type == 0
+0308             xlim([-2.2,+2.5])
+0309             ylim([-2.2,2.9])
+0310         <span class="keyword">end</span>
+0311         
+0312         subplot(3,2,2)
+0313         
+0314         title(<span class="string">'ALGe emp (green) - ALGe theor (blue)'</span>)
+0315         hold on
+0316         <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_aE_emp,<span class="string">'ok'</span>,<span class="string">'-g'</span>,2,factor_p);
+0317         hold on
+0318         <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_aE,<span class="string">'ok'</span>,<span class="string">'-b'</span>,1,factor_p);
+0319         axis equal
+0320         <span class="keyword">if</span> sim_type == 0
+0321             xlim([-2.2,+2.5])
+0322             ylim([-2.2,2.9])
+0323         <span class="keyword">end</span>
+0324         
+0325         subplot(3,2,3)
+0326         
+0327         title(<span class="string">'ALGs'</span>)
+0328         hold on
+0329         <span class="comment">%sugr_plot_Point_2D(est_p_a_emp,'ok','-g',2,factor_p);</span>
+0330         hold on
+0331         <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_a,<span class="string">'ok'</span>,<span class="string">'-k'</span>,1,factor_p);
+0332         axis equal
+0333         <span class="keyword">if</span> sim_type == 0
+0334             xlim([-2.2,+2.5])
+0335             ylim([-2.2,2.9])
+0336         <span class="keyword">end</span>
+0337         
+0338         subplot(3,2,4)
+0339         title(<span class="string">'SSDe'</span>)
+0340         hold on
+0341         <span class="comment">%sugr_plot_Point_2D(est_p_g_emp,'ok','-g',2,factor_p);</span>
+0342         hold on
+0343         <span class="comment">%sugr_plot_Point_2D(est_p_g,'ok','-b',1,factor_p);</span>
+0344         axis equal
+0345         <span class="keyword">if</span> sim_type == 0
+0346             xlim([-2.2,+2.5])
+0347             ylim([-2.2,2.9])
+0348         <span class="keyword">end</span>
+0349         
+0350         subplot(3,2,5)
+0351         title(<span class="string">'MLEe'</span>)
+0352         <span class="comment">% sugr_plot_Point_2D(est_p_mH_emp,'ok','-g',2,factor_p);</span>
+0353         hold on
+0354         <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_mH,<span class="string">'ok'</span>,<span class="string">'-k'</span>,1,factor_p);
+0355         axis equal
+0356         <span class="keyword">if</span> sim_type == 0
+0357             xlim([-2.2,+2.5])
+0358             ylim([-2.2,2.9])
+0359         <span class="keyword">end</span>        
+0360         
+0361         subplot(3,2,6)
+0362         title(<span class="string">'MLEs (green) - ALGs (dashed)'</span>)
+0363         <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_a,<span class="string">'ok'</span>,<span class="string">'--k'</span>,1,factor_p);
+0364         hold on
+0365         <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_ml,<span class="string">'ok'</span>,<span class="string">'-k'</span>,1,factor_p);
+0366         axis equal
+0367         <span class="keyword">if</span> sim_type == 0
+0368             xlim([-2.2,+2.5])
+0369             ylim([-2.2,2.9])
+0370         <span class="keyword">end</span>
+0371     <span class="keyword">end</span>
+0372     
+0373 <span class="comment">% % distance between the covariance matrices</span>
+0374 <span class="comment">% distance_a_emp= exp(sqrt(sum(log(eigs(inv(Cxx_a_e)*est_x_cov_a)).^2)/2)/2)</span>
+0375 <span class="comment">% distance_g_emp= exp(sqrt(sum(log(eigs(inv(Cxx_g_e)*est_x_cov_g)).^2)/2)/2)</span>
+0376 <span class="comment">%</span>
+0377 <span class="comment">% distance_a_ml = exp(sqrt(sum(log(eigs(inv(Cxx_ml_e)* Cxx_a_e )).^2)/2)/2)</span>
+0378 <span class="comment">% distance_g_ml = exp(sqrt(sum(log(eigs(inv(Cxx_ml_e)* Cxx_g_e )).^2)/2)/2)</span>
+0379 <span class="keyword">end</span>
+0380 
+0381 <span class="comment">%% final distribution of points</span>
+0382 
+0383 <span class="comment">% algebraic solution</span>
+0384 <span class="keyword">if</span> N_samples &gt; 2
+0385 <span class="comment">%% show histograms</span>
+0386     figure(<span class="string">'name'</span>,<span class="string">'Histogramms'</span>,<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[ss(1)/2,0.3*ss(2),0.5*ss(1),0.6*ss(2)])   
+0387     N_bin = ceil(sqrt(N_samples));
+0388     
+0389     subplot(3,2,2)
+0390     hist(sigma_2_a_D,N_bin);
+0391     title(<span class="string">'Variance ALGe'</span>)
+0392     
+0393     subplot(3,2,3)
+0394     hist(sigma_2_aE_D,N_bin);
+0395     title(<span class="string">'Variance ALGs'</span>)
+0396     
+0397     subplot(3,2,4)
+0398     hist(sigma_2_g,N_bin);
+0399     title(<span class="string">'Variance SSDe'</span>)
+0400     
+0401     subplot(3,2,5)
+0402     hold on
+0403     hist(sigma_2_mH,N_bin);
+0404     [~,r] = hist(sigma_2_mH,N_bin);
+0405     <span class="comment">%r=2*(1:ceil(sqrt(N_samples))-1/2)/N_bin;</span>
+0406     range = abs(r(N_bin)-r(1));
+0407     plot(r,N_bin*range*fpdf(r,R,10000),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2);
+0408     
+0409     title(<span class="string">'Variance factor MLEe'</span>)
+0410     
+0411     subplot(3,2,6)
+0412     hold on
+0413     hist(sigma_2_ml,N_bin);
+0414     [NN,r] = hist(sigma_2_ml,N_bin);
+0415     <span class="comment">%r=2*(1:ceil(sqrt(N_samples))-1/2)/N_bin;</span>
+0416     range = abs(r(N_bin)-r(1));
+0417     plot(r,N_bin*range*fpdf(r,R,10000),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2);
+0418     
+0419     title(<span class="string">'Variance factor MLEs'</span>)
+0420 
+0421     <span class="comment">%%  show</span>
+0422     figure(<span class="string">'name'</span>,<span class="string">'Distribution of points'</span>,<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[100,20,0.6*ss(1),0.82*ss(2)])
+0423     plot_option=1;
+0424     subplot(3,2,1)
+0425     hold on
+0426     title(<span class="string">'Straight line segments'</span>)
+0427     <a href="../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>(x_tilde.h,d,lines,resolution,sigma,rigorous);
+0428 
+0429     subplot(3,2,2)
+0430     hold on
+0431     title(<span class="string">'ALGe'</span>)
+0432     <span class="keyword">for</span> n=1:N_samples
+0433         plot(est_x_mean_aE(1)+(est_x_samples_aE(n,1)-est_x_mean_aE(1)),<span class="keyword">...</span>
+0434             est_x_mean_aE(2)+(est_x_samples_aE(n,2)-est_x_mean_aE(2)),<span class="string">'.k'</span>);
+0435     <span class="keyword">end</span>
+0436     <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_aE_emp,<span class="string">'ok'</span>,<span class="string">'--k'</span>,1,3);
+0437 
+0438     plot(est_x_mean_aE(1),est_x_mean_aE(2),<span class="string">'ow'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,7);
+0439     plot(est_x_mean_aE(1),est_x_mean_aE(2),<span class="string">'ok'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,3);
+0440 
+0441     plot(x_tilde.h(1)/x_tilde.h(3),x_tilde.h(2)/x_tilde.h(3),<span class="string">'+k'</span>,<span class="string">'MarkerSize'</span>,10,<span class="string">'LineWidth'</span>,1);
+0442 
+0443     xlim_aE=xlim;
+0444     ylim_aE=ylim;
+0445 
+0446     subplot(3,2,3)
+0447     hold on
+0448     title(<span class="string">'ALGs'</span>)
+0449     <span class="keyword">for</span> n = 1:N_samples
+0450         plot(est_x_mean_a(1)+(est_x_samples_a(n,1)-est_x_mean_a(1)),<span class="keyword">...</span>
+0451             est_x_mean_a(2)+(est_x_samples_a(n,2)-est_x_mean_a(2)),<span class="string">'.k'</span>);
+0452     <span class="keyword">end</span>
+0453     <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_a_emp,<span class="string">'ok'</span>,<span class="string">'--k'</span>,1,3);
+0454 
+0455     plot(est_x_mean_a(1),est_x_mean_a(2),<span class="string">'ow'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,7);
+0456     plot(est_x_mean_a(1),est_x_mean_a(2),<span class="string">'ok'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,3);
+0457 
+0458     plot(x_tilde.h(1)/x_tilde.h(3),x_tilde.h(2)/x_tilde.h(3),<span class="string">'+k'</span>,<span class="string">'MarkerSize'</span>,10,<span class="string">'LineWidth'</span>,1);
+0459 
+0460     xlim_a = xlim;
+0461     ylim_a = ylim;
+0462 
+0463     <span class="comment">% geometric solution</span>
+0464     subplot(3,2,4)
+0465     hold on
+0466     title(<span class="string">'SSDe'</span>)
+0467     <span class="keyword">for</span> n = 1:N_samples
+0468         plot(est_x_mean_g(1)+(est_x_samples_g(n,1)-est_x_mean_g(1)),<span class="keyword">...</span>
+0469             est_x_mean_g(2)+(est_x_samples_g(n,2)-est_x_mean_g(2)),<span class="string">'.k'</span>);
+0470     <span class="keyword">end</span>
+0471 
+0472     <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_g_emp,<span class="string">'ok'</span>,<span class="string">'--k'</span>,1,3);
+0473 
+0474     plot(est_x_mean_g(1),est_x_mean_g(2),<span class="string">'ow'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,7);
+0475     plot(est_x_mean_g(1),est_x_mean_g(2),<span class="string">'ok'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,3);
+0476 
+0477     plot(x_tilde.h(1)/x_tilde.h(3),x_tilde.h(2)/x_tilde.h(3),<span class="string">'+k'</span>,<span class="string">'MarkerSize'</span>,10,<span class="string">'LineWidth'</span>,1);
+0478 
+0479     xlim_g = xlim;
+0480     ylim_g = ylim;
+0481 
+0482     <span class="comment">% ml-estimation Hessian</span>
+0483 
+0484     subplot(3,2,5)
+0485     hold on
+0486     title(<span class="string">'MLEe'</span>)
+0487     <span class="keyword">for</span> n = 1:N_samples
+0488         plot(est_x_mean_mH(1)+(est_x_samples_mH(n,1)-est_x_mean_mH(1)),<span class="keyword">...</span>
+0489             est_x_mean_mH(2)+(est_x_samples_mH(n,2)-est_x_mean_mH(2)),<span class="string">'.k'</span>);
+0490     <span class="keyword">end</span>
+0491     <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_mH_emp,<span class="string">'ok'</span>,<span class="string">'--k'</span>,1,3);
+0492     plot(est_x_mean_mH(1),est_x_mean_mH(2),<span class="string">'ow'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,7);
+0493     plot(est_x_mean_mH(1),est_x_mean_mH(2),<span class="string">'ok'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,3);
+0494 
+0495     plot(x_tilde.h(1)/x_tilde.h(3),x_tilde.h(2)/x_tilde.h(3),<span class="string">'+k'</span>,<span class="string">'MarkerSize'</span>,10,<span class="string">'LineWidth'</span>,1);
+0496 
+0497     xlim_mH = xlim;
+0498     ylim_mH = ylim;
+0499 
+0500     <span class="comment">% ml-estimation</span>
+0501     subplot(3,2,6)
+0502     hold on
+0503     title(<span class="string">'MLEs'</span>)
+0504     <span class="keyword">for</span> n = 1:N_samples
+0505         plot(est_x_mean_ml(1)+(est_x_samples_ml(n,1)-est_x_mean_ml(1)),<span class="keyword">...</span>
+0506             est_x_mean_ml(2)+(est_x_samples_ml(n,2)-est_x_mean_ml(2)),<span class="string">'.k'</span>);
+0507     <span class="keyword">end</span>
+0508     <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(est_p_ml_emp,<span class="string">'ok'</span>,<span class="string">'--k'</span>,1,3);
+0509 
+0510     plot(est_x_mean_ml(1),est_x_mean_ml(2),<span class="string">'ow'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,7);
+0511     plot(est_x_mean_ml(1),est_x_mean_ml(2),<span class="string">'ok'</span>,<span class="string">'MarkerSize'</span>,12,<span class="string">'LineWidth'</span>,3);
+0512 
+0513     plot(x_tilde.h(1)/x_tilde.h(3),x_tilde.h(2)/x_tilde.h(3),<span class="string">'+k'</span>,<span class="string">'MarkerSize'</span>,10,<span class="string">'LineWidth'</span>,1);
+0514 
+0515     <span class="comment">% determine common plot bounding box</span>
+0516     xlim_ml = xlim;
+0517     ylim_ml = ylim;
+0518 
+0519     mxlimg = [min([xlim_a(1),xlim_g(1)]),<span class="keyword">...</span>
+0520         max([xlim_a(2),xlim_g(2)])];
+0521     mylimg = [min([ylim_a(1),ylim_g(1)]),<span class="keyword">...</span>
+0522         max([ylim_a(2),ylim_g(2)])];
+0523 
+0524     subplot(3,2,2);xlim(mxlimg);ylim(mylimg);
+0525     subplot(3,2,4);xlim(mxlimg);ylim(mylimg);
+0526 
+0527     mxliml = [min([xlim_mH(1),xlim_ml(1)]),<span class="keyword">...</span>
+0528         max([xlim_mH(2),xlim_ml(2)])];
+0529     myliml = [min([ylim_mH(1),ylim_ml(1)]),<span class="keyword">...</span>
+0530         max([ylim_mH(2),ylim_ml(2)])];
+0531 
+0532     subplot(3,2,2);xlim(mxlimg);ylim(mylimg);
+0533     subplot(3,2,4);xlim(mxlimg);ylim(mylimg);
+0534     subplot(3,2,5);xlim(mxliml);ylim(myliml);
+0535     subplot(3,2,6);xlim(mxliml);ylim(myliml);
+0536 
+0537     <span class="comment">% same bb for all</span>
+0538     mx = [min([xlim_a(1),xlim_g(1),xlim_mH(1),xlim_ml(1)]),<span class="keyword">...</span>
+0539         max([xlim_a(2),xlim_g(2),xlim_mH(2),xlim_ml(2)])];
+0540     my = [min([ylim_a(1),ylim_g(1),ylim_mH(1),ylim_ml(1)]),<span class="keyword">...</span>
+0541         max([ylim_a(2),ylim_g(2),ylim_mH(2),ylim_ml(2)]) ];
+0542 
+0543     subplot(3,2,2);xlim(mx);ylim(my);
+0544     subplot(3,2,3);xlim(mx);ylim(my);
+0545     subplot(3,2,4);xlim(mx);ylim(my);
+0546     subplot(3,2,5);xlim(mx);ylim(my);
+0547     subplot(3,2,6);xlim(mx);ylim(my);
+0548     
+0549     <span class="comment">%% evaluate correctness</span>
+0550     S = 0.99;
+0551     <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(R,x_tilde_e,Cxx_a_e,ones(N_samples,1),est_x_samples_a,S,<span class="string">' ALGs'</span>);
+0552     <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(R,x_tilde_e,Cxx_mH_e,sigma_2_mH,est_x_samples_mH,S,<span class="string">' MLEe'</span>);
+0553     set(gcf,<span class="string">'Position'</span>,[0.25*ss(1),70,0.35*ss(1),0.25*ss(2)])
+0554     <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(R,x_tilde_e,Cxx_ml_e,sigma_2_ml,est_x_samples_ml,S,<span class="string">' MLEs'</span>);
+0555     set(gcf,<span class="string">'Position'</span>,[0.63*ss(1),70,0.35*ss(1),0.25*ss(2)])
+0556     
+0557     <span class="comment">% Bias and  accuracy</span>
+0558     disp(<span class="string">'----------------------------'</span>)
+0559     disp(<span class="string">'Precision, bias and accuracy'</span>)
+0560     lb = max([trace(est_x_cov_aE),<span class="keyword">...</span>
+0561               trace(est_x_cov_a),<span class="keyword">...</span>
+0562               trace(est_x_cov_g),<span class="keyword">...</span>
+0563               trace(est_x_cov_ml),<span class="keyword">...</span>
+0564               trace(est_x_cov_mH)]);
+0565     
+0566     f = 10^-(ceil(log(lb)/log(10)/2));
+0567     factor_for_bias=1/f;
+0568     
+0569     <span class="comment">% provide bias, accuracy and test statistic</span>
+0570     disp(<span class="string">'sigma = sqrt(tr(CovM)/2)'</span>)
+0571     disp(<span class="string">'bias  = true_x - est_x'</span>)
+0572     disp(<span class="string">'A     = |bias|^2 + sigma^2)'</span>)
+0573     disp([<span class="string">'Values * '</span>,num2str(f),<span class="string">':'</span>])
+0574     ALGe_bias_x________y_____sigma_________A = <span class="keyword">...</span>
+0575         f*[-x_tilde_e'+est_x_mean_aE,sqrt(trace(est_x_cov_aE)/2),<span class="keyword">...</span>
+0576         sqrt(norm(x_tilde_e'-est_x_mean_aE)^2+trace(est_x_cov_aE)/2)]      <span class="comment">%#ok&lt;*NOPTS&gt;</span>
+0577     
+0578     ALGs_bias_x________y_____sigma_________A = <span class="keyword">...</span>
+0579         f*[-x_tilde_e'+est_x_mean_a,sqrt(trace(est_x_cov_a)/2),<span class="keyword">...</span>
+0580         sqrt(norm(x_tilde_e'-est_x_mean_a)^2+trace(est_x_cov_a)/2)]
+0581     
+0582     SSDe_bias_x________y_____sigma_________A = <span class="keyword">...</span>
+0583         f*[-x_tilde_e'+est_x_mean_g,sqrt(trace(est_x_cov_g)/2),<span class="keyword">...</span>
+0584         sqrt(norm(x_tilde_e'-est_x_mean_g)^2+trace(est_x_cov_g)/2)]
+0585     
+0586     MLEs_bias_x________y_____sigma_________A = <span class="keyword">...</span>
+0587         f*[-x_tilde_e'+est_x_mean_mH,sqrt(trace(est_x_cov_mH)/2),<span class="keyword">...</span>
+0588         sqrt(norm(x_tilde_e'-est_x_mean_mH)^2+trace(est_x_cov_mH)/2)]
+0589     
+0590     MLEe_bias_x________y_____sigma_________A = <span class="keyword">...</span>
+0591         f*[-x_tilde_e'+est_x_mean_ml,sqrt(trace(est_x_cov_ml)/2),<span class="keyword">...</span>
+0592         sqrt(norm(x_tilde_e'-est_x_mean_ml)^2+trace(est_x_cov_ml)/2)]
+0593 <span class="comment">%%</span>
+0594 <span class="keyword">end</span>
+0595 <span class="comment">% save('vp_0_200')</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

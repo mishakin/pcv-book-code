@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of structure_tensor</title>
+  <meta name="keywords" content="structure_tensor">
+  <meta name="description" content="% determine structure tensor from image patch">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">13-Two-View-Geometry</a> &gt; <a href="Documentation.html">Functions</a> &gt; structure_tensor.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>structure_tensor
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% determine structure tensor from image patch</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function T  = structure_tensor(im,tau,sigma) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% determine structure tensor from image patch
+ 
+ im    = window
+ tau   = differentiation scale
+ sigma = integration scale
+
+ T     = structure tensor 
+       = \overline(g'_x g_x)
+       = G(\sigma) * (G(\tau)*\nabla_g'  G(\tau)*\nabla_g )
+
+ T     = structure_tensor(im,tau,sigma)
+
+ Observe: 
+ The structure tensor is not the sum ...
+                         but the average of the squared gradient
+
+ Wolfgang Förstner 4/2018
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="gaussFFT.html" class="code" title="function varargout = gaussFFT(img, sigma, varargin)">gaussFFT</a>	GAUSSFFT convolves an image IMG with Gaussian kernels via FFT.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../13-Two-View-Geometry/Demo-F-Matrix/demo_epipolar_geometry.html" class="code" title="function demo_epipolar_geometry()">demo_epipolar_geometry</a>	% Epipolar geometry</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% determine structure tensor from image patch</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% im    = window</span>
+0004 <span class="comment">% tau   = differentiation scale</span>
+0005 <span class="comment">% sigma = integration scale</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% T     = structure tensor</span>
+0008 <span class="comment">%       = \overline(g'_x g_x)</span>
+0009 <span class="comment">%       = G(\sigma) * (G(\tau)*\nabla_g'  G(\tau)*\nabla_g )</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% T     = structure_tensor(im,tau,sigma)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Observe:</span>
+0014 <span class="comment">% The structure tensor is not the sum ...</span>
+0015 <span class="comment">%                         but the average of the squared gradient</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Wolfgang Förstner 4/2018</span>
+0018 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0019 
+0020 <a name="_sub0" href="#_subfunctions" class="code">function T  = structure_tensor(im,tau,sigma)</a>
+0021 
+0022 <span class="comment">% size of image, number of channels</span>
+0023 [N,M,K] = size(im);
+0024 
+0025 <span class="comment">% initiate T</span>
+0026 T = zeros(2);
+0027 
+0028 <span class="comment">% sum up over all channels</span>
+0029 <span class="keyword">for</span> k = 1:K
+0030     <span class="comment">% gradient at scale tau</span>
+0031     im_x = <a href="gaussFFT.html" class="code" title="function varargout = gaussFFT(img, sigma, varargin)">gaussFFT</a>(double(im(:,:,k))/256,tau,<span class="string">'Gx'</span>); 
+0032     im_y = <a href="gaussFFT.html" class="code" title="function varargout = gaussFFT(img, sigma, varargin)">gaussFFT</a>(double(im(:,:,k))/256,tau,<span class="string">'Gy'</span>); 
+0033     <span class="comment">% squared gradient</span>
+0034     imxx = im_x.*im_x;
+0035     imyy = im_y.*im_y;
+0036     imxy = im_x.*im_y;
+0037     <span class="comment">% mean squared gradient</span>
+0038     txx = <a href="gaussFFT.html" class="code" title="function varargout = gaussFFT(img, sigma, varargin)">gaussFFT</a>(imxx,sigma,<span class="string">'G'</span>);
+0039     tyy = <a href="gaussFFT.html" class="code" title="function varargout = gaussFFT(img, sigma, varargin)">gaussFFT</a>(imyy,sigma,<span class="string">'G'</span>);
+0040     txy = <a href="gaussFFT.html" class="code" title="function varargout = gaussFFT(img, sigma, varargin)">gaussFFT</a>(imxy,sigma,<span class="string">'G'</span>);
+0041     <span class="comment">% sum up channels</span>
+0042     T = T+[txx((N+1)/2,(M+1)/2) , txy((N+1)/2,(M+1)/2); <span class="keyword">...</span>
+0043            txy((N+1)/2,(M+1)/2) , tyy((N+1)/2,(M+1)/2)];
+0044 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

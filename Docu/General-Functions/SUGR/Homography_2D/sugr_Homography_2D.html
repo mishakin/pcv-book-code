@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_Homography_2D</title>
+  <meta name="keywords" content="sugr_Homography_2D">
+  <meta name="description" content="% create 2D homography">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Homography_2D</a> &gt; sugr_Homography_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Homography_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_Homography_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% create 2D homography</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function Homography_2D = sugr_Homography_2D(a1,a2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% create 2D homography
+
+ H = sugr_Homography_2D(a1,a2);
+
+ input cases
+ (1) 8-vector of Euclideanly normalized homography, CovM == 0
+ (1) list of Euclidean points, Nx2 matrix of x,y-coordinates -&gt; H = conditioning matrix
+ (1) 3 x 3-matrix, CovM == 0
+ (1) list of structs of points and lines -&gt; generate conditioning matrix
+ (2) 3 x 3-matrix with full covariance matrix
+ (2) 8-vector Euclidean homography with full covariance matrix
+
+ Homography = structure
+ *             .H   = 3 x 3-Matrix, determinant normalized (det= +1)
+ *             .Crr = covariance matrix of 8 parameters of differential left factor
+ *             .type = 20
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ wf 1/2011</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>	% create 2D homography</li><li><a href="sugr_minimal_Homography_2D.html" class="code" title="function [H,Jrh] = sugr_minimal_Homography_2D(Ha,Chh)">sugr_minimal_Homography_2D</a>	% minimal representation of homography</li><li><a href="../../../General-Functions/SUGR/Line_2D/sugr_get_centroid_Line_2D.html" class="code" title="function [x0,p,sp,sq] = sugr_get_centroid_Line_2D(l)">sugr_get_centroid_Line_2D</a>	% Centroid representation from minimal representation</li><li><a href="../../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>	% Get Euclidean coordinates with CovM</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Homography/demo_estimate_2D_homography_from_point_pairs.html" class="code" title="">demo_estimate_2D_homography_from_point_pairs</a>	% demo_estimate_2D_homography_from_point_pairs</li><li><a href="../../../10-Uncertain-Geometry/Functions/determine_Homography_2D_from_two_images.html" class="code" title="function [H,X] = determine_Homography_2D_from_two_images(Image_l,Image_r,readX)">determine_Homography_2D_from_two_images</a>	demo_h_determine_homography_from_two_images: read/interactively determine homography</li><li><a href="sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>	% create 2D homography</li><li><a href="sugr_estimation_algebraic_Homography_2D_from_point_pairs.html" class="code" title="function H = sugr_estimation_algebraic_Homography_2D_from_point_pairs(P)">sugr_estimation_algebraic_Homography_2D_from_point_pairs</a>	% Algebraic estimation of 2D homography from point pairs,</li><li><a href="sugr_estimation_ml_Homography_2D_from_point_pairs.html" class="code" title="function [H, sigma_0, R] = sugr_estimation_ml_Homography_2D_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_Homography_2D_from_point_pairs</a>	% ML estimate of 2D homography from point pairs</li><li><a href="sugr_transform_Homography_2D.html" class="code" title="function H = sugr_transform_Homography_2D(H0,Tl,Tr)">sugr_transform_Homography_2D</a>	% transform uncertain homography with crisp transformations</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% create 2D homography</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% H = sugr_Homography_2D(a1,a2);</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% input cases</span>
+0006 <span class="comment">% (1) 8-vector of Euclideanly normalized homography, CovM == 0</span>
+0007 <span class="comment">% (1) list of Euclidean points, Nx2 matrix of x,y-coordinates -&gt; H = conditioning matrix</span>
+0008 <span class="comment">% (1) 3 x 3-matrix, CovM == 0</span>
+0009 <span class="comment">% (1) list of structs of points and lines -&gt; generate conditioning matrix</span>
+0010 <span class="comment">% (2) 3 x 3-matrix with full covariance matrix</span>
+0011 <span class="comment">% (2) 8-vector Euclidean homography with full covariance matrix</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Homography = structure</span>
+0014 <span class="comment">% *             .H   = 3 x 3-Matrix, determinant normalized (det= +1)</span>
+0015 <span class="comment">% *             .Crr = covariance matrix of 8 parameters of differential left factor</span>
+0016 <span class="comment">% *             .type = 20</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Wolfgang Förstner</span>
+0019 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% wf 1/2011</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function Homography_2D = sugr_Homography_2D(a1,a2)</a>
+0024 
+0025 <span class="comment">% default</span>
+0026 Chh  = zeros(9);
+0027 <span class="comment">%</span>
+0028 <span class="keyword">switch</span> nargin
+0029     <span class="keyword">case</span> 1
+0030         <span class="comment">% 9-matrix or 8-vector</span>
+0031         <span class="keyword">switch</span> isstruct(a1)
+0032             <span class="keyword">case</span> 0
+0033                 [~,columns_a1] = size(a1);
+0034                 <span class="keyword">switch</span> columns_a1
+0035                     <span class="keyword">case</span> 1 <span class="comment">% 8-vector of elements except H(3,3)</span>
+0036                         <span class="comment">%% (1) 8-vector of Euclidean normalized homography, CovM == 0</span>
+0037                         H = reshape([a1;1],3,3);
+0038                         Homography_2D = <a href="sugr_minimal_Homography_2D.html" class="code" title="function [H,Jrh] = sugr_minimal_Homography_2D(Ha,Chh)">sugr_minimal_Homography_2D</a>(H,Chh);
+0039                     <span class="keyword">case</span> 2 <span class="comment">% list of Euclidean points</span>
+0040                         xy = a1;
+0041                         max_xy=max(xy);
+0042                         min_xy=min(xy);
+0043                         
+0044                         H = [1 ,0 ,-(min_xy(1)+max_xy(1))/2;<span class="keyword">...</span>
+0045                             0 ,1 ,-(min_xy(2)+max_xy(2))/2;<span class="keyword">...</span>
+0046                             0 ,0 ,max(max_xy(1)-min_xy(1),max_xy(2)-min_xy(2))];
+0047                         Homography_2D = <a href="sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>(H);
+0048                     <span class="keyword">case</span> 3
+0049                         <span class="comment">%% (1) 3 x 3-matrix, CovM == 0</span>
+0050                         Homography_2D = <a href="sugr_minimal_Homography_2D.html" class="code" title="function [H,Jrh] = sugr_minimal_Homography_2D(Ha,Chh)">sugr_minimal_Homography_2D</a>(a1,Chh);
+0051                         
+0052                         
+0053                 <span class="keyword">end</span>
+0054             <span class="keyword">case</span> 1
+0055                 <span class="comment">%% (1) generate conditioning matrix</span>
+0056                 <span class="comment">% set of point structs and line structs -&gt; H = conditioning matrix</span>
+0057                 X =a1;
+0058                 N  = length(X);
+0059                 xy = zeros(N,2);
+0060                 <span class="comment">% for list of structs</span>
+0061                 <span class="keyword">for</span> i=1:N
+0062                     <span class="keyword">if</span> X(i).type == 1
+0063                         [xe,~] = <a href="../../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(X(i));
+0064                         xy(i,:) = xe';
+0065                     <span class="keyword">end</span>
+0066                     
+0067                     <span class="keyword">if</span> X(i).type == 2
+0068                         f = <a href="../../../General-Functions/SUGR/Line_2D/sugr_get_centroid_Line_2D.html" class="code" title="function [x0,p,sp,sq] = sugr_get_centroid_Line_2D(l)">sugr_get_centroid_Line_2D</a>(X(i));
+0069                         [fe,~] = <a href="../../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(f);
+0070                         xy(i,:) = fe';
+0071                     <span class="keyword">end</span>
+0072                 <span class="keyword">end</span>
+0073                 
+0074                 max_xy=max(xy);
+0075                 min_xy=min(xy);
+0076                 
+0077                 H = [1 ,0 ,-(min_xy(1)+max_xy(1))/2;<span class="keyword">...</span>
+0078                     0 ,1 ,-(min_xy(2)+max_xy(2))/2;<span class="keyword">...</span>
+0079                     0 ,0 ,max(max_xy(1)-min_xy(1),max_xy(2)-min_xy(2))];
+0080                 
+0081                 Homography_2D = <a href="sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>(H);
+0082         <span class="keyword">end</span>
+0083     <span class="keyword">case</span> 2 <span class="comment">%</span>
+0084         <span class="comment">%% 9-matrix or 8-vector with full covariance matrix</span>
+0085         size_a1 = size(a1,1);
+0086         <span class="keyword">switch</span> size_a1
+0087             <span class="keyword">case</span> 3
+0088                 <span class="comment">%% (2) 3 x 3-matrix</span>
+0089                 Homography_2D = <a href="sugr_minimal_Homography_2D.html" class="code" title="function [H,Jrh] = sugr_minimal_Homography_2D(Ha,Chh)">sugr_minimal_Homography_2D</a>(a1,a2);
+0090                 
+0091             <span class="keyword">case</span> 8
+0092                 <span class="comment">%% (2) 8-vector Euclidean homography</span>
+0093                 H = reshape([a1;1],3,3);
+0094                 Chh = [a2 zeros(8,1);zeros(1,9)];
+0095                 Homography_2D = <a href="sugr_minimal_Homography_2D.html" class="code" title="function [H,Jrh] = sugr_minimal_Homography_2D(Ha,Chh)">sugr_minimal_Homography_2D</a>(H,Chh);
+0096                 
+0097         <span class="keyword">end</span>
+0098         
+0099 <span class="keyword">end</span>
+0100 
+0101 Homography_2D.type = 20;</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

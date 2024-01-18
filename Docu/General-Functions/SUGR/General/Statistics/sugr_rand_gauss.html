@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_rand_gauss</title>
+  <meta name="keywords" content="sugr_rand_gauss">
+  <meta name="description" content="% rand_gauss">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../Documentation.html">Home</a> &gt;  <a href="../../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="../Documentation.html">General</a> &gt; <a href="Documentation.html">Statistics</a> &gt; sugr_rand_gauss.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../Documentation.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\General\Statistics&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_rand_gauss
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>% rand_gauss</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function ret = sugr_rand_gauss(Mu, Cll, n) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% rand_gauss
+
+ ret = rand_gauss(Mu, C, n)
+
+ Verrauschen eines Vektors mit entsprechender Kovarianzmatrix unter
+ Beachtung der Korrelationen
+ Erweiterung: Beachte Singularität von Cll
+ 
+ Mu  = N x 1 mean vector
+ C   = N x N Covariance matrix
+ n   = number of vectors to be sampled
+
+ ret = N x n Matrix of n random vectors 
+
+ @author Richard Steffen</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs.html" class="code" title="function PP = sugr_perturb_2D_point_pairs(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs</a>	% Perturb sampled 2D points pairs</li><li><a href="../../../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs_spherical.html" class="code" title="function PP = sugr_perturb_2D_point_pairs_spherical(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs_spherical</a>	% Perturb sampled 2D points pairs sphericaly</li><li><a href="../../../../General-Functions/SUGR/Projection_3D_2D/sugr_perturb_3D_2D_point_pairs.html" class="code" title="function [X,y] = sugr_perturb_3D_2D_point_pairs(Xt,yt,sigma_X,sigma_y,fp)">sugr_perturb_3D_2D_point_pairs</a>	% Perturb sampled 3D 2D points pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% rand_gauss</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% ret = rand_gauss(Mu, C, n)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Verrauschen eines Vektors mit entsprechender Kovarianzmatrix unter</span>
+0006 <span class="comment">% Beachtung der Korrelationen</span>
+0007 <span class="comment">% Erweiterung: Beachte Singularität von Cll</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Mu  = N x 1 mean vector</span>
+0010 <span class="comment">% C   = N x N Covariance matrix</span>
+0011 <span class="comment">% n   = number of vectors to be sampled</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% ret = N x n Matrix of n random vectors</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% @author Richard Steffen</span>
+0016 
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function ret = sugr_rand_gauss(Mu, Cll, n)</a>
+0019     
+0020 <span class="comment">% Zerlegung in Eigenvektoren und Eigenwerte</span>
+0021 [R,S] = eig(Cll);   
+0022 <span class="comment">% Eigenvectoren skalieren mit Wurzeln der Eigenwerte</span>
+0023 A = R .* repmat(sqrt(abs(diag(S)))',length(S),1);
+0024 ret = repmat(Mu,1,n) + A*randn(length(Mu),n);
+0025</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_mean_rotation</title>
+  <meta name="keywords" content="demo_mean_rotation">
+  <meta name="description" content="% DEMO  3D Mean Rotation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">05-08-Geometry</a> &gt; demo_mean_rotation.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 05-08-Geometry&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>demo_mean_rotation
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% DEMO  3D Mean Rotation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% DEMO  3D Mean Rotation
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 07/17
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../General-Functions/Geometry/calc_Mq.html" class="code" title="function M = calc_Mq(q)">calc_Mq</a>	% Multiplication matrix for quaternions</li><li><a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>	% Rotation matrix from quaternion</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% DEMO  3D Mean Rotation</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Wolfgang Förstner</span>
+0004 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% last changes: Susanne Wenzel 07/17</span>
+0007 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0008 
+0009 clc
+0010 close all
+0011 
+0012 addpath(genpath(<span class="string">'../General-Functions'</span>))
+0013 
+0014 fprintf(<span class="string">'\n------ DEMO  3D Mean Rotation ------\n'</span>)
+0015 fprintf(<span class="string">'\nIn order to shorten the output, we display transposed vectors\n'</span>)
+0016 
+0017 <span class="comment">% control of random numbers</span>
+0018 sigma = 0.1;
+0019 
+0020 <span class="comment">% generate data</span>
+0021 q_true = rand(4,1);
+0022 <span class="comment">% Given: true 3D rotation</span>
+0023 q_true = q_true/norm(q_true);
+0024 R_true = <a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>(q_true);
+0025 
+0026 fprintf(<span class="string">'\nGiven: noisy 3D rotations\n'</span>)
+0027 fprintf(<span class="string">'\nQuaternions\n'</span>)
+0028 q1 = q_true + rand(4,1) * sigma; disp([<span class="string">'q1 = ['</span>, num2str(q1'),<span class="string">']'</span>])
+0029 q2 = q_true*sign(rand) + rand(4,1) * sigma ; disp([<span class="string">'q2 = ['</span>, num2str(q2'),<span class="string">']'</span>])
+0030 fprintf(<span class="string">'\nAccording rotation matrices\n'</span>)
+0031 R1 = <a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>(q1)                                                        <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0032 R2 = <a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>(q2)                                                        <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0033 
+0034 <span class="comment">%% Average quaternions</span>
+0035 fprintf(<span class="string">'\nAverage quaternion\n'</span>)
+0036 M = q1 * q1' + q1 * q1';
+0037 [Ev,lambdas] = eig(M);
+0038 q_est = Ev(:,4); disp([<span class="string">'q_est = ['</span>, num2str(q_est'),<span class="string">']'</span>])
+0039 
+0040 fprintf(<span class="string">'\nResidual\n'</span>)
+0041 dq = <a href="../General-Functions/Geometry/calc_Mq.html" class="code" title="function M = calc_Mq(q)">calc_Mq</a>(q_true)\q_est;
+0042 difference_q_qtrue = norm(dq(2:4));
+0043 disp([<span class="string">'diff_q = '</span>, num2str(difference_q_qtrue)])
+0044 
+0045 <span class="comment">%% Average rotation matrices</span>
+0046 fprintf(<span class="string">'\nAverage rotation matrices\n'</span>)
+0047 R_sum = R1 + R2;
+0048 [U,D,V] = svd(R_sum);
+0049 R_est = U * V'                                                             <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0050 
+0051 fprintf(<span class="string">'\nResiduals\n'</span>)
+0052 difference_R_Rtrue = norm((R_est*R_true'-eye(3))/2);
+0053 disp([<span class="string">'diff_R = '</span>, num2str(difference_R_Rtrue)])
+0054 
+0055 fprintf(<span class="string">'\nComparision: get rotation matrix from estimated quaternion\n'</span>)
+0056 R_true_from_q = <a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>(q_est)                                          <span class="comment">%#ok&lt;NOPTS&gt;</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

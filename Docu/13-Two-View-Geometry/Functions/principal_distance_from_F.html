@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of principal_distance_from_F</title>
+  <meta name="keywords" content="principal_distance_from_F">
+  <meta name="description" content="% principal_distance_from_F: determina single c from fundamental matrix">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">13-Two-View-Geometry</a> &gt; <a href="Documentation.html">Functions</a> &gt; principal_distance_from_F.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>principal_distance_from_F
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% principal_distance_from_F: determina single c from fundamental matrix</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function c = principal_distance_from_F(F) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% principal_distance_from_F: determina single c from fundamental matrix
+
+ c = principal_distance_from_F(F)
+
+ F = fundamental matrix, rank 2-matrix
+     assumed for conditioned cooridates
+ 
+ c = principal distance
+
+ Reference:
+ P. Sturm, Z.L. Cheng, P.C.Y. Chen, A.N. Poo 
+ Focal length calibration from two views:
+ method and analysis of singular cases
+ Computer Vision and Image Understanding 99 (2005) 58–95
+
+ Wolfgang Förstner 3/2013
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% principal_distance_from_F: determina single c from fundamental matrix</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% c = principal_distance_from_F(F)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% F = fundamental matrix, rank 2-matrix</span>
+0006 <span class="comment">%     assumed for conditioned cooridates</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% c = principal distance</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Reference:</span>
+0011 <span class="comment">% P. Sturm, Z.L. Cheng, P.C.Y. Chen, A.N. Poo</span>
+0012 <span class="comment">% Focal length calibration from two views:</span>
+0013 <span class="comment">% method and analysis of singular cases</span>
+0014 <span class="comment">% Computer Vision and Image Understanding 99 (2005) 58–95</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Wolfgang Förstner 3/2013</span>
+0017 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0018 
+0019 
+0020 <a name="_sub0" href="#_subfunctions" class="code">function c = principal_distance_from_F(F)</a>
+0021 
+0022 <span class="comment">% enforce long principal distance as prior</span>
+0023 factor = 1;
+0024 K0 = diag([factor,factor,1]);
+0025 F  = K0*F*K0;
+0026 
+0027 <span class="comment">% svd</span>
+0028 [U,D,V] = svd(F);
+0029 a = D(1,1);
+0030 b = D(2,2);
+0031 
+0032 <span class="comment">%% build coefficients</span>
+0033 
+0034 <span class="comment">% 1. linear equation</span>
+0035 a1 = a*U(3,1)*U(3,2)*(1-V(3,1)^2)+b*V(3,1)*V(3,2)*(1-U(3,2)^2);
+0036 a0 = U(3,2)*V(3,1)*(a*U(3,1)*V(3,1)+b*U(3,2)*V(3,2));
+0037 
+0038 <span class="comment">% 2. linear equation</span>
+0039 b1 = a*V(3,1)*V(3,2)*(1-U(3,1)^2)+b*U(3,1)*U(3,2)*(1-V(3,2)^2);
+0040 b0 = U(3,1)*V(3,2)*(a*U(3,1)*V(3,1)+b*U(3,2)*V(3,2));
+0041 
+0042 <span class="comment">% quadratic equation</span>
+0043 c2 = a^2*(1-U(3,1)^2)*(1-V(3,1)^2)-b^2*(1-U(3,2)^2)*(1-V(3,2)^2);
+0044 c1 = a^2*(U(3,1)^2+V(3,1)^2-2*U(3,1)^2*V(3,1)^2)-<span class="keyword">...</span>
+0045      b^2*(U(3,2)^2+V(3,2)^2-2*U(3,2)^2*V(3,2)^2);
+0046 c0 = a^2*U(3,1)^2*V(3,1)^2-b^2*U(3,2)^2*V(3,2)^2;
+0047 
+0048 f_squares = roots([c2,c1,c0]);
+0049 <span class="comment">% fs = sqrt(f_squares);</span>
+0050 
+0051 <span class="comment">% flin1 = -a0/a1;</span>
+0052 <span class="comment">% flin2 = -b0/b1;</span>
+0053 
+0054 c = 0;
+0055 <span class="keyword">for</span> i = [1,2]
+0056     f2 = f_squares(i);
+0057     <span class="keyword">if</span> isreal(f2) &amp;&amp; f2 &gt; 0
+0058         <span class="keyword">if</span> abs(a1*f2+a0) &lt; 10^(-10) &amp;&amp; abs(b1*f2+b0) &lt; 10^(-10)
+0059            c = sqrt(f2);
+0060         <span class="keyword">end</span>
+0061     <span class="keyword">end</span>
+0062 <span class="keyword">end</span>
+0063 
+0064 c = factor*c;
+0065 
+0066</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

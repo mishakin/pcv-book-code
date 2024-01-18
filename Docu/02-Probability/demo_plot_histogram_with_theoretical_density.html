@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_plot_histogram_with_theoretical_density</title>
+  <meta name="keywords" content="demo_plot_histogram_with_theoretical_density">
+  <meta name="description" content="% plot histogram with theoretical density function">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">02-Probability</a> &gt; demo_plot_histogram_with_theoretical_density.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 02-Probability&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>demo_plot_histogram_with_theoretical_density
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% plot histogram with theoretical density function</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% plot histogram with theoretical density function</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../General-Functions/SUGR/General/Plots/sugr_plot_histogram_density.html" class="code" title="function sugr_plot_histogram_density(x,pdf,npar,A,B,C)">sugr_plot_histogram_density</a>	% plots histogrqam with theoretical density function</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% plot histogram with theoretical density function</span>
+0002 
+0003 close all
+0004 clearvars
+0005 
+0006 addpath(genpath(<span class="string">'../General-Functions'</span>))
+0007 
+0008 <span class="comment">% default parameters</span>
+0009 A = 0;
+0010 B = 0;
+0011 C = 0;
+0012 
+0013 <span class="comment">% Number of generated samples</span>
+0014 N = 1000;
+0015 
+0016 <span class="comment">%distribution --- uncomment unused alternatives</span>
+0017  
+0018 distribution = <span class="string">'f'</span>;
+0019 density      = @fpdf;
+0020 npar = 2;
+0021 A = 53;
+0022 B = 1000000;
+0023 <span class="comment">%</span>
+0024 <span class="comment">% distribution = 'normal';</span>
+0025 <span class="comment">% density      = @normpdf</span>
+0026 <span class="comment">% npar=2</span>
+0027 <span class="comment">% A=3;</span>
+0028 <span class="comment">% B=4;</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% distribution = 'chi2';</span>
+0031 <span class="comment">% density      = @chi2pdf</span>
+0032 <span class="comment">% npar=1</span>
+0033 <span class="comment">% A=5;</span>
+0034 
+0035 <span class="comment">% take sample</span>
+0036 <span class="keyword">switch</span> npar
+0037     <span class="keyword">case</span> 1
+0038         x = random(distribution,A,N,1);
+0039     <span class="keyword">case</span> 2
+0040         x = random(distribution,A,B,N,1);
+0041 <span class="keyword">end</span>
+0042 
+0043 ss = <a href="../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0044 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[20 ss(2)/2-100 ss(1)/2 ss(2)/2]);
+0045 hold on
+0046 
+0047 <a href="../General-Functions/SUGR/General/Plots/sugr_plot_histogram_density.html" class="code" title="function sugr_plot_histogram_density(x,pdf,npar,A,B,C)">sugr_plot_histogram_density</a>(x,density,npar,A,B,C);
+0048</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

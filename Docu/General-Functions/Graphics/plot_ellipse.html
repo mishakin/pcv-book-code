@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_ellipse</title>
+  <meta name="keywords" content="plot_ellipse">
+  <meta name="description" content="% plot_ellipse: plot 2D ellipse">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Graphics</a> &gt; plot_ellipse.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Graphics&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>plot_ellipse
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% plot_ellipse: plot 2D ellipse</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function h = plot_ellipse(ellipse,fmt) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% plot_ellipse: plot 2D ellipse
+
+ usage:
+ h = plot_ellipse(p,fmt) using parameters p = [xo,yo,a,b,phi]
+ h = plot_ellipse(C,fmt) using 3x3 conic C with det(Chh)!&gt;0, Chh = C(1:2,1:2)
+ h = plot_ellipse(Cov,fmt) using Cov.mean and Cov.cov covariance matrix
+
+ arguments:
+  p - double 5x1, parameters of ellipse p = [xo,yo,a,b,phi]
+                  xo,yo:  centre
+                  a, b:  semi axes
+                  phi:  direction
+  C - double 3x3, conic
+  Cov - struct with fields
+        .mean - double 2x1
+        .cov  - double 2x2 covariance matrix to plot at mean
+  fmt:  optional format string
+
+ output:
+      h:  handle to line object
+
+ author: J. Meidow
+
+ 2004, Oct.: adaptive number of supporting points 
+ 2005, Mar.: check input args
+ 2016, Sep.: added conic and covariance matrix as input 
+             Susanne Wenzel, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ellipseConic2param.html" class="code" title="function p = ellipseConic2param(C)">ellipseConic2param</a>	% estimates values of parametric represenation of a 2D ellipse</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../02-Probability/fig_2_11_demo_scatter_histogram.html" class="code" title="">fig_2_11_demo_scatter_histogram</a>	% Fig. 2.11 page 56</li><li><a href="../../04-Estimation/GHM/Demo-GHM/demo_GHM_2D_line.html" class="code" title="">demo_GHM_2D_line</a>	% Demo nonlinear GHM without constraints</li><li><a href="plot_circle.html" class="code" title="function h = plot_circle(xo,yo,r, fmt, varargin)">plot_circle</a>	% plot circle.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% plot_ellipse: plot 2D ellipse</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% usage:</span>
+0004 <span class="comment">% h = plot_ellipse(p,fmt) using parameters p = [xo,yo,a,b,phi]</span>
+0005 <span class="comment">% h = plot_ellipse(C,fmt) using 3x3 conic C with det(Chh)!&gt;0, Chh = C(1:2,1:2)</span>
+0006 <span class="comment">% h = plot_ellipse(Cov,fmt) using Cov.mean and Cov.cov covariance matrix</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% arguments:</span>
+0009 <span class="comment">%  p - double 5x1, parameters of ellipse p = [xo,yo,a,b,phi]</span>
+0010 <span class="comment">%                  xo,yo:  centre</span>
+0011 <span class="comment">%                  a, b:  semi axes</span>
+0012 <span class="comment">%                  phi:  direction</span>
+0013 <span class="comment">%  C - double 3x3, conic</span>
+0014 <span class="comment">%  Cov - struct with fields</span>
+0015 <span class="comment">%        .mean - double 2x1</span>
+0016 <span class="comment">%        .cov  - double 2x2 covariance matrix to plot at mean</span>
+0017 <span class="comment">%  fmt:  optional format string</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% output:</span>
+0020 <span class="comment">%      h:  handle to line object</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% author: J. Meidow</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% 2004, Oct.: adaptive number of supporting points</span>
+0025 <span class="comment">% 2005, Mar.: check input args</span>
+0026 <span class="comment">% 2016, Sep.: added conic and covariance matrix as input</span>
+0027 <span class="comment">%             Susanne Wenzel, wenzel@igg.uni-bonn.de</span>
+0028 <a name="_sub0" href="#_subfunctions" class="code">function h = plot_ellipse(ellipse,fmt)</a>
+0029 
+0030 <span class="keyword">if</span> nargin&lt;1
+0031     error(<span class="string">'not enough input arguments'</span>)
+0032 <span class="keyword">end</span>
+0033 
+0034 <span class="keyword">if</span> nargin&gt;1 &amp;&amp; ~ischar(fmt)
+0035     error(<span class="string">'2nd input must be string'</span>)
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="keyword">if</span> nargin==1
+0039     fmt = <span class="string">'k-'</span>;
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="keyword">if</span> isstruct(ellipse)
+0043     p(1) = ellipse.mean(1);       <span class="comment">% x0</span>
+0044     p(2) = ellipse.mean(2);       <span class="comment">% y0</span>
+0045     [~,D,R] = svd(ellipse.cov);
+0046     p(3) = sqrt(D(1,1));        <span class="comment">% a</span>
+0047     p(4) = sqrt(D(2,2));        <span class="comment">% b</span>
+0048     p(5) = atan2(R(2,1),R(1,1));  <span class="comment">% phi</span>
+0049 <span class="keyword">elseif</span> ~isvector(ellipse)
+0050     p = <a href="ellipseConic2param.html" class="code" title="function p = ellipseConic2param(C)">ellipseConic2param</a>(ellipse);
+0051 <span class="keyword">else</span>
+0052     p = ellipse;
+0053 <span class="keyword">end</span>
+0054   
+0055 xo = p(1);
+0056 yo = p(2);
+0057 a = p(3);
+0058 b = p(4);
+0059 phi = p(5);
+0060     
+0061 
+0062 <span class="keyword">if</span> a&lt;=0.0
+0063     warning(<span class="string">'plot ellipse: semi-major axis a = %g &lt;=0'</span>, a)
+0064 <span class="keyword">end</span>
+0065 <span class="keyword">if</span> b&lt;=0.0
+0066     warning(<span class="string">'plot ellipse: semi-minor axis b = %g &lt;=0'</span>, b)
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">% ds = 10;              % pixel</span>
+0070 <span class="comment">% perim = 2*(a+b);        % perimeter</span>
+0071 <span class="comment">% N = round(perim/ds);  % number of supporting points 16...200</span>
+0072 <span class="comment">% N = min( N, 200);</span>
+0073 <span class="comment">% N = max( N, 200);</span>
+0074 N = 20000;
+0075 
+0076 t = linspace( 0.0, 2.0*pi, N );
+0077 
+0078 u = a*sin(t);
+0079 v = b*cos(t);
+0080 x = cos(phi)*u -sin(phi)*v +xo;
+0081 y = sin(phi)*u +cos(phi)*v +yo;
+0082 
+0083 h = plot(x,y,fmt);
+0084</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

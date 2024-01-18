@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of generate_points_on_plane</title>
+  <meta name="keywords" content="generate_points_on_plane">
+  <meta name="description" content="% generate_points_on_plane(r,A);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">10-Uncertain-Geometry</a> &gt; <a href="Documentation.html">Functions</a> &gt; generate_points_on_plane.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 10-Uncertain-Geometry\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>generate_points_on_plane
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% generate_points_on_plane(r,A);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function X = generate_points_on_plane(N,A,sigma,r,RL,rPCV) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% generate_points_on_plane(r,A);
+
+ N     = number of points
+ A     = plane (assumed to be not vertical, A3\=0))
+ sigma = standard deviation (in all coordinates)
+ r     = [xmin,xmax,ymin,ymax]
+ RL    = 0 left plane
+       = 1 right plane
+ rPCV  = 0 generate points
+       = 1 take coordiantes from book
+
+ X      = list of noisy coordinates (structs)
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/SUGR/Point_3D/sugr_Point_3D.html" class="code" title="function Point_3D = sugr_Point_3D(a1,a2,a3,a4,a5,a6)">sugr_Point_3D</a>	% Create 3D point</li><li><a href="../../General-Functions/Statistics/rand_gauss.html" class="code" title="function ret = rand_gauss(mu, C, n)">rand_gauss</a>	% random numbers following a multivariate Gaussian  with</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../10-Uncertain-Geometry/demo_estimate_two_symmetric_planes_from_points.html" class="code" title="">demo_estimate_two_symmetric_planes_from_points</a>	% test_two_symmetric_planes_from_points</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% generate_points_on_plane(r,A);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% N     = number of points</span>
+0004 <span class="comment">% A     = plane (assumed to be not vertical, A3\=0))</span>
+0005 <span class="comment">% sigma = standard deviation (in all coordinates)</span>
+0006 <span class="comment">% r     = [xmin,xmax,ymin,ymax]</span>
+0007 <span class="comment">% RL    = 0 left plane</span>
+0008 <span class="comment">%       = 1 right plane</span>
+0009 <span class="comment">% rPCV  = 0 generate points</span>
+0010 <span class="comment">%       = 1 take coordiantes from book</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% X      = list of noisy coordinates (structs)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Wolfgang Förstner</span>
+0015 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0016 
+0017 <a name="_sub0" href="#_subfunctions" class="code">function X = generate_points_on_plane(N,A,sigma,r,RL,rPCV)</a>
+0018 
+0019 <span class="keyword">global</span> plot_option
+0020 
+0021 <span class="comment">% Margin</span>
+0022 m = 0.15;
+0023 <span class="comment">% AX+BY+CZ+D=0;</span>
+0024 Xlist = (1-2*m)*rand(N,1)*(r(2)-r(1))+r(1)+m*(r(2)-r(1));
+0025 Ylist = (1-2*m)*rand(N,1)*(r(4)-r(3))+r(3)+m*(r(4)-r(3));
+0026 Zlist = -(A(1)*Xlist + A(2)*Ylist + A(4)) / A(3);
+0027 
+0028 X_true = [Xlist,Ylist,Zlist];
+0029 
+0030 <span class="comment">%% redundancy numbers for non-orthogonal fit</span>
+0031 <span class="comment">% 1-1/N-xq/sumxq-yq/sumyq</span>
+0032 
+0033 meanX = mean(Xlist);
+0034 meanY = mean(Ylist);
+0035 Xq = Xlist-meanX;
+0036 Yq = Ylist-meanY;
+0037 C = (N-1)*cov([Xq,Yq]);
+0038 D = [Xq,Yq]*inv(C)*[Xq,Yq]';                                               <span class="comment">%#ok&lt;MINV&gt;</span>
+0039 ri = ones(N,1)*(1-1/N)- diag(D);
+0040 deltai = 4./sqrt(ri);
+0041 sum(ri);
+0042 disp([<span class="string">'Redundancy numbers  : '</span>,num2str(ri')])
+0043 disp([<span class="string">'Sensitivity factors : '</span>,num2str(deltai')])
+0044 
+0045 <span class="comment">%% noise</span>
+0046 <span class="keyword">if</span> rPCV == 0
+0047     Xe = X_true + <a href="../../General-Functions/Statistics/rand_gauss.html" class="code" title="function ret = rand_gauss(mu, C, n)">rand_gauss</a>([0,0,0]',sigma^2*eye(3),N)';
+0048 <span class="keyword">else</span>    
+0049     XLRn=[-0.8749 3.8996 2.3502 0.5370 2.1825 2.6343;<span class="keyword">...</span>
+0050         -1.6218 3.2287 2.0395 0.8666 1.3679 2.2913;<span class="keyword">...</span>
+0051         -1.6059 1.6108 1.8873 0.9658 3.6694 2.4097;<span class="keyword">...</span>
+0052         -1.4275 0.0609 2.0249 1.0134 2.3504 2.2827;<span class="keyword">...</span>
+0053         -1.2100 0.8542 2.4765 -0.0517 2.4755 2.9952;<span class="keyword">...</span>
+0054         0 0 0                 1.6559 -0.0646 2.0355];
+0055     
+0056     <span class="keyword">if</span> RL==0
+0057         Xe = XLRn(1:5,1:3);
+0058     <span class="keyword">else</span>
+0059         Xe = XLRn(1:6,4:6);
+0060     <span class="keyword">end</span>
+0061 <span class="keyword">end</span>
+0062 
+0063 X.h   = zeros(N,4);
+0064 X.Crr = zeros(N,3,3);
+0065 <span class="keyword">for</span> n=1:N
+0066     Xc = <a href="../../General-Functions/SUGR/Point_3D/sugr_Point_3D.html" class="code" title="function Point_3D = sugr_Point_3D(a1,a2,a3,a4,a5,a6)">sugr_Point_3D</a>(Xe(n,:)',sigma^2*eye(3));
+0067     X.h(n,:)     = Xc.h';
+0068     X.Crr(n,:,:) = Xc.Crr;
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="keyword">if</span> plot_option &gt; 0
+0072    z = -(A(1)*r(1:2) + A(2)*r(3:4) + A(4)) / A(3);
+0073    
+0074    <span class="keyword">for</span> n=1:N
+0075        plot3(Xe(n,1),Xe(n,2),Xe(n,3),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0076    <span class="keyword">end</span>
+0077    plot3([r(1),r(2),r(2),r(1),r(1)],[r(3),r(3),r(4),r(4),r(3)],[z(1),z(2),z(2),z(1),z(1)],<span class="string">'--k'</span>);
+0078    xlabel(<span class="string">'X'</span>)
+0079    ylabel(<span class="string">'Y'</span>)
+0080    zlabel(<span class="string">'Z'</span>)
+0081    axis equal
+0082 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

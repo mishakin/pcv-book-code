@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of generate_observed_ARp</title>
+  <meta name="keywords" content="generate_observed_ARp">
+  <meta name="description" content="% generate_observed_ARp: generates samples of autoregressive processes">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Statistics</a> &gt; generate_observed_ARp.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Statistics&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>generate_observed_ARp
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% generate_observed_ARp: generates samples of autoregressive processes</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [x,y,sigma_x,sigma_y] = generate_observed_ARp(N,p,q,sigma_e,sigma_n) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% generate_observed_ARp: generates samples of autoregressive processes
+
+ [x,y,sigma_x,sigma_y] = 
+   generate_observed_ARp(N,p,q,sigma_e,sigma_n);
+ 
+ N         = number of points
+ p         = order of process
+ q         = decay (abs(q) &lt; 1)
+ sigma_e   = process noise
+ sigma_n   = observation noise
+
+ x         = true sample
+ y         = noisy sample
+ sigma_x   = theoretical std. of x
+ sigma_y   = theoretical std. of y
+
+ Wolfgang Förstner 01/2015
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../02-Probability/fig_2_10_demo_AR_process.html" class="code" title="">fig_2_10_demo_AR_process</a>	% Fig. 2.10 page 54</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_3_16_4_example_demo_profile.html" class="code" title="">fig_16_3_16_4_example_demo_profile</a>	% Fig. 16.3 page 731 and 16.4 page 732</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% generate_observed_ARp: generates samples of autoregressive processes</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [x,y,sigma_x,sigma_y] =</span>
+0004 <span class="comment">%   generate_observed_ARp(N,p,q,sigma_e,sigma_n);</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% N         = number of points</span>
+0007 <span class="comment">% p         = order of process</span>
+0008 <span class="comment">% q         = decay (abs(q) &lt; 1)</span>
+0009 <span class="comment">% sigma_e   = process noise</span>
+0010 <span class="comment">% sigma_n   = observation noise</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% x         = true sample</span>
+0013 <span class="comment">% y         = noisy sample</span>
+0014 <span class="comment">% sigma_x   = theoretical std. of x</span>
+0015 <span class="comment">% sigma_y   = theoretical std. of y</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Wolfgang Förstner 01/2015</span>
+0018 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0019 
+0020 <a name="_sub0" href="#_subfunctions" class="code">function [x,y,sigma_x,sigma_y] = generate_observed_ARp(N,p,q,sigma_e,sigma_n)</a>
+0021 
+0022 <span class="comment">% initiate sample</span>
+0023 x = zeros(N,1);
+0024 y = zeros(N,1);
+0025 
+0026 <span class="comment">% determine coefficients from polynomial</span>
+0027 c = poly(q*ones(1,p));        <span class="comment">% p roots q -&gt; polynomial coeff.</span>
+0028 a = -c(2:p+1)';               <span class="comment">% coeff. of ARp = polynomial coeff.</span>
+0029 
+0030 <span class="comment">% theoretical std of x and y</span>
+0031 sigma_x = sigma_e/sqrt((1-q)^p);
+0032 sigma_y = sqrt(sigma_x^2+sigma_n^2);
+0033 
+0034 <span class="comment">% generate true and noisy sample</span>
+0035 <span class="keyword">for</span> n=p+1:N
+0036     x(n) = sum(a(1:p).*x(n-1:-1:n-p))+randn(1)*sigma_e;
+0037     y(n) = x(n)+randn(1)*sigma_n;
+0038 <span class="keyword">end</span>
+0039 
+0040</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

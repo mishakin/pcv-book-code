@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of generate_point_pair</title>
+  <meta name="keywords" content="generate_point_pair">
+  <meta name="description" content="% generate_point_pair">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">13-Two-View-Geometry</a> &gt; <a href="Documentation.html">Functions</a> &gt; generate_point_pair.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>generate_point_pair
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% generate_point_pair</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [u,v] = generate_point_pair(X,b,Rot,sigma) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% generate_point_pair
+
+ X        = 4x1 vector, 3D point
+ b,Rot    = relative orientation
+ sigma    = radial error of direction
+
+ [u,v] = generate_point_pair(X,b,R,sigma)
+
+ Wolfgang Förstner 04/2014
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Geometry/calc_Rot_rod.html" class="code" title="function R = calc_Rot_rod(q)">calc_Rot_rod</a>	% Rotation matrix according to Rodriguez</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../13-Two-View-Geometry/Demo-E-Matrix/demo_triangulation_spherical.html" class="code" title="">demo_triangulation_spherical</a>	% demo triangulation</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% generate_point_pair</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% X        = 4x1 vector, 3D point</span>
+0004 <span class="comment">% b,Rot    = relative orientation</span>
+0005 <span class="comment">% sigma    = radial error of direction</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% [u,v] = generate_point_pair(X,b,R,sigma)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Wolfgang Förstner 04/2014</span>
+0010 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0011 
+0012 
+0013 <a name="_sub0" href="#_subfunctions" class="code">function [u,v] = generate_point_pair(X,b,Rot,sigma)</a>
+0014 
+0015 <span class="comment">% projection matrices</span>
+0016 P1 =     [eye(3) zeros(3,1)];
+0017 P2 = Rot*[eye(3),-b];
+0018 
+0019 <span class="comment">% true directions</span>
+0020 u_true = P1*X; u_true = u_true/norm(u_true);
+0021 v_true = P2*X; v_true = v_true/norm(v_true);
+0022 
+0023 <span class="comment">% perturbed directions, only two angles are affected,</span>
+0024 R_1 = <a href="../../General-Functions/Geometry/calc_Rot_rod.html" class="code" title="function R = calc_Rot_rod(q)">calc_Rot_rod</a>(sigma*randn(3,1));
+0025 u   = R_1*u_true;
+0026 u   = u/norm(u);
+0027 R_2 = <a href="../../General-Functions/Geometry/calc_Rot_rod.html" class="code" title="function R = calc_Rot_rod(q)">calc_Rot_rod</a>(sigma*randn(3,1));
+0028 v   = R_2*v_true;
+0029 v   = v/norm(v);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

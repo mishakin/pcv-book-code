@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of simulate_points_dem_6</title>
+  <meta name="keywords" content="simulate_points_dem_6">
+  <meta name="description" content="% simulate_points_dem_6: generate test image of Uwe 1994">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="../Documentation.html">Surface-Reconstruction</a> &gt; <a href="Documentation.html">Functions</a> &gt; simulate_points_dem_6.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Surface-Reconstruction\Functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>simulate_points_dem_6
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% simulate_points_dem_6: generate test image of Uwe 1994</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [points,BB,delta_x,sigma_k,out_in,dem] =simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% simulate_points_dem_6: generate test image of Uwe 1994
+
+ [points,BB,delta_x,sigma_k,sigma_s,sigma,out_in,dem] = ...
+        simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)
+
+ Input:
+    N:                   int, mesh size in x- and y-direction
+    g_min:               double, min high level
+    delta_g:             double, hight steps
+    sigma:               double, std noise
+    outlier_percentage:  double \in [0,1], fraction of outlies
+
+ Output
+    points:    double (N*N)x4, coordinates of dem grid points, [i, j, height(i,j), std]
+    BB:        int 1x4, bounding box of dem
+    delta_x:   double, gridsize/spacing
+    sigma_k:   double, std curvature   
+    sigma:     double, std noise
+    out_in:    boolean (N*N)x1, outlier mask
+    dem:       double NxN, DEM
+
+ Wolfgang Förstner 07/14
+ last changes: Susanne Wenzel 09/16, wf 4/2018
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../../General-Functions/Graphics/plot_surface.html" class="code" title="function h = plot_surface(ds,BB,delta_x,varargin)">plot_surface</a>	% Ploting 2.5D surfaces</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="test_smooth_dem_robust_bilinear.html" class="code" title="">test_smooth_dem_robust_bilinear</a>	% test dem smoothing</li><li><a href="test_smooth_dem_robust_bilinear_square.html" class="code" title="">test_smooth_dem_robust_bilinear_square</a>	% test dem smoothing</li><li><a href="../../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_22_demo_robust_surface_reconstruction.html" class="code" title="">fig_16_22_demo_robust_surface_reconstruction</a>	% Fig. 16.22 page 762</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% simulate_points_dem_6: generate test image of Uwe 1994</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [points,BB,delta_x,sigma_k,sigma_s,sigma,out_in,dem] = ...</span>
+0004 <span class="comment">%        simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%    N:                   int, mesh size in x- and y-direction</span>
+0008 <span class="comment">%    g_min:               double, min high level</span>
+0009 <span class="comment">%    delta_g:             double, hight steps</span>
+0010 <span class="comment">%    sigma:               double, std noise</span>
+0011 <span class="comment">%    outlier_percentage:  double \in [0,1], fraction of outlies</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Output</span>
+0014 <span class="comment">%    points:    double (N*N)x4, coordinates of dem grid points, [i, j, height(i,j), std]</span>
+0015 <span class="comment">%    BB:        int 1x4, bounding box of dem</span>
+0016 <span class="comment">%    delta_x:   double, gridsize/spacing</span>
+0017 <span class="comment">%    sigma_k:   double, std curvature</span>
+0018 <span class="comment">%    sigma:     double, std noise</span>
+0019 <span class="comment">%    out_in:    boolean (N*N)x1, outlier mask</span>
+0020 <span class="comment">%    dem:       double NxN, DEM</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% Wolfgang Förstner 07/14</span>
+0023 <span class="comment">% last changes: Susanne Wenzel 09/16, wf 4/2018</span>
+0024 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0025 <span class="comment">%</span>
+0026 <a name="_sub0" href="#_subfunctions" class="code">function [points,BB,delta_x,sigma_k,out_in,dem] = </a><span class="keyword">...</span>
+0027         simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)
+0028 
+0029 <span class="comment">%% plot settings</span>
+0030 ss = <a href="../../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0031 
+0032 BB=[1,1,N,N];
+0033 
+0034 <span class="comment">%% set sigma of curvatures</span>
+0035 sigma_k = 1.0*sigma;
+0036 
+0037 <span class="comment">%% start simulation</span>
+0038 A=ones(N,N)*g_min;
+0039 
+0040 <span class="comment">%% squares: center (16,16)</span>
+0041 cent_x=round(2/7*N);
+0042 cent_y=round(2/7*N);
+0043 <span class="comment">% lowest: half width = 12, z = 40</span>
+0044 h = round(12/70*N);
+0045 z = g_min+delta_g;
+0046 <span class="keyword">for</span> i=cent_x-h:cent_x+h
+0047     <span class="keyword">for</span> j=cent_y-h:cent_y+h
+0048         A(i,j)=z;
+0049     <span class="keyword">end</span>
+0050 <span class="keyword">end</span>
+0051 <span class="comment">% lowest: half width = 8, z = 60</span>
+0052 h = round(8/70*N);
+0053 z = g_min+2*g_min;
+0054 <span class="keyword">for</span> i=cent_x-h:cent_x+h
+0055     <span class="keyword">for</span> j=cent_y-h:cent_y+h
+0056         A(i,j)=z;
+0057     <span class="keyword">end</span>
+0058 <span class="keyword">end</span>
+0059 <span class="comment">% lowest: half width = 4, z = 80</span>
+0060 h = round(4/70*N);
+0061 z = g_min+3*delta_g;
+0062 <span class="keyword">for</span> i=cent_x-h:cent_x+h
+0063     <span class="keyword">for</span> j=cent_y-h:cent_y+h
+0064         A(i,j)=z;
+0065     <span class="keyword">end</span>
+0066 <span class="keyword">end</span>
+0067 
+0068 <span class="comment">%% cylinder, sphere, block, peak</span>
+0069 cent_x = round(2/7*N);
+0070 cent_y = round(5/7*N);
+0071 r      = round(13/70*N);
+0072 
+0073 <span class="comment">%% sphere</span>
+0074 <span class="keyword">for</span> i = cent_x-r:cent_x
+0075     <span class="keyword">for</span> j = cent_y-r:cent_y
+0076       dx = (i-cent_x)/r;
+0077       dy = (j-cent_y)/r;
+0078       dr = sqrt(dx^2+dy^2);
+0079       <span class="keyword">if</span> dr &lt; 1;
+0080           A(i,j) = g_min + 3*delta_g*(1-sqrt(dx^2+dy^2));
+0081       <span class="keyword">end</span>
+0082     <span class="keyword">end</span>
+0083 <span class="keyword">end</span>
+0084 
+0085 <span class="comment">%% box with peak</span>
+0086 <span class="keyword">for</span> i = cent_x-r:cent_x
+0087     <span class="keyword">for</span> j = cent_y:cent_y+r
+0088       <span class="keyword">if</span> dr &lt; 1;
+0089           A(i,j)=g_min + 3*delta_g;
+0090       <span class="keyword">end</span>
+0091     <span class="keyword">end</span>
+0092 <span class="keyword">end</span>
+0093 A(cent_x-round(r/2),cent_y+round(r/2)) = g_min+4*delta_g;
+0094 
+0095 <span class="comment">%% cylinder</span>
+0096 <span class="keyword">for</span> i = cent_x:cent_x+r
+0097     <span class="keyword">for</span> j = cent_y-r:cent_y+r
+0098       dx = (i-cent_x)/r;
+0099       <span class="keyword">if</span> dr &lt; 1;
+0100           A(i,j) = g_min + 3*delta_g*sqrt(1-dx^2);
+0101       <span class="keyword">end</span>
+0102     <span class="keyword">end</span>
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="comment">%% diagonal cross</span>
+0106 cent_x = round(5/7*N);
+0107 cent_y = round(2/7*N);
+0108 r      = round(13/70*N);
+0109 <span class="keyword">for</span> i = cent_x-r:cent_x+r
+0110     <span class="keyword">for</span> j = cent_y-r:cent_y+r
+0111         di = (i-cent_x)/r;
+0112         dj = (j-cent_y)/r;
+0113       A(i,j) = max(A(i,j),g_min+min([(1-di-dj),(1+di+dj)])*3*delta_g);
+0114       A(i,j) = max(A(i,j),g_min+min([(1-di+dj),(1+di-dj)])*3*delta_g);
+0115     <span class="keyword">end</span>
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">%% torus and box</span>
+0119 cent_x = round(5/7*N);
+0120 cent_y = round(5/7*N);
+0121 b      = round(12/70*N);
+0122 R      = round(12/70*N);
+0123 r      = round(03/70*N);
+0124 rm     = (R+r)/2;
+0125 <span class="keyword">for</span> i = cent_x-b:cent_x+b
+0126     <span class="keyword">for</span> j = cent_y-b:cent_y+b
+0127       dx = (i-cent_x);
+0128       dy = (j-cent_y);
+0129       dr = sqrt(dx^2+dy^2);
+0130       ddr = 2*(dr - rm)/(R-r);
+0131       <span class="keyword">if</span> dr &gt;= r &amp;&amp; dr &lt;= R
+0132           A(i,j) = g_min + 3*delta_g*(1-sqrt(ddr^2));
+0133       <span class="keyword">end</span>
+0134     <span class="keyword">end</span>
+0135 <span class="keyword">end</span>
+0136 <span class="keyword">for</span> i = cent_x-b:cent_x-rm
+0137     <span class="keyword">for</span> j = cent_x-b:cent_y+b
+0138         A(i,j) = g_min+3*delta_g;
+0139     <span class="keyword">end</span>
+0140 <span class="keyword">end</span>
+0141 
+0142 <span class="comment">%% add noise</span>
+0143 M = (rand(N,N) &lt; outlier_percentage);
+0144 A = A + randn(N,N)*sigma + M .*(rand(N,N)-0.5)*8*delta_g;
+0145 
+0146 <span class="comment">%% Check</span>
+0147 figure(<span class="string">'name'</span>,<span class="string">'original dem as image'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0148     <span class="string">'Position'</span>,[0.02*ss(1),0.02*ss(2),0.3*ss(1),0.4*ss(2)]);
+0149 imagesc(A)
+0150 axis equal;axis off
+0151 colormap(gray)
+0152 title(<span class="string">'original dem as image'</span>,<span class="string">'FontSize'</span>,16)
+0153 
+0154 <span class="comment">%% output</span>
+0155 dem = A;
+0156 delta_x = 1;
+0157 k = 0;
+0158 points = zeros(BB(3)*BB(4),4);
+0159 out_in = ones(BB(3)*BB(4),1);
+0160 <span class="keyword">for</span> i=BB(1):BB(3)
+0161     <span class="keyword">for</span> j=BB(2):BB(4)
+0162         k=k+1;
+0163         points(k,:) = [i,j,A(i,j),sigma];
+0164         out_in(k) = 1-M(i,j);
+0165     <span class="keyword">end</span>
+0166 <span class="keyword">end</span>
+0167 dem = dem(BB(1):BB(3),BB(2):BB(4));
+0168 dem = dem(BB(1):BB(3),BB(2):BB(4));
+0169 
+0170 figure(<span class="string">'name'</span>,<span class="string">'original dem'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0171     <span class="string">'Position'</span>,[0.02*ss(1),0.52*ss(2),0.3*ss(1),0.4*ss(2)]);
+0172 <a href="../../../General-Functions/Graphics/plot_surface.html" class="code" title="function h = plot_surface(ds,BB,delta_x,varargin)">plot_surface</a>(dem,BB,delta_x,<span class="string">'plotfun'</span>,@mesh,<span class="string">'view'</span>,[-65,29],<span class="string">'alpha'</span>,1);
+0173 axis equal
+0174 title(<span class="string">'original dem as mesh'</span>,<span class="string">'FontSize'</span>,16)
+0175 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

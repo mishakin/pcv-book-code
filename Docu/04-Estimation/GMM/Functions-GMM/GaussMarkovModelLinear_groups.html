@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of GaussMarkovModelLinear_groups</title>
+  <meta name="keywords" content="GaussMarkovModelLinear_groups">
+  <meta name="description" content="% Gauss-Markov model linear, groups of uncorrel. observations">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GMM</a> &gt; <a href="Documentation.html">Functions-GMM</a> &gt; GaussMarkovModelLinear_groups.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GMM\Functions-GMM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>GaussMarkovModelLinear_groups
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Gauss-Markov model linear, groups of uncorrel. observations</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [est_x,Cov_xx,sigma_0q,R,vi,Xv,Rim,nabla_lv,muv,muv1,Um1q,Um2] =GaussMarkovModelLinear_groups(lm,Cov_ll_m,Am,av,rU) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Gauss-Markov model linear, groups of uncorrel. observations
+
+ all observational groups have the same dimension
+ all observational groups are mutually uncorrelated
+
+ input matrix Am may be sparse
+ covariance matrix of estimates is assumed to be full
+
+ lm       = I x d_I matrix of observational groups
+ Cov_ll_m = I x d_i^2 matrix of vectorized covariance matrices
+ Am       = NxU Jacobian (may be sparse)
+ av       = Nx1 additive vector
+ rU       = range of unknown parameters of interest
+
+ est_x    = Ux1 estimated parameter
+ Cov_xx   = UxU theoretical covariance matrix of estimated parameters
+ sigma_0q = estimated variance factor (=1 if R=0)
+ R        = redundancy
+ vm       = I x d_I matrix of estimated residuals
+ Xv       = Ix1 vector of test statistics  (Xhi^2_d_I using sigma_0=1)
+ Rim      = I x d_i^2 matrix of redundacy matrices R_ii
+ nabla_lv = size of minimal detectable errors
+            (from max eigenvalue of C_ll W_vv C_ll * delta_0
+ muv      = Ix1 vector of senstivity factors
+               (mu_i:=mu_ix, cf. (4.307))
+ muv1     = Ix1 vector of senstivity factors for selected parameters
+               (mu_i:=mu_ik, cf. (4.315))
+ Um1q     = I x d_i^2 matrix of reduced U_ii-matrices
+              for selected parameters (cf. bar(U)_k(4.127))
+ Um2      = I x d_i^2 matrix of U_ii-matrices
+              for not selected parameters (cf. U_t (4.127))
+
+ [est_x,Cov_xx,sigma_0q,R,vm,Xv,Rim,muv]=...
+            GaussMarkovModelLinear_groups(lm,Cov_ll,Am,av)
+
+ Wolfgang Förstner 2015-06-04
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="diagnostics_GMM_multi_d.html" class="code" title="function [vi,Xv,Rim,nabla_lv,muv,muv1,U1mq,U2m] = diagnostics_GMM_multi_d(r_U,I,d_I,Am,Cov_ll,W_ll,Cov_xx,W_xx,vv)">diagnostics_GMM_multi_d</a>	% Diagnostics Gauss-Markov model multidimensional</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../04-Estimation/GMM/Demo-GMM/fig_4_11_test_sensitivity_factors_GMM_similarity.html" class="code" title="">fig_4_11_test_sensitivity_factors_GMM_similarity</a>	% Fig. 4.11 test sensitivity factors in GMM with similarity</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Gauss-Markov model linear, groups of uncorrel. observations</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% all observational groups have the same dimension</span>
+0004 <span class="comment">% all observational groups are mutually uncorrelated</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% input matrix Am may be sparse</span>
+0007 <span class="comment">% covariance matrix of estimates is assumed to be full</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% lm       = I x d_I matrix of observational groups</span>
+0010 <span class="comment">% Cov_ll_m = I x d_i^2 matrix of vectorized covariance matrices</span>
+0011 <span class="comment">% Am       = NxU Jacobian (may be sparse)</span>
+0012 <span class="comment">% av       = Nx1 additive vector</span>
+0013 <span class="comment">% rU       = range of unknown parameters of interest</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% est_x    = Ux1 estimated parameter</span>
+0016 <span class="comment">% Cov_xx   = UxU theoretical covariance matrix of estimated parameters</span>
+0017 <span class="comment">% sigma_0q = estimated variance factor (=1 if R=0)</span>
+0018 <span class="comment">% R        = redundancy</span>
+0019 <span class="comment">% vm       = I x d_I matrix of estimated residuals</span>
+0020 <span class="comment">% Xv       = Ix1 vector of test statistics  (Xhi^2_d_I using sigma_0=1)</span>
+0021 <span class="comment">% Rim      = I x d_i^2 matrix of redundacy matrices R_ii</span>
+0022 <span class="comment">% nabla_lv = size of minimal detectable errors</span>
+0023 <span class="comment">%            (from max eigenvalue of C_ll W_vv C_ll * delta_0</span>
+0024 <span class="comment">% muv      = Ix1 vector of senstivity factors</span>
+0025 <span class="comment">%               (mu_i:=mu_ix, cf. (4.307))</span>
+0026 <span class="comment">% muv1     = Ix1 vector of senstivity factors for selected parameters</span>
+0027 <span class="comment">%               (mu_i:=mu_ik, cf. (4.315))</span>
+0028 <span class="comment">% Um1q     = I x d_i^2 matrix of reduced U_ii-matrices</span>
+0029 <span class="comment">%              for selected parameters (cf. bar(U)_k(4.127))</span>
+0030 <span class="comment">% Um2      = I x d_i^2 matrix of U_ii-matrices</span>
+0031 <span class="comment">%              for not selected parameters (cf. U_t (4.127))</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% [est_x,Cov_xx,sigma_0q,R,vm,Xv,Rim,muv]=...</span>
+0034 <span class="comment">%            GaussMarkovModelLinear_groups(lm,Cov_ll,Am,av)</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">% Wolfgang Förstner 2015-06-04</span>
+0037 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0038 
+0039 
+0040 <a name="_sub0" href="#_subfunctions" class="code">function [est_x,Cov_xx,sigma_0q,R,vi,Xv,Rim,nabla_lv,muv,muv1,Um1q,Um2] = </a><span class="keyword">...</span>
+0041     GaussMarkovModelLinear_groups(lm,Cov_ll_m,Am,av,rU)
+0042 
+0043 <span class="comment">%% initialization</span>
+0044 
+0045 <span class="comment">% numbers I, d_I</span>
+0046 [I,d_I]= size(lm);
+0047 
+0048 <span class="comment">% number N and U</span>
+0049 [N,U] = size(Am);
+0050 
+0051 <span class="comment">% redundancy</span>
+0052 R = N-U;
+0053 <span class="keyword">if</span> R &lt; 0
+0054     disp(<span class="string">'not enough observations'</span>)
+0055     <span class="keyword">return</span>;
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">% reshape observations and covariance matrix</span>
+0059 lv     = zeros(N,1);
+0060 Cov_ll = spalloc(N,N,I*d_I^2);
+0061 <span class="keyword">for</span> i = 1:I
+0062     lv(d_I*i-(d_I-1):d_I*i)=lm(i,:)';
+0063     Cov_ll(d_I*i-(d_I-1):d_I*i,d_I*i-(d_I-1):d_I*i) = <span class="keyword">...</span>
+0064         reshape(Cov_ll_m(i,:),d_I,d_I);
+0065 <span class="keyword">end</span>
+0066 <span class="comment">%% estimation</span>
+0067 W_ll   = inv(Cov_ll);                  <span class="comment">% weight matrix of lv</span>
+0068 Bm     = W_ll*Am;                      <span class="comment">%#ok&lt;*MINV&gt; % ancillary matrix</span>
+0069 Nm     = Bm'*Am;                       <span class="comment">% normal equation matrix</span>
+0070 mv     = Bm'*(lv-av);                  <span class="comment">% right hand sides</span>
+0071 
+0072 <span class="comment">% use sparseinv in Matlab, otherwise inv</span>
+0073 <span class="comment">%Cov_xx = sparseinv(Nm);               % covariance matrix of est. parameters</span>
+0074 Cov_xx = inv(Nm);                      <span class="comment">% covariance matrix of est. parameters</span>
+0075 est_x  = Nm\mv;                        <span class="comment">% estimated parameters</span>
+0076 vv     = Am*est_x+av-lv;               <span class="comment">% estimated residuals</span>
+0077 <span class="keyword">if</span> R &gt; 0
+0078     sigma_0q = vv'*W_ll*vv/R;          <span class="comment">% estimated variance factor</span>
+0079 <span class="keyword">else</span>
+0080     sigma_0q = 1;
+0081 <span class="keyword">end</span>
+0082 <span class="comment">%% diagnostics</span>
+0083 [vi,Xv,Rim,nabla_lv,muv,muv1,Um1q,Um2]=<span class="keyword">...</span>
+0084     <a href="diagnostics_GMM_multi_d.html" class="code" title="function [vi,Xv,Rim,nabla_lv,muv,muv1,U1mq,U2m] = diagnostics_GMM_multi_d(r_U,I,d_I,Am,Cov_ll,W_ll,Cov_xx,W_xx,vv)">diagnostics_GMM_multi_d</a>(rU,I,d_I,Am,Cov_ll,W_ll,Cov_xx,Nm,vv);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

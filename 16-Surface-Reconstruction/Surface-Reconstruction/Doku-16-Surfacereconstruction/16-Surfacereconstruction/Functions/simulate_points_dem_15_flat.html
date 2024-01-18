@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of simulate_points_dem_15_flat</title>
+  <meta name="keywords" content="simulate_points_dem_15_flat">
+  <meta name="description" content="% generate a set of points for dem-interpolation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">16-Surfacereconstruction</a> &gt; <a href="index.html">Functions</a> &gt; simulate_points_dem_15_flat.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>simulate_points_dem_15_flat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% generate a set of points for dem-interpolation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [points,BB,dx,sigma_k,sigma_s,out_in,dem]=simulate_points_dem_15(d,n) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% generate a set of points for dem-interpolation</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="test_smooth_dem_robust_bilinear.html" class="code" title="">test_smooth_dem_robust_bilinear</a>	% test dem smoothing</li><li><a href="test_smooth_dem_robust_bilinear_square.html" class="code" title="">test_smooth_dem_robust_bilinear_square</a>	% test dem smoothing</li><li><a href="../../16-Surfacereconstruction/eq_15_120_theoretical_accuracy.html" class="code" title="">eq_15_120_theoretical_accuracy</a>	% eq_15_120_theoretical accuracy</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% generate a set of points for dem-interpolation</span>
+0002 
+0003 <a name="_sub0" href="#_subfunctions" class="code">function [points,BB,dx,sigma_k,sigma_s,out_in,dem]=simulate_points_dem_15(d,n)</a>
+0004 
+0005 d=2*d
+0006 N=(n-1)*d+1;
+0007 <span class="comment">%%</span>
+0008 <span class="comment">% bounding box</span>
+0009 BB=[0,0,N+1,N+1];
+0010 <span class="comment">% grid size</span>
+0011 dx = 1;
+0012 
+0013 sigma_h = 0.03725;
+0014 sigma_k = 1;
+0015 sigma_s = 1;
+0016 
+0017 points = zeros(n*n,4);
+0018 k=0;
+0019 <span class="keyword">for</span> i=1:n
+0020     <span class="keyword">for</span> j=1:n
+0021         k=k+1;
+0022         points(k,:)=[1+(i-1)*d,1+(j-1)*d,0,sigma_h];
+0023     <span class="keyword">end</span>
+0024 <span class="keyword">end</span>
+0025 points(:,1:2)=points(:,1:2);
+0026 Np=size(points,1);
+0027 out_in=ones(Np,1);
+0028 
+0029 <span class="comment">%%</span>
+0030 
+0031 xmin = BB(1);
+0032 ymin = BB(2);
+0033 xmax = BB(3);
+0034 ymax = BB(4);
+0035 Nr = ceil((xmax-xmin)/dx)+1;
+0036 Mc = ceil((ymax-ymin)/dx)+1;
+0037 <span class="comment">%points(:,3)=(points(:,3)-mean(points(:,3)))*sqrt(Nr)/4;</span>
+0038 <span class="comment">% interpolation kernel</span>
+0039 sigma = min(Nr,Mc)/5;
+0040 
+0041 dem = zeros(Nr,Mc);
+0042 <span class="keyword">for</span> i=1:Nr
+0043     <span class="keyword">for</span> j=1:Mc
+0044         dem(i,j)=sum(points(:,3).*<span class="keyword">...</span>
+0045             exp(-1/2*((i-1-(points(:,1)-xmin)/dx).^2+(j-1-(points(:,2)-ymin)/dx).^2)/sigma^2));
+0046     <span class="keyword">end</span>
+0047 <span class="keyword">end</span>
+0048 
+0049 figure
+0050 hold on
+0051 X=([0:Nr-1]'*ones(1,Mc))*dx+BB(1);
+0052 Y=(ones(Nr,1)*[0:Mc-1])*dx+BB(2);
+0053 surf(X,Y,dem)
+0054 colormap(gray)
+0055 alpha(0.3)
+0056 <span class="comment">%mesh(dem)</span>
+0057 
+0058 <span class="comment">%plot3(points(:,1)/dx+1,points(:,2)/dx+1,points(:,3),'.r','MarkerSize',20)</span>
+0059 plot3(points(:,1),points(:,2),points(:,3),<span class="string">'.r'</span>,<span class="string">'MarkerSize'</span>,15)
+0060 axis equal
+0061 xlim([xmin-1,xmax+1]);
+0062 ylim([ymin-1,ymax+1]);
+0063 title(strcat(<span class="string">'original grid, n='</span>,num2str(n)));
+0064 
+0065 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_E_Matrix</title>
+  <meta name="keywords" content="sugr_E_Matrix">
+  <meta name="description" content="% create E-matrix">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">E-Matrix</a> &gt; sugr_E_Matrix.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\E-Matrix&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_E_Matrix
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% create E-matrix</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function E = sugr_E_Matrix(a1,a2,a3) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% create E-matrix
+
+ Usage
+    E = sugr_E_Matrix(E)         
+       3x3 matrix, needs not be an essential matrix, CovM = 0
+    E = sugr_E_Matrix(b,R)       
+       3x1 vector b, 3x3 rotation R, CovM = 0
+    E = sugr_E_Matrix(b,R,CbRbR) 
+       3x1 vector b, 3x3 rotation R, 5x5 CovM of d_r = [db_r,dr]
+    E = sugr_E_Matrix(b,R,Cee)   
+       3x1 vector b, 3x3 rotation R, 9x9 CovM of d_e = d_vecE,
+       needs  not have the correct rank
+
+ output
+ E-Matrix = structure
+    .E     = 3 x 3-Matrix, 
+             Frobenius norm = 2
+             det(U)=det(V), for [U,D,V]=svd(E)% 
+    .bR    = 3 x 4 matrix [b,R], if input b, R  
+    .Cee   = 9x9 covariance matrix of e=vecE, rank=5
+    .CbRbR = 5 x 5 covariance matrix of minimal parameters r
+             r(5) = [db_r; dm] for [b,R], if input b, R
+    .JebR  = 8 x 5 Jacobian de/dbR
+    .type  = 25 -&gt; Essential matrix
+
+ Wolfgang Förstner 11/2017
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li><li><a href="sugr_get_CbRbR_JebR_from_b_R_Cee.html" class="code" title="function [EbR,CbRbR,JebR] = sugr_get_CbRbR_JebR_from_b_R_Cee(b,R,Cee)">sugr_get_CbRbR_JebR_from_b_R_Cee</a>	% Determine CbRbR from Cee for given Relative Orientaion</li><li><a href="sugr_get_Cee_JebR_from_b_R_CbRbR.html" class="code" title="function [EbR,Cee,JebR] = sugr_get_Cee_JebR_from_b_R_CbRbR(b,R,CbRbR)">sugr_get_Cee_JebR_from_b_R_CbRbR</a>	% Determine Cee from CbRbR for given Relative Orientaion</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_bR_from_UVuv.html" class="code" title="">demo_bR_from_UVuv</a>	% demo: bR from (U,V,xs,xss)</li><li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_estimate_E_Matrix_from_point_pairs.html" class="code" title="">demo_estimate_E_Matrix_from_point_pairs</a>	% test_estimate_E_Matrix_from_point_pairs</li><li><a href="demo_sugr_E_matrix.html" class="code" title="">demo_sugr_E_matrix</a>	% test sugr_E_matrix</li><li><a href="sugr_estimation_algebraic_E_Matrix_from_point_pairs.html" class="code" title="function [E,est_sigma_0,error] = sugr_estimation_algebraic_E_Matrix_from_point_pairs(P)">sugr_estimation_algebraic_E_Matrix_from_point_pairs</a>	% Algebraic estimation of E-Matrix from point pairs,</li><li><a href="sugr_estimation_ml_E_Matrix_from_point_pairs.html" class="code" title="function [E, sigma_0, R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_E_Matrix_from_point_pairs</a>	% ML estimation of E-Matrix from point pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% create E-matrix</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage</span>
+0004 <span class="comment">%    E = sugr_E_Matrix(E)</span>
+0005 <span class="comment">%       3x3 matrix, needs not be an essential matrix, CovM = 0</span>
+0006 <span class="comment">%    E = sugr_E_Matrix(b,R)</span>
+0007 <span class="comment">%       3x1 vector b, 3x3 rotation R, CovM = 0</span>
+0008 <span class="comment">%    E = sugr_E_Matrix(b,R,CbRbR)</span>
+0009 <span class="comment">%       3x1 vector b, 3x3 rotation R, 5x5 CovM of d_r = [db_r,dr]</span>
+0010 <span class="comment">%    E = sugr_E_Matrix(b,R,Cee)</span>
+0011 <span class="comment">%       3x1 vector b, 3x3 rotation R, 9x9 CovM of d_e = d_vecE,</span>
+0012 <span class="comment">%       needs  not have the correct rank</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% output</span>
+0015 <span class="comment">% E-Matrix = structure</span>
+0016 <span class="comment">%    .E     = 3 x 3-Matrix,</span>
+0017 <span class="comment">%             Frobenius norm = 2</span>
+0018 <span class="comment">%             det(U)=det(V), for [U,D,V]=svd(E)%</span>
+0019 <span class="comment">%    .bR    = 3 x 4 matrix [b,R], if input b, R</span>
+0020 <span class="comment">%    .Cee   = 9x9 covariance matrix of e=vecE, rank=5</span>
+0021 <span class="comment">%    .CbRbR = 5 x 5 covariance matrix of minimal parameters r</span>
+0022 <span class="comment">%             r(5) = [db_r; dm] for [b,R], if input b, R</span>
+0023 <span class="comment">%    .JebR  = 8 x 5 Jacobian de/dbR</span>
+0024 <span class="comment">%    .type  = 25 -&gt; Essential matrix</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% Wolfgang Förstner 11/2017</span>
+0027 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0028 
+0029 <a name="_sub0" href="#_subfunctions" class="code">function E = sugr_E_Matrix(a1,a2,a3)</a>
+0030 
+0031 <span class="comment">% default</span>
+0032 Cee   = zeros(9);                                                          <span class="comment">%#ok&lt;PREALL&gt;</span>
+0033 CbRbR = zeros(5);
+0034 <span class="comment">%</span>
+0035 <span class="keyword">switch</span> nargin
+0036     <span class="keyword">case</span> 1 <span class="comment">% E-matrix, CovM = 0</span>
+0037         [U,~,V] = svd(a1);
+0038         Em      = U*diag([1,1,0])*V'*det(U)*det(V);
+0039         <span class="comment">% collect</span>
+0040         E.E     = Em;
+0041         E.CbRbR = CbRbR;
+0042     <span class="keyword">case</span> 2 <span class="comment">% b, R</span>
+0043         b        = a1/norm(a1);
+0044         E.E      = <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(b)*a2';
+0045         E.bR     = [b,a2];
+0046         E.CbRbR  = CbRbR;
+0047     <span class="keyword">case</span> 3
+0048         r=size(a3,1);
+0049         <span class="keyword">switch</span> r
+0050             <span class="keyword">case</span> 5 <span class="comment">% basis, rotation, CbRbR</span>
+0051                 factor  = 1/norm(a1);
+0052                 b       = a1*factor;
+0053                 CbRbR   = a3*factor^2;
+0054                 [EbR,Cee,JebR]=<span class="keyword">...</span>
+0055                     <a href="sugr_get_Cee_JebR_from_b_R_CbRbR.html" class="code" title="function [EbR,Cee,JebR] = sugr_get_Cee_JebR_from_b_R_CbRbR(b,R,CbRbR)">sugr_get_Cee_JebR_from_b_R_CbRbR</a>(b,a2,CbRbR);
+0056                 <span class="comment">% normalize E</span>
+0057                 [U,~,V] = svd(EbR);
+0058                 Em      = U*diag([1,1,0])*V'*det(U)*det(V);
+0059                 <span class="comment">% collect</span>
+0060                 E.E     = Em;
+0061                 E.bR    = [b,a2];
+0062                 E.Cee   = Cee;     
+0063                 E.CbRbR = CbRbR;
+0064                 E.JebR  = JebR;
+0065             <span class="keyword">case</span> 9 <span class="comment">% basis, rotation, Cee</span>
+0066                 factor  = 1/norm(a1);
+0067                 b       = a1*factor;
+0068                 Cee     = a3*factor^2;
+0069                 [EbR,CbRbR,JebR]=<span class="keyword">...</span>
+0070                     <a href="sugr_get_CbRbR_JebR_from_b_R_Cee.html" class="code" title="function [EbR,CbRbR,JebR] = sugr_get_CbRbR_JebR_from_b_R_Cee(b,R,Cee)">sugr_get_CbRbR_JebR_from_b_R_Cee</a>(b,a2,Cee); 
+0071                 <span class="comment">% normalize E</span>
+0072                 [U,~,V] = svd(EbR);
+0073                 Em      = U*diag([1,1,0])*V'*det(U)*det(V);             
+0074                 <span class="comment">% normalize E and get JebR</span>
+0075                 E.E     = Em;
+0076                 E.bR    = [b,a2];
+0077                 E.CbRbR = CbRbR;
+0078                 E.Cee   = JebR*E.CbRbR*JebR';
+0079                 E.JebR  = JebR;
+0080         <span class="keyword">end</span>
+0081 <span class="keyword">end</span>
+0082 E.type = 25;</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

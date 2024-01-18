@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of diagnostics_GHM_1d</title>
+  <meta name="keywords" content="diagnostics_GHM_1d">
+  <meta name="description" content="% diagnostics GMM 1d">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GHM</a> &gt; <a href="Documentation.html">Functions-GHM</a> &gt; diagnostics_GHM_1d.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GHM\Functions-GHM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>diagnostics_GHM_1d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% diagnostics GMM 1d</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [riv,zv,nabla_lv,muv,muv1,uv1q,uv2] =diagnostics_GHM_1d(r_U,Am,Bm,Cov_ll,Cov_xx,W_xx,W_gg,vv) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% diagnostics GMM 1d
+
+ r_U      = range of paraemters of interest
+ Am       = design matrix
+ Cov_ll   = CovM of observations
+ Cov_xx   = CovM of parameters
+ W_xx     = weight matrix of parameters
+ vv       = vector of residuals
+
+ riv      = redundancy numbers of observations
+ zv       = standardized resiuals
+ nabla_lv = minimum size of detectable outliers
+ muv      = sensitivity factors wrt to all parameters
+ uv1q     = effect onty parameters of interest
+ uv2      = effect onto nuisance parameters
+
+ Wolfgang Förstner 6/6/2015
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="GaussHelmertModel.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2] =GaussHelmertModel(lv,Cov_ll,cg_f,xa,sx,Tx,maxiter,rU)">GaussHelmertModel</a>	% Gauss Helmert Model</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% diagnostics GMM 1d</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% r_U      = range of paraemters of interest</span>
+0004 <span class="comment">% Am       = design matrix</span>
+0005 <span class="comment">% Cov_ll   = CovM of observations</span>
+0006 <span class="comment">% Cov_xx   = CovM of parameters</span>
+0007 <span class="comment">% W_xx     = weight matrix of parameters</span>
+0008 <span class="comment">% vv       = vector of residuals</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% riv      = redundancy numbers of observations</span>
+0011 <span class="comment">% zv       = standardized resiuals</span>
+0012 <span class="comment">% nabla_lv = minimum size of detectable outliers</span>
+0013 <span class="comment">% muv      = sensitivity factors wrt to all parameters</span>
+0014 <span class="comment">% uv1q     = effect onty parameters of interest</span>
+0015 <span class="comment">% uv2      = effect onto nuisance parameters</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Wolfgang Förstner 6/6/2015</span>
+0018 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0019 
+0020 <a name="_sub0" href="#_subfunctions" class="code">function [riv,zv,nabla_lv,muv,muv1,uv1q,uv2] = </a><span class="keyword">...</span>
+0021     diagnostics_GHM_1d(r_U,Am,Bm,Cov_ll,Cov_xx,W_xx,W_gg,vv)
+0022 
+0023 delta_0 = 4.13;
+0024 
+0025 U  = size(Cov_xx,1);
+0026 
+0027 <span class="comment">%% observations: detectatbility, statistical test</span>
+0028 Rm     = Cov_ll*Bm*W_gg*Bm'-Cov_ll*Bm*W_gg*Am*Cov_xx*Am'*W_gg*Bm'; <span class="comment">% redundancy matrix</span>
+0029 riv    = diag(Rm);                         <span class="comment">% redundancy numbers</span>
+0030 zv     = vv./sqrt(riv.*diag(Cov_ll)+eps);  <span class="comment">% normalized residuals</span>
+0031 nabla_lv = delta_0 * sqrt(1./riv);
+0032 
+0033 <span class="comment">%% sensitivity wrt all parameters</span>
+0034 muv    = sqrt((1-riv)./(riv+eps));         <span class="comment">% sensitivity factors</span>
+0035 
+0036 <span class="comment">%% sensitivity wrt selected parameters</span>
+0037 <span class="keyword">if</span> ~isempty(r_U)
+0038     <span class="comment">% ranges</span>
+0039     r_C= r_U;
+0040     r_D= setdiff(1:U,r_U);
+0041     <span class="comment">% partitioned Jacobian matrix A=[C,D], G x [U_C,U_D]</span>
+0042     Cm = Am(:,r_C);         <span class="comment">% G * U_C</span>
+0043     Dm = Am(:,r_D);         <span class="comment">% G * U_D</span>
+0044     <span class="comment">% reduced design matrix</span>
+0045     Cmr = Cm - Dm * inv(W_xx(r_D,r_D)) * W_xx(r_D,r_C);  <span class="comment">%#ok&lt;MINV&gt; % C_reduced</span>
+0046     Cov_11 = Cov_xx(r_C,r_C);
+0047     <span class="comment">% effect of constraints onto parameters</span>
+0048     U1qc     = Cmr * Cov_11        * Cmr' * W_gg;         <span class="comment">% U_C_bar</span>
+0049     U2c      = Dm  * inv(W_xx(r_D,r_D)) * Dm'  * W_gg;    <span class="comment">%#ok&lt;MINV&gt; % U_D</span>
+0050     
+0051     <span class="comment">% ---  for checking</span>
+0052     <span class="comment">% uv1qc    = diag(U1qc);                                 % u_C_bar</span>
+0053     <span class="comment">% uv2c     = diag(U2c) ;                                 % u_D</span>
+0054     <span class="comment">% Rmc      = eye(G) - Am*Cov_xx*Am'*W_gg;</span>
+0055     <span class="comment">% rivc     = diag(Rmc);</span>
+0056     <span class="comment">% check =uv1qc+uv2c+rivc ; % should be ones</span>
+0057     
+0058     <span class="comment">% sensitivity factors for constraints</span>
+0059     <span class="comment">% wrt observations</span>
+0060     U1q     = Cov_ll*Bm*W_gg * U1qc *Bm';
+0061     uv1q    = diag(U1q);
+0062     U2      = Cov_ll*Bm*W_gg * U2c * Bm';
+0063     uv2     = diag(U2);
+0064     
+0065     <span class="comment">% ---  for checking</span>
+0066     <span class="comment">% muv1c    = sqrt(uv1qc ./ (rivc+eps));</span>
+0067     <span class="comment">% check =uv1q+uv2+riv; % should be ones</span>
+0068     
+0069     <span class="comment">% sensitivity factors for observations</span>
+0070     muv1    = sqrt(uv1q ./ (riv+eps));
+0071 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

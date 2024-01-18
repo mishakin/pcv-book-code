@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of e_from_bR</title>
+  <meta name="keywords" content="e_from_bR">
+  <meta name="description" content="% get e (= vec E) from [db_r,dr]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">E-Matrix</a> &gt; e_from_bR.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\E-Matrix&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>e_from_bR
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% get e (= vec E) from [db_r,dr]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function  e = e_from_bR(dbR,bR) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% get e (= vec E) from [db_r,dr]
+
+ function for checking Jacobian 9x5 of d(vec E)/d([b_r;r])
+       potentially used in sugr_get_Cee_JebR_from_b_R_CbRbR.m, l. 46
+
+ Usage:
+    e = e_from_bR(dbR,bR)
+        db_r = reduced coordinates of b (differential)
+        dr   = differential correction of rotation matrix 
+
+    dbR = 5x1 vector od differentials[db_r;dr] 
+    bR  = 3x4 matrix [b,R], approximate values 
+ 
+    e   = 9x1 vector of vec(S(b+db)*(Rot(dr)*R)
+
+ Wolfgang Förstner 
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>	% Cayley rotation matrix</li><li><a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% get e (= vec E) from [db_r,dr]</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% function for checking Jacobian 9x5 of d(vec E)/d([b_r;r])</span>
+0004 <span class="comment">%       potentially used in sugr_get_Cee_JebR_from_b_R_CbRbR.m, l. 46</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Usage:</span>
+0007 <span class="comment">%    e = e_from_bR(dbR,bR)</span>
+0008 <span class="comment">%        db_r = reduced coordinates of b (differential)</span>
+0009 <span class="comment">%        dr   = differential correction of rotation matrix</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%    dbR = 5x1 vector od differentials[db_r;dr]</span>
+0012 <span class="comment">%    bR  = 3x4 matrix [b,R], approximate values</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%    e   = 9x1 vector of vec(S(b+db)*(Rot(dr)*R)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Wolfgang Förstner</span>
+0017 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0018 
+0019 <a name="_sub0" href="#_subfunctions" class="code">function  e = e_from_bR(dbR,bR)</a>
+0020 
+0021 <span class="comment">% E  = S(b)*R'</span>
+0022 <span class="comment">% take b,R as approximate values</span>
+0023 b = bR(:,1);
+0024 R = bR(:,2:4);
+0025 <span class="comment">% provide Jacobian Jr</span>
+0026 Jrb = null(b');
+0027 <span class="comment">% determine E</span>
+0028 E = <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(b+Jrb*dbR(1:2))*(<a href="../../../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>(dbR(3:5)/2)*R)';
+0029 <span class="comment">% finally vectorize</span>
+0030 e = E(:);
+0031 
+0032 
+0033 
+0034</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_sugr_Point_2D</title>
+  <meta name="keywords" content="demo_sugr_Point_2D">
+  <meta name="description" content="demo_sugr_Point_2D: demo routine for generating 2D point">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">10-Uncertain-Geometry</a> &gt; <a href="Documentation.html">Demo-Point-2D</a> &gt; demo_sugr_Point_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 10-Uncertain-Geometry\Demo-Point-2D&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_sugr_Point_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>demo_sugr_Point_2D: demo routine for generating 2D point</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> demo_sugr_Point_2D: demo routine for generating 2D point
+
+ Point_2D = structure 
+
+ *           .h = spherically normalized homogeneous coordinates
+ *           .Crr = half vector of reduced covariance matrix
+ *           .type = 'Point_2D'
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 06/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>	% Plot 2D point with standard ellipse</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>	% Show information of 2D point on console</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% demo_sugr_Point_2D: demo routine for generating 2D point</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Point_2D = structure</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% *           .h = spherically normalized homogeneous coordinates</span>
+0006 <span class="comment">% *           .Crr = half vector of reduced covariance matrix</span>
+0007 <span class="comment">% *           .type = 'Point_2D'</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Wolfgang Förstner</span>
+0010 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% last changes: Susanne Wenzel 06/18</span>
+0013 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0014 
+0015 <span class="comment">%% initialize sugr</span>
+0016 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0017 close all; clearvars;clc
+0018 <a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0019 <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0020 
+0021 <span class="comment">%% Sorted according to number of arguments</span>
+0022 
+0023 <span class="comment">%% (1) Euclidean point vector without CovM (==0)</span>
+0024 in = [1,2]';
+0025 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in);
+0026 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0027 
+0028 
+0029 <span class="comment">%% (1) Homogeneous point vector without CovM (==0)</span>
+0030 in = [1,2,3]';
+0031 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in);
+0032 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0033 
+0034 <span class="comment">%% (1) Homogeneous vanishing point vector without CovM (==0)</span>
+0035 in = [1,2,0]';
+0036 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in);
+0037 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0038 
+0039 <span class="comment">%% (2) Euclidean point coordinates without CovM (==0)</span>
+0040 in1 = 1;
+0041 in2 = 2;
+0042 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in1,in2);
+0043 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0044 
+0045 <span class="comment">%% (2) Homogeneous point vector</span>
+0046 in1 = [1,2,2]';
+0047 in2 = [1,2,1;2,5,0;1,0,7]*0.01;
+0048 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in1,in2);
+0049 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0050 
+0051 <span class="comment">%% (2) Homogeneous vanishing point vector</span>
+0052 in1 = [3,4,0]';
+0053 in2 = [2,2,0;2,6,0;0,0,5];
+0054 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in1,in2);
+0055 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0056 
+0057 <span class="comment">%% (3) Homogeneous point coordinatens without CM (==0)</span>
+0058 in1 = 1;
+0059 in2 = 2;
+0060 in3 = 2;
+0061 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in1,in2,in3);
+0062 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0063 
+0064 <span class="comment">%% (3) Homogeneous vanishing point coordinates without CM (==0)</span>
+0065 in1 = 1;
+0066 in2 = 2;
+0067 in3 = 0;
+0068 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in1,in2,in3);
+0069 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0070 
+0071 <span class="comment">%% (4) Euclidean point coordinates</span>
+0072 in1 = 1;
+0073 in2 = 2;
+0074 in3 = 0.1;
+0075 in4 = 0.2;
+0076 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in1,in2,in3,in4);
+0077 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0078 
+0079 <span class="comment">%% (4) Homogeneous point coordinates</span>
+0080 in1 = 1;
+0081 in2 = 2;
+0082 in3 = 2;
+0083 in4 = [1,2,1;<span class="keyword">...</span>
+0084        2,5,0;<span class="keyword">...</span>
+0085        1,0,7]*0.0001;
+0086 x1 = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in1,in2,in3,in4);
+0087 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x_1'</span>);
+0088 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>)
+0089 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(x1,<span class="string">'-k'</span>,<span class="string">'-b'</span>,2,1);
+0090 title(<span class="string">'Homogeneous uncertain point'</span>)
+0091 axis equal
+0092 
+0093 <span class="comment">%% (4) Homogeneous vanishing point coordinates</span>
+0094 in1 = 1;
+0095 in2 = 2;
+0096 in3 = 0;
+0097 in4 = [2,2,1;2,5,0;1,0,7]*0.01;
+0098 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(in1,in2,in3,in4);
+0099 <a href="../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>(x,<span class="string">'x'</span>);
+0100</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

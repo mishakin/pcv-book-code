@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_estimate_two_symmetric_planes_from_points</title>
+  <meta name="keywords" content="demo_estimate_two_symmetric_planes_from_points">
+  <meta name="description" content="% test_two_symmetric_planes_from_points">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">10-Uncertain-Geometry</a> &gt; demo_estimate_two_symmetric_planes_from_points.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 10-Uncertain-Geometry&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>demo_estimate_two_symmetric_planes_from_points
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% test_two_symmetric_planes_from_points</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% test_two_symmetric_planes_from_points
+
+ example PCV Sect. 10.6.4, Fig. 10.29
+
+ The parameter model_II is used to choose the estimation model
+
+ % Wolfgang Förstner 7/2012
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../10-Uncertain-Geometry/Functions/generate_points_on_plane.html" class="code" title="function X = generate_points_on_plane(N,A,sigma,r,RL,rPCV)">generate_points_on_plane</a>	% generate_points_on_plane(r,A);</li><li><a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>	% Pi-matrix from 3D-point 4-vector</li><li><a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>	% Pidual-matrix from 3D-point 4-vector</li><li><a href="../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>	% GHM update spherically normalized vector</li><li><a href="../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li><li><a href="../General-Functions/SUGR/Plane/sugr_estimation_ml_Plane_from_points.html" class="code" title="function [x,sigma_0,R,N_matrix,h_vector,estx0,estl] =sugr_estimation_ml_Plane_from_points(l,xa,T,maxiter)">sugr_estimation_ml_Plane_from_points</a>	% ML estiamte of plane from points</li><li><a href="../General-Functions/SUGR/Plane/sugr_estimation_ml_symmetric_Planes_from_points.html" class="code" title="function [x, estl, sigma_0, R] =sugr_estimation_ml_symmetric_Planes_from_points(XL, XR, xa, T, maxiter)">sugr_estimation_ml_symmetric_Planes_from_points</a>	% ML estiamte of plane from points</li><li><a href="../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li><li><a href="../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% test_two_symmetric_planes_from_points</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% example PCV Sect. 10.6.4, Fig. 10.29</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% The parameter model_II is used to choose the estimation model</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% % Wolfgang Förstner 7/2012</span>
+0008 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0009 
+0010 <span class="comment">%%</span>
+0011 close all
+0012 clearvars
+0013 clc
+0014 
+0015 addpath(genpath(<span class="string">'../General-Functions'</span>))
+0016 addpath(genpath(<span class="string">'Functions'</span>))
+0017 
+0018 <span class="keyword">global</span> min_redundancy
+0019 <span class="keyword">global</span> plot_option
+0020 <span class="keyword">global</span> print_option_estimation
+0021 ss = <a href="../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0022 
+0023 disp(<span class="string">'---------------------------------------'</span>)
+0024 disp(<span class="string">' Estimate parameters of symmetric roof '</span>)
+0025 disp(<span class="string">' example PCV Sect. 10.6.4, Fig. 10.29  '</span>)
+0026 disp(<span class="string">'---------------------------------------'</span>)
+0027 
+0028 <span class="comment">%% Choose estimation model</span>
+0029 
+0030 <span class="comment">% model_II = 0; % One step estimation GHM with</span>
+0031 model_II = 1; <span class="comment">% Estimate individually, Model D + C</span>
+0032 
+0033 <span class="keyword">switch</span> model_II
+0034     <span class="keyword">case</span> 0
+0035         disp(<span class="string">'One step estimation GHM with constraints'</span>)
+0036     <span class="keyword">case</span> 1
+0037         disp(<span class="string">'Estimate individually, Model D + C'</span>)
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">% read coordinates according to PCV?</span>
+0041 read_PCV_coordinates = 0; <span class="comment">% coordinates from book, only 4-digits</span>
+0042 <span class="comment">% read_PCV_coordinates = 0; % generate random points</span>
+0043 
+0044 <span class="comment">%% initialize</span>
+0045 factor = 2;                  <span class="comment">% for scaling the complete data set</span>
+0046 slope = -0.6;                <span class="comment">% slope of roofs</span>
+0047 NL    = 5;                   <span class="comment">% number of points on left roof</span>
+0048 NR    = 6;                   <span class="comment">% number of points on left roof</span>
+0049 sigma =  factor*0.05;        <span class="comment">% std. dev. of points</span>
+0050 maxiter = 5;                 <span class="comment">% iteration for constraints</span>
+0051 Tol     = 0.0001;
+0052 disp(strcat(<span class="string">'Tolerance for convergence :'</span>, num2str(Tol)))
+0053 
+0054 rangeL = factor*[-1,0,0,2]; <span class="comment">% x-range, y-range of roofs</span>
+0055 rangeR = factor*[ 0,1,0,2];
+0056 
+0057 plot_option = 1;
+0058 print_option_estimation = 2;
+0059 
+0060 <span class="comment">% initialize SUGR</span>
+0061 <a href="../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0062 min_redundancy = 100000;
+0063 
+0064 init_rand      = 3;          <span class="comment">% random seed (default = 3)</span>
+0065 init_rand = <a href="../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0066 <span class="comment">%% Generate planes</span>
+0067 disp(<span class="string">'Generate planes...'</span>);
+0068 <span class="comment">% common horizontal line: height 1.5, in Y-direction</span>
+0069 X = [0,0,factor*1.5,1]';             <span class="comment">% start points</span>
+0070 Y = [0,factor*1,factor*1.5,1]';      <span class="comment">% end point</span>
+0071 L = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(X)*Y;                    <span class="comment">% roof line</span>
+0072 L_true = L;
+0073 disp([<span class="string">'   Roof edge L = ['</span>,num2str(L'),<span class="string">']'</span>])
+0074 
+0075 <span class="comment">% slope, tan(alpha)</span>
+0076 X_L = X + factor*[1,0,-slope,0]';
+0077 X_R = X + factor*[-1,0,-slope,0]';
+0078 AL  = +<a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(X_L)'*L;
+0079 AR  = -<a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(X_R)'*L;
+0080 AL_true = AL;
+0081 AR_true = AR;
+0082 disp([<span class="string">'   Left roof plane AL  : ['</span>,num2str(AL'),<span class="string">']'</span>])
+0083 disp([<span class="string">'   Right roof plane AR : ['</span>,num2str(AR'),<span class="string">']'</span>])
+0084 
+0085 <span class="comment">%% generate points</span>
+0086 disp(<span class="string">' '</span>)
+0087 disp(<span class="string">'Generate points...'</span>);
+0088 <span class="keyword">if</span> plot_option &gt; 0    
+0089     figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[0.2*ss(1), 0.35*ss(2),ss(1)/2,ss(2)/2])
+0090     hold on
+0091     axis equal
+0092 <span class="keyword">end</span>
+0093 
+0094 disp(<span class="string">'---Generate points on left plane'</span>)
+0095 XL = <a href="../10-Uncertain-Geometry/Functions/generate_points_on_plane.html" class="code" title="function X = generate_points_on_plane(N,A,sigma,r,RL,rPCV)">generate_points_on_plane</a>(NL,AL,sigma,rangeL,0,read_PCV_coordinates);
+0096 disp(<span class="string">'---Generate points on right plane'</span>)
+0097 XR = <a href="../10-Uncertain-Geometry/Functions/generate_points_on_plane.html" class="code" title="function X = generate_points_on_plane(N,A,sigma,r,RL,rPCV)">generate_points_on_plane</a>(NR,AR,sigma,rangeR,1,read_PCV_coordinates);
+0098 
+0099 xlim(factor*[-1.5,1.5]);
+0100    ylim(factor*[-0.5,2.5]);
+0101    zlim(factor*[0,2.5]);
+0102    axis equal
+0103 set(gca,<span class="string">'CameraPosition'</span>,[-14,31,27])
+0104 
+0105 <span class="comment">%%  approximate values of the two planes: algebraic solution X_i' * A = 0</span>
+0106 [~,~,V] = svd(XL.h);  <span class="comment">%</span>
+0107 ALa  =V(:,4);
+0108 [U,D,V] = svd(XR.h);
+0109 ARa = V(:,4);
+0110 
+0111 planes_appr = [ALa'/ALa(3);ARa'/ARa(3)];
+0112 disp([<span class="string">'Approximate plane parameters left  : ['</span>,num2str(planes_appr(1,:)),<span class="string">']'</span>])
+0113 disp([<span class="string">'Approximate plane parameters right : ['</span>,num2str(planes_appr(2,:)),<span class="string">']'</span>])
+0114 
+0115 <span class="comment">% Possibly show coordinates</span>
+0116 <span class="comment">% XL.h(:,1:3)./(XL.h(:,4)*[1,1,1]);</span>
+0117 <span class="comment">% XR.h(:,1:3)./(XR.h(:,4)*[1,1,1]);</span>
+0118 
+0119 <span class="comment">%% Estimate complete roof</span>
+0120 disp(<span class="string">' '</span>)
+0121 disp(<span class="string">'Perform estimation...'</span>);
+0122 <span class="keyword">if</span> model_II==1
+0123     
+0124     disp(<span class="string">'-------- Estimate individually, Model D + C'</span>);
+0125     
+0126     <span class="comment">%% First step: estimate individually using model D</span>
+0127     disp(<span class="string">' '</span>)
+0128     disp(<span class="string">'ML-estimation left plane ---------------------------------------'</span>)
+0129     [AL_est,sigma_0L,RL] = <a href="../General-Functions/SUGR/Plane/sugr_estimation_ml_Plane_from_points.html" class="code" title="function [x,sigma_0,R,N_matrix,h_vector,estx0,estl] =sugr_estimation_ml_Plane_from_points(l,xa,T,maxiter)">sugr_estimation_ml_Plane_from_points</a>(XL,ALa,0.01,5);
+0130     disp(<span class="string">' '</span>)
+0131     disp(<span class="string">'ML-estimation right plane --------------------------------------'</span>)
+0132     [AR_est,sigma_0R,RR] = <a href="../General-Functions/SUGR/Plane/sugr_estimation_ml_Plane_from_points.html" class="code" title="function [x,sigma_0,R,N_matrix,h_vector,estx0,estl] =sugr_estimation_ml_Plane_from_points(l,xa,T,maxiter)">sugr_estimation_ml_Plane_from_points</a>(XR,ARa,0.01,5);
+0133     disp([<span class="string">'   left plane: R = '</span>,num2str(RL), <span class="string">', sigma_0 = '</span>,num2str(sigma_0L)]);
+0134     disp([<span class="string">'   right plane: R = '</span>,num2str(RR), <span class="string">', sigma_0 = '</span>,num2str(sigma_0R)]);
+0135     
+0136 <span class="comment">%     AL_est.h/AL_est.h(3)</span>
+0137 <span class="comment">%     AR_est.h/AR_est.h(3)</span>
+0138     
+0139     disp([<span class="string">'   Estimated left plane  (1): '</span>,num2str(AL_est.h'/AL_est.h(3))])
+0140     disp([<span class="string">'   Estimated right plane (1): '</span>,num2str(AR_est.h'/AR_est.h(3))])
+0141     
+0142     Crr  = [AL_est.Crr zeros(3)   ;<span class="keyword">...</span>
+0143             zeros(3)   AR_est.Crr];
+0144 <span class="comment">%     Crr_x_10000 = Crr*10000</span>
+0145     
+0146     <span class="comment">%% Second step: Impose constraints on plane parameters using model C</span>
+0147     <span class="comment">% see PCV Sect. 4.8.2.6</span>
+0148     disp(<span class="string">'-------- -------- Impose constraints: Model C'</span>);
+0149     Nm  = zeros(2);
+0150     hv  = zeros(2,1);
+0151     l  = [AL_est.h;AR_est.h];   <span class="comment">% observations == plane parameters</span>
+0152     l0 = l;
+0153     AL = l(1:4);
+0154     AR  =l(5:8); 
+0155     <span class="keyword">for</span> iter = 1:maxiter
+0156 
+0157         disp([<span class="string">'-------- -------- -------- C Iteration '</span>,num2str(iter),<span class="string">'----------------'</span>])
+0158 
+0159         AL0 = l0(1:4);                    <span class="comment">% left plane A</span>
+0160         AR0 = l0(5:8);                    <span class="comment">% right plane B</span>
+0161         est_L0 = <a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(AL0)*AR0;  <span class="comment">% roof edge L</span>
+0162         eL0C = est_L0'/norm(est_L0(1:3));
+0163 
+0164         <span class="comment">% Jacobian of constraints, see PCV (10.318)</span>
+0165         Bt=[2*[-AL0(1)*AR0(3)^2,<span class="keyword">...</span>
+0166             -AL0(2)*AR0(3)^2,<span class="keyword">...</span>
+0167             +AL0(3)*(AR0(1)^2+AR0(2)^2),<span class="keyword">...</span>
+0168             0]*null(AL0'),<span class="keyword">...</span>
+0169             2*[+AR0(1)*AL0(3)^2,<span class="keyword">...</span>
+0170             +AR0(2)*AL0(3)^2,<span class="keyword">...</span>
+0171             -AR0(3)*(AL0(1)^2+AL0(2)^2),<span class="keyword">...</span>
+0172             0]*null(AR0'),
+0173             [[+AR0(2),-AR0(1),0,0]*null(AL0'),<span class="keyword">...</span>
+0174             [-AL0(2),+AL0(1),0,0]*null(AR0')]];                            <span class="comment">%#ok&lt;COMNL&gt;</span>
+0175         <span class="comment">% Jacobian for reducing the plane coordinates</span>
+0176         Jrh = [null(l0(1:4)')' zeros(3,4); zeros(3,4) null(l0(5:8)')'];
+0177         <span class="comment">% constraints,  see PCV (10.318)</span>
+0178         cg = [-(AL0(3)^2*(AR0(1)^2+AR0(2)^2)-AR0(3)^2*(AL0(1)^2+AL0(2)^2));<span class="keyword">...</span>
+0179             -(AL0(1)*AR0(2)-AR0(1)*AL0(2))] + Bt*Jrh*(l0-l);
+0180         <span class="comment">% normal equation matrix (4.463)</span>
+0181         Nm = Bt*Crr*Bt';
+0182         <span class="comment">% correction to fitted observations (4.465)</span>
+0183         Dlr = Crr * Bt' * inv(Nm) * cg + <span class="keyword">...</span>
+0184             Jrh * l;                                                       <span class="comment">%#ok&lt;MINV&gt;</span>
+0185         disp([<span class="string">'Correction of observations (reduced plane parameters):'</span>, num2str(Dlr')])
+0186         
+0187         <span class="comment">% corrected fitted observations,  see PCV (10.255)</span>
+0188         l0(1:4)=<a href="../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>(l0(1:4),Dlr(1:3)); 
+0189         l0(5:8)=<a href="../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>(l0(5:8),Dlr(4:6));
+0190         
+0191         <span class="keyword">if</span> (abs(Dlr(:))./sqrt(diag(Crr)) &lt; Tol) | (iter==maxiter)         <span class="comment">%#ok&lt;OR2,BDSCA&gt;</span>
+0192             disp(<span class="string">'-------- -------- -------- after last iteration'</span>)
+0193             <span class="comment">% covariance matrix of fitted observations</span>
+0194             <span class="comment">% CovM(est_l) = CovM(l) - CovM(v), see (4.68) with (4.467)</span>
+0195             estCrr = Crr - Crr * Bt' * inv(Nm) * Bt * Crr;                 <span class="comment">%#ok&lt;MINV&gt;</span>
+0196             ver = Jrh * (l0-l);
+0197             Omega    = ver' * inv(Crr) * ver;                              <span class="comment">%#ok&lt;MINV&gt;</span>
+0198             sigma_0 = sqrt(Omega/2);
+0199             <span class="comment">% redundancy is R=2 (2 constraints)</span>
+0200             disp([<span class="string">'    R = 2 sigma_0 = '</span>,num2str(sigma_0)]);
+0201             <span class="keyword">break</span>
+0202         <span class="keyword">end</span>
+0203     <span class="keyword">end</span>
+0204     est_AL = l0(1:4);
+0205     est_AR = l0(5:8);
+0206 
+0207     disp(<span class="string">' '</span>)
+0208     disp([<span class="string">'Estimated left plane  : ['</span>,num2str(est_AL'/est_AL(3)),<span class="string">']'</span>])
+0209     disp([<span class="string">'Estimated lright plane: ['</span>,num2str(est_AR'/est_AR(3)),<span class="string">']'</span>])
+0210 
+0211     est_L = <a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(est_AL)*est_AR;
+0212     
+0213     disp([<span class="string">'Estimated roof line   : ['</span>,num2str(est_L'/norm(est_L(1:3))),<span class="string">']'</span>])
+0214 
+0215     <span class="comment">% covariance matrix of planes (from reduced to homogeneous coord.)</span>
+0216     CestAestA = Jrh' * estCrr * Jrh;
+0217 
+0218     <span class="comment">% covariance matrix of 3D line</span>
+0219     JLA = [-<a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(est_AR),<a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(est_AL)];
+0220     CLL = JLA * CestAestA * JLA';
+0221         
+0222     <span class="comment">% take vector L(1:3) as point in P^2, spherically normalized</span>
+0223     dir = <a href="../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(est_L(1:3),CLL(1:3,1:3));
+0224     <span class="comment">% eigenvalues yield uncertainty of direction vector,</span>
+0225     <span class="comment">% one ev is 0, the slope of the fitter roof edge</span>
+0226     <span class="comment">% the other is the variance of the azimuth</span>
+0227     ev = eigs(dir.Crr)*180/pi;
+0228     disp([<span class="string">'Std.dev. of azimuth (degrees): '</span>, num2str(sqrt(max(ev(:))))])
+0229     
+0230 <span class="keyword">else</span>
+0231     <span class="comment">% one step estimation GHM with constraints</span>
+0232     disp(<span class="string">'-------- One-step estimation Model E'</span>)
+0233     
+0234     [estA,estX,sigma_0,R] = <span class="keyword">...</span>
+0235         <a href="../General-Functions/SUGR/Plane/sugr_estimation_ml_symmetric_Planes_from_points.html" class="code" title="function [x, estl, sigma_0, R] =sugr_estimation_ml_symmetric_Planes_from_points(XL, XR, xa, T, maxiter)">sugr_estimation_ml_symmetric_Planes_from_points</a><span class="keyword">...</span>
+0236         (XL,XR,[ALa;ARa],Tol,maxiter);
+0237 
+0238     disp(<span class="string">'-------- -------- -------- after last iteration'</span>)
+0239     
+0240     disp([<span class="string">'Estimated sigma_0^2  :'</span>,num2str(sigma_0),<span class="string">'^2'</span>])
+0241     <span class="comment">% fitted planes and points</span>
+0242     AL0 = estA.h(1:4);
+0243     AR0 = estA.h(5:8);
+0244     XL0 = estX(1:NL,:);
+0245     XR0 = estX(NL+1:NL+NR,:);
+0246     est_AL = AL0;
+0247     est_AR = AR0;
+0248     
+0249     XLe = XL0(:,1:4)./(XL0(:,4)*[1,1,1,1]);
+0250     XRe = XR0(:,1:4)./(XR0(:,4)*[1,1,1,1]);
+0251 <span class="comment">%     XLe*AL0/norm(AL0(1:3));</span>
+0252 <span class="comment">%     XRe*AR0/norm(AR0(1:3));</span>
+0253 
+0254     eAL = est_AL'/est_AL(3);
+0255     eAR = est_AR'/est_AR(3);
+0256     disp([<span class="string">'Estimated left plane  :'</span>,num2str(eAL)])
+0257     disp([<span class="string">'Estimated right plane :'</span>,num2str(eAR)])
+0258 
+0259     est_L = <a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(est_AL)*est_AR;
+0260     estL = est_L'/norm(est_L(1:3));
+0261     disp([<span class="string">'Estimated roof line   :'</span>,num2str(estL)])
+0262 
+0263     <span class="comment">% covariance matrix of 3D line</span>
+0264     JLA = [-<a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(est_AR),<a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(est_AL)];
+0265     CLL = JLA * estA.Cxx * JLA';
+0266     
+0267     <span class="comment">% take elements L(1:3) as direction on S^2 (see above)</span>
+0268     dir = <a href="../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(est_L(1:3),CLL(1:3,1:3));
+0269     ev = eigs(dir.Crr)*180/pi;
+0270     disp([<span class="string">'Std.dev. of azimuth (degrees): '</span>, num2str(sqrt(max(ev(:))))])
+0271     
+0272 <span class="comment">%%</span>
+0273 <span class="keyword">if</span> plot_option &gt; 0
+0274     figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[0.2*ss(1), 0.1*ss(2),ss(1)/2,ss(2)/2])
+0275     hold on
+0276     r = rangeL;
+0277     A = AL_true;
+0278     z = -(A(1)*r(1:2) + A(2)*r(3:4) + A(4)) / A(3);
+0279    
+0280    plot3([r(1),r(2),r(2),r(1),r(1)],[r(3),r(3),r(4),r(4),r(3)],[z(1),z(2),z(2),z(1),z(1)],<span class="string">'--k'</span>);
+0281    <span class="keyword">for</span> n=1:NL
+0282        plot3(XLe(n,1),XLe(n,2),XLe(n,3),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0283    <span class="keyword">end</span>
+0284    
+0285    r=rangeR;
+0286    A=AR_true;
+0287    z=-(A(1)*r(1:2) + A(2)*r(3:4) + A(4)) / A(3);
+0288    plot3([r(1),r(2),r(2),r(1),r(1)],[r(3),r(3),r(4),r(4),r(3)],[z(1),z(2),z(2),z(1),z(1)],<span class="string">'--k'</span>);
+0289    
+0290    <span class="keyword">for</span> n=1:NR
+0291        plot3(XRe(n,1),XRe(n,2),XRe(n,3),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0292    <span class="keyword">end</span>
+0293   
+0294    xlim(factor*[-1.3,1.3]);
+0295    ylim(factor*[-0.3,2.3]);
+0296    zlim(factor*[0,2.5]);
+0297    xlabel(<span class="string">'X'</span>)
+0298    ylabel(<span class="string">'Y'</span>)
+0299    zlabel(<span class="string">'Z'</span>)
+0300    axis equal
+0301    
+0302    set(gca,<span class="string">'CameraPosition'</span>,[-14,31,27])
+0303 <span class="keyword">end</span>
+0304    
+0305 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

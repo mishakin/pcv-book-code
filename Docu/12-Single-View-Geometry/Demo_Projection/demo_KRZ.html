@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_KRZ</title>
+  <meta name="keywords" content="demo_KRZ">
+  <meta name="description" content="% Demo partitioning of P into K, R, and Z">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">12-Single-View-Geometry</a> &gt; <a href="Documentation.html">Demo_Projection</a> &gt; demo_KRZ.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 12-Single-View-Geometry\Demo_Projection&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_KRZ
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Demo partitioning of P into K, R, and Z</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Demo partitioning of P into K, R, and Z
+ 
+ PCV, Algorithm 18, p. 500 
+
+ The result should not change if the sign of P changes.
+ The sign of the focal length c should be the required one
+
+ vary:
+ - sign of K(3,3), changing sign of P
+ - sign of c
+
+ check the correctnes of the decomposition for all four cases
+ diag(K) = [+1,+1,+1] : require c = +1
+ diag(K) = [-1,-1,+1] : require c = -1
+ diag(K) = [+1,+1,-1] : require c = -1
+ diag(K) = [-1,-1,-1] : require c = +1
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 04/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Geometry/calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>	% K, R, Z, K33 from P (without covariance propagation)</li><li><a href="../../General-Functions/Geometry/calc_P_from_KRZ.html" class="code" title="function P = calc_P_from_KRZ (K,R,Z,K33)">calc_P_from_KRZ</a>	% calculates P from K, R and Z</li><li><a href="../../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>	% Rotation matrix from quaternion</li><li><a href="../../General-Functions/Geometry/calc_viewing_direction.html" class="code" title="function d = calc_viewing_direction(P)">calc_viewing_direction</a>	% Viewing direction from P of perspective camera</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Demo partitioning of P into K, R, and Z</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% PCV, Algorithm 18, p. 500</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% The result should not change if the sign of P changes.</span>
+0006 <span class="comment">% The sign of the focal length c should be the required one</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% vary:</span>
+0009 <span class="comment">% - sign of K(3,3), changing sign of P</span>
+0010 <span class="comment">% - sign of c</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% check the correctnes of the decomposition for all four cases</span>
+0013 <span class="comment">% diag(K) = [+1,+1,+1] : require c = +1</span>
+0014 <span class="comment">% diag(K) = [-1,-1,+1] : require c = -1</span>
+0015 <span class="comment">% diag(K) = [+1,+1,-1] : require c = -1</span>
+0016 <span class="comment">% diag(K) = [-1,-1,-1] : require c = +1</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Wolfgang Förstner</span>
+0019 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% last changes: Susanne Wenzel 04/18</span>
+0022 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0023 
+0024 clc
+0025 close all
+0026 clearvars
+0027 
+0028 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0029 
+0030 fprintf(<span class="string">'\n------ Demo partitioning of P into K, R, and Z ------\n'</span>)
+0031 
+0032 fprintf(<span class="string">'\nIn order to shorten the output, we display transposed vectors\n'</span>)
+0033 
+0034 disp(<span class="string">' '</span>)
+0035 <span class="comment">% R = eye(3);</span>
+0036 disp(<span class="string">'Common rotation matrix'</span>)
+0037 R = <a href="../../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>([1,.0,0.0,2])                                               <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0038 
+0039 <span class="comment">%% 1. camera</span>
+0040 fprintf(<span class="string">'\n-------- camera 1: K(3,3) &gt; 0, c &gt; 0  --------\n'</span>)
+0041 disp(<span class="string">'create P with random Z and'</span>)
+0042 K = [+1,0.01,0.01;0,+1,0.1;0,0,1];
+0043 disp([<span class="string">'diag(K) = ['</span>, num2str(diag(K)'),<span class="string">']'</span>])
+0044 
+0045 Z = rand(3,1); <span class="comment">%zeros(3,1);</span>
+0046 P = <a href="../../General-Functions/Geometry/calc_P_from_KRZ.html" class="code" title="function P = calc_P_from_KRZ (K,R,Z,K33)">calc_P_from_KRZ</a>(K,R,Z)                                                 <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0047 d = <a href="../../General-Functions/Geometry/calc_viewing_direction.html" class="code" title="function d = calc_viewing_direction(P)">calc_viewing_direction</a>(P);
+0048 disp([<span class="string">'Viewing direction d = ['</span>, num2str(d'),<span class="string">']'</span>])
+0049 
+0050 disp(<span class="string">' '</span>)
+0051 disp(<span class="string">'Get K, R, Z from P with positive c'</span>)
+0052 [K_,R_,Z_,~] = <a href="../../General-Functions/Geometry/calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>(P,1);
+0053 K_                                                                         <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0054 R_                                                                         <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0055 Z_'                                                                        <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0056 
+0057 disp(<span class="string">'Check calculated values'</span>)
+0058 dK1 = K/K(3,3)-K_;
+0059 disp([<span class="string">'norm(dK) = ['</span>, num2str(norm(dK1)),<span class="string">']'</span>])
+0060 dR1 = R-R_;
+0061 disp([<span class="string">'norm(dR) = ['</span>, num2str(norm(dR1)),<span class="string">']'</span>])
+0062 dZ1 = Z-Z_;
+0063 disp([<span class="string">'norm(dZ) = ['</span>, num2str(norm(dZ1)),<span class="string">']'</span>])
+0064 
+0065 <span class="comment">%% 2. camera</span>
+0066 fprintf(<span class="string">'\n-------- camera 2: K(3,3) &gt; 0, c &lt; 0 --------\n'</span>)
+0067 disp(<span class="string">'Again, create P with random Z and'</span>)
+0068 K=[-1,0.01,0.01;0,-1,0.1;0,0,1];
+0069 disp([<span class="string">'diag(K) = ['</span>, num2str(diag(K)'),<span class="string">']'</span>])
+0070 
+0071 Z = rand(3,1); <span class="comment">% zeros(3,1);</span>
+0072 P = <a href="../../General-Functions/Geometry/calc_P_from_KRZ.html" class="code" title="function P = calc_P_from_KRZ (K,R,Z,K33)">calc_P_from_KRZ</a>(K,R,Z)                                                 <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0073 d = <a href="../../General-Functions/Geometry/calc_viewing_direction.html" class="code" title="function d = calc_viewing_direction(P)">calc_viewing_direction</a>(P);
+0074 disp([<span class="string">'Viewing direction d = ['</span>, num2str(d'),<span class="string">']'</span>])
+0075 
+0076 disp(<span class="string">' '</span>)
+0077 disp(<span class="string">'Get K, R, Z from P with negative c'</span>)
+0078 [K_,R_,Z_,~] = <a href="../../General-Functions/Geometry/calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>(P,-1);
+0079 K_                                                                         <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0080 R_                                                                         <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0081 Z_'                                                                        <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0082 
+0083 disp(<span class="string">'Check calculated values'</span>)
+0084 dK2 = K/K(3,3)-K_;
+0085 disp([<span class="string">'norm(dK) = ['</span>, num2str(norm(dK2)),<span class="string">']'</span>])
+0086 dR2 = R-R_;
+0087 disp([<span class="string">'norm(dR) = ['</span>, num2str(norm(dR2)),<span class="string">']'</span>])
+0088 dZ2 = Z-Z_;
+0089 disp([<span class="string">'norm(dZ) = ['</span>, num2str(norm(dZ2)),<span class="string">']'</span>])
+0090 
+0091 
+0092 <span class="comment">%% 3. camera</span>
+0093 fprintf(<span class="string">'\n-------- camera 3: K(3,3) &lt; 0, c &lt; 0 --------\n'</span>)
+0094 disp(<span class="string">'Again, create P with random Z and'</span>)
+0095 K=[+1,0.01,0.01;0,+1,0.1;0,0,-1];
+0096 disp([<span class="string">'diag(K) = ['</span>, num2str(diag(K)'),<span class="string">']'</span>])
+0097 
+0098 Z = rand(3,1); <span class="comment">% zeros(3,1);</span>
+0099 P = <a href="../../General-Functions/Geometry/calc_P_from_KRZ.html" class="code" title="function P = calc_P_from_KRZ (K,R,Z,K33)">calc_P_from_KRZ</a>(K,R,Z)                                                 <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0100 d = <a href="../../General-Functions/Geometry/calc_viewing_direction.html" class="code" title="function d = calc_viewing_direction(P)">calc_viewing_direction</a>(P);
+0101 disp([<span class="string">'Viewing direction d = ['</span>, num2str(d'),<span class="string">']'</span>])
+0102 
+0103 disp(<span class="string">' '</span>)
+0104 disp(<span class="string">'Get K, R, Z from P with negative c'</span>)
+0105 [K_,R_,Z_,~] = <a href="../../General-Functions/Geometry/calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>(P,-1);
+0106 K_                                                                         <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0107 R_                                                                         <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0108 Z_'                                                                        <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0109 
+0110 disp(<span class="string">'Check calculated values'</span>)
+0111 dK3 = K/K(3,3)-K_;
+0112 disp([<span class="string">'norm(dK) = ['</span>, num2str(norm(dK3)),<span class="string">']'</span>])
+0113 dR3 = R-R_;
+0114 disp([<span class="string">'norm(dR) = ['</span>, num2str(norm(dR3)),<span class="string">']'</span>])
+0115 dZ3 = Z-Z_;
+0116 disp([<span class="string">'norm(dZ) = ['</span>, num2str(norm(dZ3)),<span class="string">']'</span>])
+0117 
+0118 <span class="comment">%% 4. camera</span>
+0119 fprintf(<span class="string">'\n-------- camera 4: K(3,3) &lt; 0, c &gt; 0 --------\n'</span>)
+0120 disp(<span class="string">'Again, create P with random Z and'</span>)
+0121 K=[-1,0.01,0.01;0,-1,0.1;0,0,-1];
+0122 disp([<span class="string">'diag(K) = ['</span>, num2str(diag(K)'),<span class="string">']'</span>])
+0123 
+0124 Z = rand(3,1); <span class="comment">% zeros(3,1);</span>
+0125 P = <a href="../../General-Functions/Geometry/calc_P_from_KRZ.html" class="code" title="function P = calc_P_from_KRZ (K,R,Z,K33)">calc_P_from_KRZ</a>(K,R,Z)                                                 <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0126 d = <a href="../../General-Functions/Geometry/calc_viewing_direction.html" class="code" title="function d = calc_viewing_direction(P)">calc_viewing_direction</a>(P);
+0127 disp([<span class="string">'Viewing direction d = ['</span>, num2str(d'),<span class="string">']'</span>])
+0128 
+0129 disp(<span class="string">' '</span>)
+0130 disp(<span class="string">'Get K, R, Z from P with positive c'</span>)
+0131 [K_,R_,Z_,~] = <a href="../../General-Functions/Geometry/calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>(P,1);
+0132 K_                                                                         <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0133 R_                                                                         <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0134 Z_'                                                                        <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0135 
+0136 disp(<span class="string">'Check calculated values'</span>)
+0137 dK4 = K/K(3,3)-K_;
+0138 disp([<span class="string">'norm(dK) = ['</span>, num2str(norm(dK4)),<span class="string">']'</span>])
+0139 dR4 = R-R_;
+0140 disp([<span class="string">'norm(dR) = ['</span>, num2str(norm(dR4)),<span class="string">']'</span>])
+0141 dZ4 = Z-Z_;
+0142 disp([<span class="string">'norm(dZ) = ['</span>, num2str(norm(dZ4)),<span class="string">']'</span>])
+0143 
+0144 sum_check=<span class="keyword">...</span>
+0145     norm(dK1(:))+norm(dK2(:))+norm(dK3(:))+norm(dK4(:))+<span class="keyword">...</span>
+0146     norm(dR1(:))+norm(dR2(:))+norm(dR3(:))+norm(dR4(:))+<span class="keyword">...</span>
+0147     norm(dZ1(:))+norm(dZ2(:))+norm(dZ3(:))+norm(dZ4(:));
+0148 
+0149 disp(<span class="string">' '</span>)
+0150 display([<span class="string">'Total sum of absolute differences ='</span>,num2str(sum_check)]);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

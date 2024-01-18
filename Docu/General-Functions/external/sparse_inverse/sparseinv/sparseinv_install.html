@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sparseinv_install</title>
+  <meta name="keywords" content="sparseinv_install">
+  <meta name="description" content="SPARSEINV_INSTALL compiles and installs the sparseinv function.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../Documentation.html">Home</a> &gt;  <a href="../../../Documentation.html">General-Functions</a> &gt; <a href="../../Documentation.html">external</a> &gt; <a href="#">sparse_inverse</a> &gt; <a href="Documentation.html">sparseinv</a> &gt; sparseinv_install.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../Documentation.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\external\sparse_inverse\sparseinv&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>sparseinv_install
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>SPARSEINV_INSTALL compiles and installs the sparseinv function.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function sparseinv_install </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SPARSEINV_INSTALL compiles and installs the sparseinv function.
+ Your current working directory must be the sparseinv directory for this
+ function to work.
+
+ Example:
+   sparseinv_install
+
+ See also <a href="sparseinv.html" class="code" title="function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)">sparseinv</a>, <a href="sparseinv_test.html" class="code" title="function sparseinv_test (extensive)">sparseinv_test</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function sparseinv_install</a>
+0002 <span class="comment">%SPARSEINV_INSTALL compiles and installs the sparseinv function.</span>
+0003 <span class="comment">% Your current working directory must be the sparseinv directory for this</span>
+0004 <span class="comment">% function to work.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Example:</span>
+0007 <span class="comment">%   sparseinv_install</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% See also sparseinv, sparseinv_test</span>
+0010 
+0011 <span class="comment">% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com</span>
+0012 
+0013 is64 = ~isempty (strfind (computer, <span class="string">'64'</span>)) ;
+0014 <span class="keyword">if</span> (is64)
+0015     fprintf (<span class="string">'Compiling sparseinv (64-bit)\n'</span>) ;
+0016     mex -largeArrayDims sparseinv_mex.c sparseinv.c
+0017 <span class="keyword">else</span>
+0018     fprintf (<span class="string">'Compiling sparseinv (32-bit)\n'</span>) ;
+0019     mex sparseinv_mex.c sparseinv.c
+0020 <span class="keyword">end</span>
+0021 addpath (pwd)</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

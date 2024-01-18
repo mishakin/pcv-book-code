@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_Pi</title>
+  <meta name="keywords" content="calc_Pi">
+  <meta name="description" content="% Pi-matrix from 3D-point 4-vector">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_Pi.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_Pi
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Pi-matrix from 3D-point 4-vector</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function P = calc_Pi(X) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Pi-matrix from 3D-point 4-vector
+ see PCV (7.37)
+
+ Usage
+   P = calc_Pi (X)
+
+   X - 4x1 homogeneous 3D point
+   P - 6x4 Pi Matrix
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>, <a href="calc_Gamma.html" class="code" title="function G = calc_Gamma (L)">calc_Gamma</a>, <a href="calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>, <a href="calc_Gamma_reduced.html" class="code" title="function [Gr , Rm] = calc_Gamma_reduced(L)">calc_Gamma_reduced</a>,
+ <a href="calc_Gammadual_reduced.html" class="code" title="function [Gr , Rm] = calc_Gammadual_reduced(L)">calc_Gammadual_reduced</a>, <a href="calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../05-08-Geometry/demo_3D_Lines2Point.html" class="code" title="">demo_3D_Lines2Point</a>	% Demo intersection and join of 3D lines</li><li><a href="../../05-08-Geometry/demo_3D_Points_distances.html" class="code" title="">demo_3D_Points_distances</a>	% demo distanc 3D point</li><li><a href="../../05-08-Geometry/demo_3D_geometry.html" class="code" title="">demo_3D_geometry</a>	% Demo 3D-geometry</li><li><a href="../../05-08-Geometry/demo_dual.html" class="code" title="">demo_dual</a>	% DEMO Duality</li><li><a href="../../05-08-Geometry/demo_singularity_line_through_four_lines.html" class="code" title="">demo_singularity_line_through_four_lines</a>	% Test singularity of line through four lines</li><li><a href="../../10-Uncertain-Geometry/demo_estimate_two_symmetric_planes_from_points.html" class="code" title="">demo_estimate_two_symmetric_planes_from_points</a>	% test_two_symmetric_planes_from_points</li><li><a href="../../10-Uncertain-Geometry/demo_selection_X_on_Li.html" class="code" title="">demo_selection_X_on_Li</a>	% test whether selection is necessary when using L through X constraint</li><li><a href="../../13-Two-View-Geometry/demo_check_of_signs_single_and_two_view_geometry.html" class="code" title="">demo_check_of_signs_single_and_two_view_geometry</a>	% demo: check of signs single and two view geometry</li><li><a href="calc_Q_from_P.html" class="code" title="function Q = calc_Q_from_P (P)">calc_Q_from_P</a>	% calculates projection matrix Q for lines from P</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Pi-matrix from 3D-point 4-vector</span>
+0002 <span class="comment">% see PCV (7.37)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Usage</span>
+0005 <span class="comment">%   P = calc_Pi (X)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   X - 4x1 homogeneous 3D point</span>
+0008 <span class="comment">%   P - 6x4 Pi Matrix</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Wolfgang Förstner</span>
+0011 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See also calc_Pidual, calc_Gamma, calc_Gammadual, calc_Gamma_reduced,</span>
+0014 <span class="comment">% calc_Gammadual_reduced, calc_Dual</span>
+0015 
+0016 <a name="_sub0" href="#_subfunctions" class="code">function P = calc_Pi(X)</a>
+0017 P= <span class="keyword">...</span>
+0018 [<span class="keyword">...</span>
+0019       X(4)  0     0    -X(1); <span class="keyword">...</span>
+0020       0     X(4)  0    -X(2); <span class="keyword">...</span>
+0021       0     0     X(4) -X(3); <span class="keyword">...</span>
+0022       0    -X(3)  X(2)  0; <span class="keyword">...</span>
+0023       X(3)  0    -X(1)  0; <span class="keyword">...</span>
+0024      -X(2)  X(1)  0     0  <span class="keyword">...</span>
+0025 ];</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

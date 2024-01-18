@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_direct_fit_plane_centroid_form_to_points</title>
+  <meta name="keywords" content="sugr_direct_fit_plane_centroid_form_to_points">
+  <meta name="description" content="% Fits a plane in centroid form to a set of 3D points">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Plane</a> &gt; sugr_direct_fit_plane_centroid_form_to_points.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Plane&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_direct_fit_plane_centroid_form_to_points
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Fits a plane in centroid form to a set of 3D points</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [Xo, Q, var_q, var_phi, var_psi, est_sigma_0_2] = sugr_direct_fit_plane_centroid_form_to_points(X, CovX) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fits a plane in centroid form to a set of 3D points
+
+ [Xo, Q, var_q, var_phi, var_psi] = sugr_direct_fit_plane_centroid_form_to_points(X, CovX)
+
+ * X    = 3 x n matrix, n 3D points that lie on a plane
+ * CovX = 1 x n or 3 x n or 9 x n matrix, covariance matrices of the points.
+ Each column of CovX is either the variance of a point, or the diagonal/all elements of the covariance matrix of a point.
+
+ * Xo  = 3 x 1 vector, centroid of the fitted plane
+ * Q   = 3 x 3 matrix, rotation matrix of the fitted plane. N = Q(:,:,3);
+ * var_q   = 1 x 1 scalar, theoretical variance of fitted plane along the normal
+ * var_phi = 1 x 1 scalar, theoretical variance of X component of the normal
+ * var_psi = 1 x 1 scalar, theoretical variance of Y component of the normal
+ * est_sigma_0_2   = 1 x 1 scalar, estimated variance factor
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ change log
+ 29/08/2016    wf: added est_sigma_0_2 as output
+ 26/08/2016    first version
+ 28/08/2016    CovX can now be a 1 x n, 3 x n or 9 x n matrix</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Plane/demo_direct_plane_fit.html" class="code" title="">demo_direct_plane_fit</a>	% demo plane fitting direct method</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fits a plane in centroid form to a set of 3D points</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [Xo, Q, var_q, var_phi, var_psi] = sugr_direct_fit_plane_centroid_form_to_points(X, CovX)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * X    = 3 x n matrix, n 3D points that lie on a plane</span>
+0006 <span class="comment">% * CovX = 1 x n or 3 x n or 9 x n matrix, covariance matrices of the points.</span>
+0007 <span class="comment">% Each column of CovX is either the variance of a point, or the diagonal/all elements of the covariance matrix of a point.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% * Xo  = 3 x 1 vector, centroid of the fitted plane</span>
+0010 <span class="comment">% * Q   = 3 x 3 matrix, rotation matrix of the fitted plane. N = Q(:,:,3);</span>
+0011 <span class="comment">% * var_q   = 1 x 1 scalar, theoretical variance of fitted plane along the normal</span>
+0012 <span class="comment">% * var_phi = 1 x 1 scalar, theoretical variance of X component of the normal</span>
+0013 <span class="comment">% * var_psi = 1 x 1 scalar, theoretical variance of Y component of the normal</span>
+0014 <span class="comment">% * est_sigma_0_2   = 1 x 1 scalar, estimated variance factor</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Wolfgang Förstner</span>
+0017 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% change log</span>
+0020 <span class="comment">% 29/08/2016    wf: added est_sigma_0_2 as output</span>
+0021 <span class="comment">% 26/08/2016    first version</span>
+0022 <span class="comment">% 28/08/2016    CovX can now be a 1 x n, 3 x n or 9 x n matrix</span>
+0023 
+0024 <a name="_sub0" href="#_subfunctions" class="code">function [Xo, Q, var_q, var_phi, var_psi, est_sigma_0_2] = sugr_direct_fit_plane_centroid_form_to_points(X, CovX)</a>
+0025 
+0026 <span class="comment">%% check input</span>
+0027 
+0028 <span class="comment">% check that we dont have too few arguments</span>
+0029 <span class="keyword">if</span> nargin &lt; 1, error(<span class="string">'Not enough input arguments. '</span>), <span class="keyword">end</span>
+0030 
+0031 <span class="comment">% or too many ...</span>
+0032 <span class="keyword">if</span> nargin &gt; 2, error(<span class="string">'Too many input arguments'</span>), <span class="keyword">end</span>
+0033 
+0034 <span class="comment">% otherwise we have at least points; check if they are 3D</span>
+0035 [dim, numPoints] = size(X);
+0036 <span class="keyword">if</span> dim ~= 3, error(<span class="string">'Input should be a 3 x n matrix containing 3D points. '</span>), <span class="keyword">end</span>
+0037 
+0038 <span class="comment">% check if we have enough points</span>
+0039 <span class="keyword">if</span> numPoints &lt; 3, error(<span class="string">'At least three points are needed for plane fitting. '</span>), <span class="keyword">end</span>
+0040 
+0041 <span class="comment">% if variances are not given use default value of 1 for all points</span>
+0042 <span class="keyword">if</span> nargin == 1
+0043     warning(<span class="string">'A default variance of 1 will be used for all points. '</span>)
+0044     CovX = repmat(ones(3,1), 1, numPoints);
+0045 <span class="keyword">end</span>
+0046 
+0047 <span class="comment">% check the form of (co)variances if given</span>
+0048 <span class="keyword">if</span> nargin == 2
+0049     
+0050     [dim2, np2] = size(CovX);
+0051     
+0052     <span class="comment">% check that variances are given for all points</span>
+0053     <span class="keyword">if</span> np2 ~= numPoints, error(<span class="string">'Number of variances does not match the number of points. '</span>), <span class="keyword">end</span>
+0054     
+0055     <span class="comment">% if for each point only one variance value is given then all is fine</span>
+0056     <span class="keyword">if</span> dim2 == 1
+0057         CovX = repmat(CovX, 3, 1);
+0058         
+0059         <span class="comment">% if for each point three variances are given then issue a warning but we can proceed</span>
+0060     <span class="keyword">elseif</span> dim2 == 3
+0061         warning(<span class="string">'For anisotropic covariance matrices the result may not be optimal. '</span>),
+0062         
+0063         <span class="comment">% if for each point all 9 elements of a covariance matrix are given issue a warning and discard the off-diagonal elements</span>
+0064     <span class="keyword">elseif</span> dim2 == 9
+0065         warning(<span class="string">'Off-diagonal elements of covariance matrices will be ignored. '</span>),
+0066         <span class="comment">%CovX = CovX([1 5 9], :);</span>
+0067         CovX = repmat((CovX(1, :)+CovX(5, :)+CovX(9, :))/3,3,1);
+0068         
+0069         <span class="comment">% hopefully one should never end up here!</span>
+0070     <span class="keyword">else</span>
+0071         error(<span class="string">'Input variances/covariances should be in the form of a 1 x n, 3 x n or 9 x n matrix. '</span>),
+0072     <span class="keyword">end</span>
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="comment">%% the weights</span>
+0076 w = 1 ./ CovX;
+0077 
+0078 <span class="comment">%% the weighted centroid</span>
+0079 Xo = sum(w .* X, 2) ./ sum(w, 2);
+0080 
+0081 <span class="comment">%% the moment matrix</span>
+0082 M = w .* (X - repmat(Xo, 1, numPoints)) * (X - repmat(Xo, 1, numPoints))' ;
+0083 
+0084 <span class="comment">%% the rotation matrix Q</span>
+0085 [Q, G] = eig(M);
+0086 
+0087 <span class="comment">% sort eigenvalues in descending order</span>
+0088 [srtval, srtid] = sort(diag(G), <span class="string">'descend'</span>);
+0089 G = diag(srtval);
+0090 
+0091 <span class="comment">% sort eigenvectors correspondingly</span>
+0092 Q = Q(:, srtid);
+0093 
+0094 <span class="comment">% if Q is a reflection convert it to a rotation</span>
+0095 Q = Q*diag([1,1,det(Q)]);
+0096 
+0097 <span class="comment">%% the variances of plane parameters</span>
+0098 w_bar = mean(w(:));
+0099 
+0100 <span class="comment">% redundancy</span>
+0101 Red = numPoints - 3;
+0102 
+0103 <span class="comment">% estimated Omega</span>
+0104 Omega = G(3,3);
+0105 
+0106 <span class="keyword">if</span> Red &gt; 0
+0107     est_sigma_0_2 = Omega/Red;
+0108 <span class="keyword">else</span>
+0109     est_sigma_0_2 = 1;
+0110 <span class="keyword">end</span>
+0111 
+0112 <span class="comment">% theoretical variance along normal</span>
+0113 var_q   = 1 / numPoints / w_bar ;
+0114 
+0115 <span class="comment">% theoretcial variance of x component of the normal</span>
+0116 var_phi = 1 / G(1, 1)  ;
+0117 
+0118 <span class="comment">% theoretical variance of y component of the normal</span>
+0119 var_psi = 1 / G(2, 2)  ;
+0120 
+0121</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

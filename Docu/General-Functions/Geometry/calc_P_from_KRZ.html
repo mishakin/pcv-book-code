@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_P_from_KRZ</title>
+  <meta name="keywords" content="calc_P_from_KRZ">
+  <meta name="description" content="% calculates P from K, R and Z">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_P_from_KRZ.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_P_from_KRZ
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% calculates P from K, R and Z</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function P = calc_P_from_KRZ (K,R,Z,K33) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% calculates P from K, R and Z
+ see PCV (12.34), and additional sign of K33
+
+ Usage:
+   P = calc_P_from_KRZ (K,R,Z,[K33])
+  
+   K   - calibration matrix 
+   R   - rotation matrix
+   Z   - projection centre
+   K33 - sign of K33, optional, default K33 = 1;
+
+   P   - 4 x 3-projection matrix P = K*R*[I|-Z] 
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>, <a href="calc_Q_from_P.html" class="code" title="function Q = calc_Q_from_P (P)">calc_Q_from_P</a>, <a href="calc_viewing_direction.html" class="code" title="function d = calc_viewing_direction(P)">calc_viewing_direction</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../05-08-Geometry/demo_single_image_geometry.html" class="code" title="">demo_single_image_geometry</a>	% DEMO single image geometry</li><li><a href="../../12-Single-View-Geometry/Demo_Projection/demo_KRZ.html" class="code" title="">demo_KRZ</a>	% Demo partitioning of P into K, R, and Z</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% calculates P from K, R and Z</span>
+0002 <span class="comment">% see PCV (12.34), and additional sign of K33</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Usage:</span>
+0005 <span class="comment">%   P = calc_P_from_KRZ (K,R,Z,[K33])</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   K   - calibration matrix</span>
+0008 <span class="comment">%   R   - rotation matrix</span>
+0009 <span class="comment">%   Z   - projection centre</span>
+0010 <span class="comment">%   K33 - sign of K33, optional, default K33 = 1;</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   P   - 4 x 3-projection matrix P = K*R*[I|-Z]</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Wolfgang Förstner</span>
+0015 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% See also calc_KRZ_from_P, calc_Q_from_P, calc_viewing_direction</span>
+0018 
+0019 <a name="_sub0" href="#_subfunctions" class="code">function P = calc_P_from_KRZ (K,R,Z,K33)</a>
+0020 
+0021 <span class="keyword">if</span> nargin ==3
+0022     K33=1;
+0023 <span class="keyword">end</span>
+0024 
+0025 P = K*R*[eye(3) -Z]*K33;</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

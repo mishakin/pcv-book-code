@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of simulate_points_dem_16_precision</title>
+  <meta name="keywords" content="simulate_points_dem_16_precision">
+  <meta name="description" content="% generate a set of points for dem-precision analysis">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">16-Surfacereconstruction</a> &gt; <a href="index.html">Functions</a> &gt; simulate_points_dem_16_precision.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>simulate_points_dem_16_precision
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% generate a set of points for dem-precision analysis</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [points,BB,dx,dem,bin_im,dist_t]=simulate_points_dem_16_precision(N,sigma_h,R) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% generate a set of points for dem-precision analysis
+
+ N           = number of points
+ sigma_h     = precision of points
+ Resolution  = Number of grid cells in each coordinate axis
+
+ points      = Nx4 matrix of points
+               [X,Y,Z,sigma]
+ BB          = bounding box
+ dx          = sampling distance
+ dem         = intended dem (not used here)
+ bin_im      = binary image of points
+ dist_t      = distance transformation of points
+
+ wf 8/2015</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../16-Surfacereconstruction/fig_16_21_quality_surface_reconstruction.html" class="code" title="">fig_16_21_quality_surface_reconstruction</a>	% Fig. 16.21 theoretical quality  of surface reconstruction</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% generate a set of points for dem-precision analysis</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% N           = number of points</span>
+0004 <span class="comment">% sigma_h     = precision of points</span>
+0005 <span class="comment">% Resolution  = Number of grid cells in each coordinate axis</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% points      = Nx4 matrix of points</span>
+0008 <span class="comment">%               [X,Y,Z,sigma]</span>
+0009 <span class="comment">% BB          = bounding box</span>
+0010 <span class="comment">% dx          = sampling distance</span>
+0011 <span class="comment">% dem         = intended dem (not used here)</span>
+0012 <span class="comment">% bin_im      = binary image of points</span>
+0013 <span class="comment">% dist_t      = distance transformation of points</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% wf 8/2015</span>
+0016 
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function [points,BB,dx,dem,bin_im,dist_t]=simulate_points_dem_16_precision(N,sigma_h,R)</a>
+0019 
+0020 
+0021 <span class="comment">%% Example PCV (do not change)</span>
+0022 <span class="comment">% bounding box</span>
+0023 BB=[0,0,R,R];
+0024 <span class="comment">% grid size</span>
+0025 factor=1;
+0026 dx = 1/factor;
+0027 
+0028 p    = (1+rand(N,2)*(R-2));
+0029 M=randn(4);
+0030 a =[ones(N,1) (2*p(:,1)-R)/R (4*p(:,1).^2-4*p(:,1)*R-R^2)/(2*R^2) <span class="keyword">...</span>
+0031     (2*p(:,1)-R).*(2*p(:,1).^2-2*p(:,1)*R-R^2)/R^3];
+0032 b =[ones(N,1) (2*p(:,2)-R)/R (4*p(:,2).^2-4*p(:,2)*R-R^2)/(2*R^2) <span class="keyword">...</span>
+0033     (2*p(:,2)-R).*(2*p(:,2).^2-2*p(:,2)*R-R^2)/R^3];
+0034 z = 2*diag(a*M*b');
+0035 points = [p,z,ones(N,1)*sigma_h];
+0036  
+0037 k=0;
+0038 <span class="keyword">for</span> i=[1,round(R/2),R-1]
+0039     <span class="keyword">for</span> j=[1,round(R/2),R-1]
+0040         k=k+1;
+0041         points(k,:)=[i,j,2*[1 (2*i-R)/(2*R) 1/2*(4*i^2-4*i*R-R^2)/R^2 <span class="keyword">...</span>
+0042             (2*i-R)*(2*i^2-2*i*R-R^2)/R^3]*M*<span class="keyword">...</span>
+0043             [1 (2*j-R)/(2*R) 1/2*(4*j^2-4*j*R-R^2)/R^2 <span class="keyword">...</span>
+0044             (2*j-R)*(2*j^2-2*j*R-R^2)/R^3]',sigma_h];
+0045     <span class="keyword">end</span>
+0046 <span class="keyword">end</span>
+0047 
+0048 
+0049 
+0050 <span class="comment">%% plot points and distance transform</span>
+0051 
+0052 xmin = BB(1);
+0053 ymin = BB(2);
+0054 xmax = BB(3);
+0055 ymax = BB(4);
+0056 
+0057 Nr = ceil((xmax-xmin)/dx)+1;
+0058 Mc = ceil((ymax-ymin)/dx)+1;
+0059 
+0060 dem = zeros(Nr,Mc);
+0061 
+0062 bin_im = dem;
+0063 <span class="keyword">for</span> n=1:N
+0064     i=ceil(points(n,1)*factor);
+0065     j=ceil(points(n,2)*factor);
+0066     bin_im(R+1-j,i)=1;
+0067 <span class="keyword">end</span>
+0068 
+0069 figure
+0070 subplot(1,2,1)
+0071 imshow(bin_im)
+0072 axis equal
+0073 dist_t=bwdist(bin_im,<span class="string">'euclidean'</span>);
+0074 subplot(1,2,2)
+0075 imagesc(sqrt(dist_t));
+0076 title(<span class="string">'points and distance transform'</span>)
+0077 axis equal
+0078 
+0079 
+0080 
+0081 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

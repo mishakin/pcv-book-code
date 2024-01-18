@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_9b_demo_surface_reconstruction</title>
+  <meta name="keywords" content="fig_16_9b_demo_surface_reconstruction">
+  <meta name="description" content="% Fig. 16.9 bottom page 740">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">16-Surfacereconstruction</a> &gt; fig_16_9b_demo_surface_reconstruction.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_9b_demo_surface_reconstruction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Fig. 16.9 bottom page 740</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 16.9 bottom page 740
+ Reconstruct dem from 7 points with flattening and smoothing
+
+ Wolfgang Förstner 01/15
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../16-Surfacereconstruction/Functions/simulate_points_dem_0_flat.html" class="code" title="function [points,BB,dx,sigma_k,sigma_s,dem,out_in]=simulate_points_dem_0">simulate_points_dem_0_flat</a>	% generate a set of points for dem-interpolation</li><li><a href="../16-Surfacereconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type)">smooth_dem_robust_bilinear</a>	% smooth_dem_robust_bilinear</li><li><a href="../16-Surfacereconstruction/Functions/smooth_dem_robust_bilinear_flat.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,W] =smooth_dem_robust_bilinear_flat(points,BB,delta_x,sigma_s,out_C,type_robust,type_data,out_in,print_type,plot_type);">smooth_dem_robust_bilinear_flat</a>	% smooth_dem_robust_bilinear, sparse data on grid, flatness</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 16.9 bottom page 740</span>
+0002 <span class="comment">% Reconstruct dem from 7 points with flattening and smoothing</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner 01/15</span>
+0005 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0007 
+0008 addpath(genpath(<span class="string">'../General_Functions/'</span>));
+0009 addpath(<span class="string">'Functions'</span>)
+0010 
+0011 close all
+0012 
+0013 <span class="comment">%% set parameters</span>
+0014 
+0015 <span class="comment">% data generation</span>
+0016 init_rand = 6;             <span class="comment">% init random generator - may be changed for other example</span>
+0017 type_data = 11;
+0018 
+0019 <span class="comment">% smoothing</span>
+0020 type_robust = 0;
+0021 <span class="comment">%             0 not robust</span>
+0022 <span class="comment">%             1 only dem</span>
+0023 <span class="comment">%             2 only points</span>
+0024 <span class="comment">%             3 both</span>
+0025 out_C = 0;    <span class="comment">% 0 no covariance matrix as output</span>
+0026               <span class="comment">% 1 covariance matrix as output</span>
+0027 
+0028 <span class="comment">% intermediate output</span>
+0029 print_type = 0;
+0030 plot_type  =0;
+0031 
+0032 
+0033 <span class="comment">%% plot settings</span>
+0034 ss = plot_init;
+0035 
+0036 <span class="comment">%% initialize random number generation by fixed seed</span>
+0037 init_rand_seed(init_rand);
+0038 
+0039 
+0040 <span class="comment">%% ---------------------- LETS GO -----------------------------------------</span>
+0041 
+0042 display(<span class="string">'----- demo reconstruct dem from 7 points with flattening and smoothing -----'</span>)
+0043 
+0044 <span class="comment">%% generate dem point cloud</span>
+0045 [points,BB,delta_x,sigma_k,sigma_s,dem,out_in] = <a href="../16-Surfacereconstruction/Functions/simulate_points_dem_0_flat.html" class="code" title="function [points,BB,dx,sigma_k,sigma_s,dem,out_in]=simulate_points_dem_0">simulate_points_dem_0_flat</a>;
+0046    
+0047 
+0048 <span class="comment">%% interpolate flat</span>
+0049 starttime_flattening = cputime;
+0050 ds_flat = <a href="../16-Surfacereconstruction/Functions/smooth_dem_robust_bilinear_flat.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,W] =smooth_dem_robust_bilinear_flat(points,BB,delta_x,sigma_s,out_C,type_robust,type_data,out_in,print_type,plot_type);">smooth_dem_robust_bilinear_flat</a><span class="keyword">...</span>
+0051     (points,BB,delta_x,sigma_k,out_C,type_robust,type_data,<span class="keyword">...</span>
+0052     out_in,print_type,plot_type);
+0053 
+0054 display([<span class="string">'      time for solution flattening: '</span>,num2str(cputime-starttime_flattening)])
+0055 
+0056 <span class="comment">%% interpolate smooth</span>
+0057 starttime_smoothing = cputime;
+0058 ds_smooth = <a href="../16-Surfacereconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type)">smooth_dem_robust_bilinear</a><span class="keyword">...</span>
+0059     (points,BB,delta_x,sigma_k,out_C,type_robust,type_data,<span class="keyword">...</span>
+0060     out_in,print_type,plot_type);    
+0061     
+0062 display([<span class="string">'      time for solution smoothing: '</span>,num2str(cputime-starttime_smoothing)])
+0063 
+0064 
+0065 <span class="comment">%% plot</span>
+0066 figure(<span class="string">'name'</span>,<span class="string">'Fig 16.9 bottom: Best fitting 2D function'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0067     <span class="string">'Position'</span>,[0.1*ss(1),0.2*ss(2),0.8*ss(1),0.5*ss(2)]);
+0068 
+0069 subplot(1,2,1);hold on;
+0070 plot_surface(ds_flat,BB,delta_x,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>,<span class="string">'FaceLighting'</span>,<span class="string">'gouraud'</span>,<span class="keyword">...</span>
+0071         <span class="string">'ColorFct'</span>,<span class="string">'smoothtanh'</span>,<span class="string">'shading'</span>,<span class="string">'interp'</span>,<span class="string">'alpha'</span>,0.3,<span class="string">'view'</span>,[-20,30]);
+0072 plot3(points(:,1),points(:,2),points(:,3),<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15);
+0073 axis equal
+0074 title(<span class="string">'flat dem with given points'</span>,<span class="string">'FontSize'</span>,16)
+0075 
+0076 subplot(1,2,2);hold on
+0077 plot_surface(ds_smooth,BB,delta_x,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>,<span class="string">'FaceLighting'</span>,<span class="string">'gouraud'</span>,<span class="keyword">...</span>
+0078         <span class="string">'ColorFct'</span>,<span class="string">'smoothtanh'</span>,<span class="string">'shading'</span>,<span class="string">'interp'</span>,<span class="string">'alpha'</span>,0.3,<span class="string">'view'</span>,[-20,30]);   
+0079 plot3(points(:,1),points(:,2),points(:,3),<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0080 axis equal
+0081 title(<span class="string">'smooth dem with given points'</span>,<span class="string">'FontSize'</span>,16)
+0082   
+0083 
+0084</pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

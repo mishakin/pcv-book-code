@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_Plane</title>
+  <meta name="keywords" content="sugr_Plane">
+  <meta name="description" content="% Create Plane">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Plane</a> &gt; sugr_Plane.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Plane&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_Plane
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Create Plane</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function Plane = sugr_Plane(a1,a2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Create Plane
+
+ Usage:
+
+    Plane = sugr_Plane(Ah)
+        Ah = 4x1 homogeneous coordinate vector, CovM = 0
+
+    Plane = sugr_Plane(n, d)
+        Hessian parameters, CovM = 0
+        n = 3x1 normal
+        d = 1x1 distance
+
+    Plane = sugr_Plane(Ah,Ahh)
+        Ah = 4x1 homogeneous coordinate vector
+        Ahh = 4x4 cov.matrx
+
+
+ Plane = structure
+ *           .h    = spherically normalized homogeneous coordinates
+ *           .Crr  = reduced covariance matrix of l.h
+ *           .type = 5
+
+
+ Wolfgang Förstner 7/2012
+ wfoerstn@uni-bonn.de
+
+ See also sugr_Point_3D, sugr_Line_3D</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>	% generate minimal representation for homogeneous vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_estimation_ml_Plane_from_points.html" class="code" title="function [x,sigma_0,R,N_matrix,h_vector,estx0,estl] =sugr_estimation_ml_Plane_from_points(l,xa,T,maxiter)">sugr_estimation_ml_Plane_from_points</a>	% ML estiamte of plane from points</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Create Plane</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage:</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%    Plane = sugr_Plane(Ah)</span>
+0006 <span class="comment">%        Ah = 4x1 homogeneous coordinate vector, CovM = 0</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%    Plane = sugr_Plane(n, d)</span>
+0009 <span class="comment">%        Hessian parameters, CovM = 0</span>
+0010 <span class="comment">%        n = 3x1 normal</span>
+0011 <span class="comment">%        d = 1x1 distance</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%    Plane = sugr_Plane(Ah,Ahh)</span>
+0014 <span class="comment">%        Ah = 4x1 homogeneous coordinate vector</span>
+0015 <span class="comment">%        Ahh = 4x4 cov.matrx</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Plane = structure</span>
+0019 <span class="comment">% *           .h    = spherically normalized homogeneous coordinates</span>
+0020 <span class="comment">% *           .Crr  = reduced covariance matrix of l.h</span>
+0021 <span class="comment">% *           .type = 5</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% Wolfgang Förstner 7/2012</span>
+0025 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% See also sugr_Point_3D, sugr_Line_3D</span>
+0028 
+0029 <a name="_sub0" href="#_subfunctions" class="code">function Plane = sugr_Plane(a1,a2)</a>
+0030 
+0031 <span class="comment">% default</span>
+0032 Chh  = zeros(4);
+0033 
+0034 
+0035 <span class="keyword">switch</span> nargin
+0036     <span class="keyword">case</span> 1 <span class="comment">% 4-vector</span>
+0037         <span class="comment">%% (1) homogeneous vector, CovM == 0</span>
+0038         <span class="comment">% minimal representation</span>
+0039         Plane   = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(a1,Chh);
+0040         
+0041     <span class="keyword">case</span> 2
+0042         size_a1=size(a1,1);
+0043         <span class="keyword">switch</span> size_a1
+0044             <span class="keyword">case</span> 3
+0045                 <span class="comment">%% (2) normal, distance, CovM == 0</span>
+0046                 <span class="comment">% minimal representation</span>
+0047                 Plane   = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;-a2],Chh);
+0048                 
+0049             <span class="keyword">case</span> 4
+0050                 <span class="comment">%% (2) homogeneous coordinate vector</span>
+0051                 <span class="comment">% minimal representation</span>
+0052                 Plane   = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(a1,a2);
+0053         <span class="keyword">end</span>
+0054         
+0055 <span class="keyword">end</span>
+0056 
+0057 Plane.type = 5;</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

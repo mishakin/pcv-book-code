@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of diagnostics_GHM_constraints_multi_d</title>
+  <meta name="keywords" content="diagnostics_GHM_constraints_multi_d">
+  <meta name="description" content="% Diagnostics Gauss-Helmert model multidimensional">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GHM</a> &gt; <a href="Documentation.html">Functions-GHM</a> &gt; diagnostics_GHM_constraints_multi_d.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GHM\Functions-GHM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>diagnostics_GHM_constraints_multi_d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Diagnostics Gauss-Helmert model multidimensional</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [vgi,Xv,Rgm,nabla_cg,muv,muv1,U1mqc,U2mc]=diagnostics_GHM_constraints_multi_d(r_U,I,d_I,d_G,Am,Bm,Cov_xx,W_xx,W_gg,vv) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Diagnostics Gauss-Helmert model multidimensional
+
+ referring to constraints
+ assuming each group of observations belongs to one group of constraints
+      number = I, with d_I observations and d_G constraints
+
+  [vgi,Xv,Rgm,nabla_cg,muv,muv1,U1mqc,U2mc]=
+            diagnostics_GHM_constraints_multi_d...
+   (r_U,I,d_I,d_G,Am,Bm,Cov_xx,W_xx,W_gg,vv)
+ 
+ r_U    = index set for parameters to be estimated (others are nuisance)
+ I      = number of observational groups
+ d_I    = dimension of observatioanl groups (must be the same for all)
+ Am     = G x U Jacobian
+ Bm     = G x N Jacobain
+ Cov_xx = U x U CovM of all estimated parameters
+ W_xx   = U x U WeightM of all estimated parameters
+ Wgg    = 
+ vv     = N x 1 residuals
+
+ vgi      = I x dI    matrix of residuals
+ Xv       = I x 1     vector standardized test statistics (chi^2)
+ Rim      = I * d_I^2 redundancy matrices as row vectors 
+ nabla_lv = I x 1     lower bound for detectable outliers (maximum eigenvalue)
+ muv      = I x 1     sensitivity factor for all parameters
+ muv1     = I x 1     sensitivity factor for parameters specified by r_U
+ Um1q     = I * d_I^2 diagonal blocks of \bar U_1 (numerator of muv1^2)
+ Um2      = I * d_I^2 diagonal blocks of U2
+
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+ 
+ See also <a href="GaussHelmertModel.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2] =GaussHelmertModel(lv,Cov_ll,cg_f,xa,sx,Tx,maxiter,rU)">GaussHelmertModel</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="GaussHelmertModelGroups.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,Xv,Rim,nabla_lv,muv,muv1,Uv1q,Uv2]=GaussHelmertModelGroups(lm,Cov_ll_m,cg_f,xa,ux,sx,Tx,maxiter,rU)">GaussHelmertModelGroups</a>	% Gauss Helmert Model for Groups</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Diagnostics Gauss-Helmert model multidimensional</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% referring to constraints</span>
+0004 <span class="comment">% assuming each group of observations belongs to one group of constraints</span>
+0005 <span class="comment">%      number = I, with d_I observations and d_G constraints</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  [vgi,Xv,Rgm,nabla_cg,muv,muv1,U1mqc,U2mc]=</span>
+0008 <span class="comment">%            diagnostics_GHM_constraints_multi_d...</span>
+0009 <span class="comment">%   (r_U,I,d_I,d_G,Am,Bm,Cov_xx,W_xx,W_gg,vv)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% r_U    = index set for parameters to be estimated (others are nuisance)</span>
+0012 <span class="comment">% I      = number of observational groups</span>
+0013 <span class="comment">% d_I    = dimension of observatioanl groups (must be the same for all)</span>
+0014 <span class="comment">% Am     = G x U Jacobian</span>
+0015 <span class="comment">% Bm     = G x N Jacobain</span>
+0016 <span class="comment">% Cov_xx = U x U CovM of all estimated parameters</span>
+0017 <span class="comment">% W_xx   = U x U WeightM of all estimated parameters</span>
+0018 <span class="comment">% Wgg    =</span>
+0019 <span class="comment">% vv     = N x 1 residuals</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% vgi      = I x dI    matrix of residuals</span>
+0022 <span class="comment">% Xv       = I x 1     vector standardized test statistics (chi^2)</span>
+0023 <span class="comment">% Rim      = I * d_I^2 redundancy matrices as row vectors</span>
+0024 <span class="comment">% nabla_lv = I x 1     lower bound for detectable outliers (maximum eigenvalue)</span>
+0025 <span class="comment">% muv      = I x 1     sensitivity factor for all parameters</span>
+0026 <span class="comment">% muv1     = I x 1     sensitivity factor for parameters specified by r_U</span>
+0027 <span class="comment">% Um1q     = I * d_I^2 diagonal blocks of \bar U_1 (numerator of muv1^2)</span>
+0028 <span class="comment">% Um2      = I * d_I^2 diagonal blocks of U2</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">% Wolfgang Förstner</span>
+0032 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% See also GaussHelmertModel</span>
+0035 
+0036 <a name="_sub0" href="#_subfunctions" class="code">function [vgi,Xv,Rgm,nabla_cg,muv,muv1,U1mqc,U2mc]=diagnostics_GHM_constraints_multi_d</a><span class="keyword">...</span>
+0037     (r_U,I,d_I,d_G,Am,Bm,Cov_xx,W_xx,W_gg,vv)
+0038 
+0039 [~,U] = size(Am);
+0040 
+0041 delta_0=4.13;  <span class="comment">% all sizes referring to d_J.</span>
+0042 
+0043 <span class="keyword">if</span> ~isempty(r_U)
+0044     <span class="comment">% ranges</span>
+0045     r_C= r_U;
+0046     r_D= setdiff(1:U,r_U);
+0047     <span class="comment">% partitioned design matrix A=[C,D]</span>
+0048     Cm = Am(:,r_C);
+0049     Dm = Am(:,r_D);
+0050     <span class="comment">% reduced design matrix</span>
+0051     Cmr    = Cm - Dm / W_xx(r_D,r_D) * W_xx(r_D,r_C);  <span class="comment">% C_reduced</span>
+0052     Cov_11 = Cov_xx(r_C,r_C);
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">%% observational groups</span>
+0056 Rgm   = zeros(I,d_G^2);
+0057 U1mqc = zeros(I,d_G^2);
+0058 U2mc  = zeros(I,d_G^2);
+0059 Xv    = zeros(I,1);
+0060 vgi   = zeros(I,d_G);
+0061 nabla_cg = zeros(I,1);
+0062 muv   = zeros(I,1);
+0063 muv1  = zeros(I,1);
+0064 
+0065 <span class="keyword">for</span> i=1:I
+0066     <span class="comment">% detectability, test statistics, sensitivity wrt all parameters</span>
+0067     i_range     = d_I*i-(d_I-1):d_I*i;
+0068     g_range     = d_G*i-(d_G-1):d_G*i;
+0069     Amt_i       = Am(g_range,:);
+0070     Bmt_i       = Bm(i_range,g_range)';
+0071     <span class="comment">%W_gg_ii     = inv(Bmt_i * Cov_ll_ii * Bmt_i'); % Weight matrix of group</span>
+0072     W_gg_ii     = W_gg(g_range,g_range); <span class="comment">% Weight matrix of group</span>
+0073     Cov_gg_ii   = inv(W_gg_ii);
+0074     Cov_vgvg_ii = Cov_gg_ii - Amt_i * Cov_xx * Amt_i';
+0075     W_vgvg_ii   = inv(Cov_vgvg_ii+eps);
+0076     <span class="comment">% redundancy matrix of constraints</span>
+0077     R_gg_ii     = full(Cov_vgvg_ii * W_gg_ii);
+0078     R_gg_ii_inv = inv(R_gg_ii);
+0079     Rgm(i,:)    = R_gg_ii(:)';                  <span class="comment">% vectorized Rgg</span>
+0080     vgi(i,:)    = Bmt_i*vv(i_range);       <span class="comment">% residual of group</span>
+0081     Xv(i)       = vgi(i,:) * W_vgvg_ii * vgi(i,:)';                         <span class="comment">%#ok&lt;MINV&gt;</span>
+0082     <span class="comment">% Xhi^2-test statistic</span>
+0083     nabla_cg(i) = delta_0 * <span class="keyword">...</span>
+0084         sqrt(real(max(eig( R_gg_ii \ inv(W_gg_ii) ))));
+0085     <span class="comment">% minimum detectable outlier</span>
+0086     muv(i)      = sqrt(real(max(eig(R_gg_ii_inv - eye(d_G) ))));
+0087     <span class="comment">% sensitivity factors</span>
+0088     
+0089     <span class="comment">% sensitivity wrt selected parameters range rU</span>
+0090     
+0091     <span class="keyword">if</span> ~isempty(r_U)
+0092         <span class="comment">% U's for constraints</span>
+0093         U1qc       = Cmr(g_range,:) * Cov_11  * Cmr(g_range,:)' * W_gg_ii;
+0094         U1mqc(i,:) = U1qc(:)';
+0095         U2c        = Dm(g_range,:)  / W_xx(r_D,r_D)  * <span class="keyword">...</span>
+0096             Dm(g_range,:)' * W_gg_ii;
+0097         U2mc(i,:)  = U2c(:)';
+0098         <span class="comment">% check      = U1qc + U2c + R_gg_ii - eye(d_G)</span>
+0099         <span class="comment">% I=U_C_bar+U_D+R, check-eye(d_I)</span>
+0100         
+0101         <span class="comment">% sensitivity factors</span>
+0102         muv1(i)   = sqrt(real(max(eig(U1qc / R_gg_ii ))));
+0103     <span class="keyword">end</span>
+0104 <span class="keyword">end</span>
+0105</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

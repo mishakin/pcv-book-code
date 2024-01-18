@@ -1,0 +1,632 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demos_GMM_regression</title>
+  <meta name="keywords" content="demos_GMM_regression">
+  <meta name="description" content="% test GMM with linear regression with check">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GMM</a> &gt; <a href="Documentation.html">Demo-GMM</a> &gt; demos_GMM_regression.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GMM\Demo-GMM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>demos_GMM_regression
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% test GMM with linear regression with check</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% test GMM with linear regression with check
+
+ 1. Single example
+ 2. checking the correctness
+ 3. the effect of varying noise level
+ 4. the effect of varying density of observations
+ 
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../04-Estimation/GMM/Functions-GMM/GaussMarkovModelLinear.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=GaussMarkovModelLinear(lv,Cov_ll,Am,av,rU)">GaussMarkovModelLinear</a>	% Gauss-Markov model linear, individual observations</li><li><a href="../../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>	% check estimation result, PCV Sect. 4.6.8</li><li><a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% test GMM with linear regression with check</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% 1. Single example</span>
+0004 <span class="comment">% 2. checking the correctness</span>
+0005 <span class="comment">% 3. the effect of varying noise level</span>
+0006 <span class="comment">% 4. the effect of varying density of observations</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Wolfgang Förstner</span>
+0009 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0010 
+0011 close all
+0012 clear sigma_x12
+0013 
+0014 addpath(genpath(<span class="string">'../../../General-Functions/'</span>));
+0015 addpath(genpath(<span class="string">'../Functions-GMM/'</span>));
+0016 
+0017 
+0018 disp(<span class="string">'============================================'</span>)
+0019 disp(<span class="string">'============================================'</span>)
+0020 disp(<span class="string">'             Linear regression              '</span>)
+0021 disp(<span class="string">'            l = x[1] + x[2] * t             '</span>)
+0022 disp(<span class="string">'--------------------------------------------'</span>)
+0023 
+0024 <span class="comment">%% General control parameters</span>
+0025 
+0026 <span class="comment">% choose one or several of the following four parts of the example</span>
+0027 <span class="comment">%choice=[1,0,0,0];  % single example</span>
+0028 <span class="comment">%choice=[0,1,0,0];  % checking the correctness%</span>
+0029 <span class="comment">%choice=[0,0,1,0];  % the effect of varying noise level</span>
+0030 <span class="comment">%choice=[0,0,0,1];  % the effect of varying density of observations</span>
+0031 choice=[1,1,1,1];
+0032 
+0033 <span class="comment">% initialization of random numbers</span>
+0034 <span class="comment">% = 0 CPU-time dependent</span>
+0035 <span class="comment">% &gt; 0 fixed</span>
+0036 <span class="comment">%init_rand  = 0;</span>
+0037 init_rand   = 15;     <span class="comment">% standard = 15</span>
+0038 
+0039 <span class="comment">%% random number intialization</span>
+0040 <a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0041 
+0042 <span class="comment">%%</span>
+0043 <span class="comment">% unknown parameters</span>
+0044 xt  = [0.5,1]';
+0045 U   = 2;
+0046 disp([<span class="string">'True_parameters = ['</span>, num2str(xt'),<span class="string">']'</span>])
+0047 
+0048 <span class="comment">% Significance level</span>
+0049 S = 0.99;
+0050 
+0051 <span class="comment">% non-centrality parameter</span>
+0052 delta0 = 4;
+0053 
+0054 <span class="comment">%% Individual control parameters</span>
+0055 
+0056 <span class="comment">% 1. for diagnostics: set of parameters to be evaluated</span>
+0057 <span class="comment">%------------------------------------------------------</span>
+0058 rU = 1;  <span class="comment">% can be [], 1, 2, or [1,2]; 1 for offset, 2 for scale</span>
+0059 
+0060 
+0061 <span class="comment">% 2. for checking the result</span>
+0062 <span class="comment">% --------------------------</span>
+0063 <span class="comment">% type of generated data</span>
+0064 <span class="comment">% data_type = -10;  % 10 random position in 1:10</span>
+0065 data_type2 =   1;  <span class="comment">% 4 observations with leverage point at i=4;</span>
+0066 
+0067 <span class="comment">% number of samples for estimation</span>
+0068 K2 = 25;
+0069 
+0070 
+0071 <span class="comment">% 3. for varying sigma</span>
+0072 <span class="comment">% --------------------</span>
+0073 <span class="comment">% type of generated data</span>
+0074 <span class="comment">% data_type = -10;  % 10 random position in 1:10</span>
+0075 data_type3 =   1;  <span class="comment">% 4 observations with leverage point at i=4;</span>
+0076 
+0077 <span class="comment">% varying sigmas</span>
+0078 sigmas = [0.01,0.05,0.1,0.15,0.20];
+0079 
+0080 <span class="comment">% number of samples per sigma</span>
+0081 K3 = 25;
+0082 
+0083 
+0084 <span class="comment">% 4. for varying the density/number N of observations</span>
+0085 <span class="comment">% ---------------------------------------------------</span>
+0086 
+0087 <span class="comment">% varying N's</span>
+0088 <span class="comment">%Ns = [5,10,20,40,80,160,320];</span>
+0089 Ns = round(exp(1+2*log(2):0.5*log(2):7)/exp(1));
+0090 
+0091 <span class="comment">% number of samples per N</span>
+0092 K4 = 5;
+0093 
+0094 
+0095 
+0096 
+0097 <span class="comment">%% 1. Single example #########################################################</span>
+0098 <span class="keyword">if</span> choice(1) == 1
+0099     disp(<span class="string">'============================================'</span>)
+0100     disp(<span class="string">'         Example with evaluation            '</span>)
+0101     disp(<span class="string">'............................................'</span>)
+0102 
+0103     <span class="comment">% initializing random numbers-------------------------------------------</span>
+0104     
+0105     <a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0106     
+0107     
+0108     <span class="keyword">if</span> ~isempty(rU)
+0109         <span class="keyword">if</span> rU(1) == 1
+0110             disp(<span class="string">'parameters_to_be_evaluated = intercept'</span>)
+0111         <span class="keyword">else</span>
+0112             disp(<span class="string">'parameters_to_be_evaluated = slope'</span>)
+0113         <span class="keyword">end</span>
+0114     <span class="keyword">end</span>
+0115     
+0116     <span class="comment">% times of observation ------------------------------------------------</span>
+0117     tv    = [-1,1,2,14]';
+0118     N   = length(tv);
+0119     disp([<span class="string">'Number of observations = '</span>, num2str(N)])<span class="comment">%</span>
+0120     Am  = [ones(N,1), tv];
+0121     av  = zeros(N,1);
+0122     
+0123     <span class="comment">% stochastical model --------------------------------------------------</span>
+0124     sigma= 0.5;
+0125     Cov_ll = sigma^2 * eye(N);
+0126     
+0127     <span class="comment">% observations --------------------------------------------------------</span>
+0128     true_error =randn(N,1)*sigma;
+0129     lv = Am*xt+true_error;
+0130     <span class="comment">% add outlier err(4)=+4 in 4th observation</span>
+0131     lv(4)=lv(4)-4;
+0132     
+0133     disp(<span class="string">'    no         t        tl        te         l'</span>)
+0134     disp([(1:4)',tv,Am*xt,lv-Am*xt,lv ])
+0135    
+0136     <span class="comment">% estimate parameters -------------------------------------------------</span>
+0137     start=cputime;
+0138     [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=<span class="keyword">...</span>
+0139         <a href="../../../04-Estimation/GMM/Functions-GMM/GaussMarkovModelLinear.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=GaussMarkovModelLinear(lv,Cov_ll,Am,av,rU)">GaussMarkovModelLinear</a>(lv,Cov_ll,Am,av,rU);
+0140     CPU_time = (cputime-start)                                              <span class="comment">%#ok&lt;*NOPTS&gt;</span>
+0141     
+0142     warning(<span class="string">'off'</span>,<span class="string">'all'</span>);
+0143     
+0144     <span class="comment">% --------------- output and diagnostics ------------------------------</span>
+0145     ScrS = <a href="../../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;  
+0146     f1 = figure(<span class="string">'Name'</span>,<span class="string">'Regression and Diagnostic'</span>,<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[20 ScrS(2)-0.7*ScrS(2)-100 0.6*ScrS(1) 0.7*ScrS(2)]);
+0147     subplot(2,4,1)
+0148     hold on
+0149     plot(tv,lv,<span class="string">'.r'</span>,<span class="string">'Markersize'</span>,12)       <span class="comment">% given data</span>
+0150     plot([min(tv),max(tv)],[[1,min(tv)]*est_x,[1,max(tv)]*est_x],<span class="string">'-b'</span>)
+0151     xlim([min(tv)-1,max(tv)+1])
+0152     title({<span class="string">'linear regression'</span>, strcat(<span class="string">'$\sigma_{l} = '</span>,num2str(sigma),<span class="string">'$'</span>)})
+0153     
+0154     xlabel(<span class="string">'t'</span>)
+0155     
+0156     
+0157     subplot(2,4,2)
+0158     hold on
+0159     plot(tv,vv,<span class="string">'.r'</span>)
+0160     plot([min(tv),max(tv)],[0,0],<span class="string">'-b'</span>)
+0161     title({<span class="string">'residuals'</span>, strcat(<span class="string">'max($v_i$) = '</span>,num2str(max(abs(vv))))})
+0162     xlim([min(tv)-1,max(tv)+1])
+0163     
+0164     xlabel(<span class="string">'t'</span>)
+0165     
+0166     subplot(2,4,3)
+0167     hold on
+0168     plot(tv,riv,<span class="string">'.r'</span>)
+0169     title({<span class="string">'redundancy number'</span>, strcat(<span class="string">'min($r_i$) = '</span>,num2str(min(riv)))})
+0170     xlim([min(tv)-1,max(tv)+1])
+0171     
+0172     xlabel(<span class="string">'t'</span>)
+0173     
+0174     subplot(2,4,4)
+0175     hold on
+0176     est_e=-vv./riv;
+0177     plot(tv,est_e,<span class="string">'.r'</span>)
+0178     plot([min(tv),max(tv)],[0,0],<span class="string">'-b'</span>)
+0179     title({<span class="string">'estimated error'</span>, strcat(<span class="string">'$\max(|\hat{e}_i|)) = $'</span>,num2str(max(abs(est_e))))})
+0180     xlim([min(tv)-1,max(tv)+1])
+0181     ylim([min(est_e)-1,max(est_e)+1])
+0182     xlabel(<span class="string">'t'</span>)
+0183     
+0184     
+0185     
+0186     subplot(2,4,5)
+0187     hold on
+0188     plot(tv,nabla_lv,<span class="string">'.r'</span>)
+0189     title({<span class="string">'min detectable outliers'</span>, strcat(<span class="string">'$\max(\nabla_{{0l}_i}) = $'</span>,<span class="keyword">...</span>
+0190         num2str(max(nabla_lv)))})
+0191     xlim([min(tv)-1,max(tv)+1])
+0192     xlabel(<span class="string">'t'</span>)
+0193     
+0194     
+0195     subplot(2,4,6)
+0196     hold on
+0197     plot(tv,zv,<span class="string">'.r'</span>)
+0198     plot([min(tv),max(tv)],[2.58,2.58],<span class="string">'-r'</span>)
+0199     plot([min(tv),max(tv)],-[2.58,2.58],<span class="string">'-r'</span>)
+0200     title({<span class="string">'test statistics'</span>, strcat(<span class="string">'max($z_i$) = '</span>,num2str(max(abs(zv))))})
+0201     xlim([min(tv)-1,max(tv)+1])
+0202     xlabel(<span class="string">'t'</span>)
+0203     
+0204     
+0205     
+0206     subplot(2,4,7)
+0207     hold on
+0208     plot(tv,muv,<span class="string">'.r'</span>)
+0209     title({<span class="string">'sensitivity factors'</span>, strcat(<span class="string">'max($\mu_i$) = '</span>,num2str(max(muv)))})
+0210     xlim([min(tv)-1,max(tv)+1])
+0211     xlabel(<span class="string">'t'</span>)
+0212     
+0213     
+0214     <span class="comment">%</span>
+0215     
+0216     disp(<span class="string">'........................................................'</span>)
+0217     disp(<span class="string">'                      diagnostics                       '</span>)
+0218     disp(<span class="string">'........................................................'</span>)
+0219     disp(strcat(<span class="string">'    no         t         error     v         r     est_error'</span>,<span class="keyword">...</span>
+0220             <span class="string">'     z         z*   nabla_0l  nabla_0^*l'</span> ));
+0221     o=[(1:N)', tv, lv-Am*xt, vv, riv, -vv./riv, <span class="keyword">...</span>
+0222         zv, zv.*sqrt(riv), delta0*sigma./sqrt(riv), delta0*sigma./riv ]
+0223     
+0224     Estimated_parameters      = est_x'
+0225     Theoretical_precision     = sqrt(diag(Cov_xx))'
+0226     Redundancy                = R
+0227     Estimated_sigma_0         = sqrt(sigma_0q)
+0228     
+0229     [m,i]=max(abs(true_error));
+0230     disp(horzcat(<span class="string">'Maximal true error                 = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0231         <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)));
+0232     [m,i]=max(abs(vv));
+0233     disp(horzcat(<span class="string">'Maximal residual                   = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0234         <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)));
+0235     [m,i]=min(riv);
+0236     disp(horzcat(<span class="string">'Minimal redundancy number          = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0237         <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)));
+0238     
+0239     [m,i]=max(abs(zv));
+0240     <span class="keyword">if</span> max(abs(zv)) &gt; norminv(S,0,1)
+0241         disp(horzcat(<span class="string">'Maximal test statistic             = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0242             <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)), <span class="string">' ***'</span>);
+0243     <span class="keyword">else</span>
+0244         disp(horzcat(<span class="string">'Maximal test statistic             = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0245             <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)));
+0246     <span class="keyword">end</span>
+0247     
+0248     [m,i]=max(nabla_lv);
+0249     disp(horzcat(<span class="string">'Max. of minimal detectable outlier = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0250         <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)));
+0251     
+0252     [m,i]=max(muv);
+0253     disp(horzcat(<span class="string">'Max. sensitivity factor            = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0254         <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)));
+0255     
+0256     <span class="keyword">if</span> ~isempty(rU)
+0257         [m,i]=max(muv1);
+0258         disp(horzcat(<span class="string">'Max. sensitivity factor selected   = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0259             <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)));
+0260     <span class="keyword">end</span>
+0261     
+0262     
+0263     <span class="comment">% show sensitivity factors --------------------------------------------</span>
+0264     m=2.995;range=0:m/200:m;
+0265     N=10;
+0266     mux=sqrt((1+range.^2)./(N-(1+range.^2)));
+0267     mu1=sqrt(1./(N-(1+range.^2)));
+0268     mu2=sqrt(range.^2./(N-(1+range.^2)));
+0269     
+0270     f2 = figure(<span class="string">'Name'</span>,<span class="string">'Sensitivity factor mu_x'</span>,<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[30+0.35*ScrS(1) ScrS(2)-0.4*ScrS(2)-110 0.3*ScrS(1) 0.4*ScrS(2)]);
+0271     plot(range,mux,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2);
+0272     title(<span class="string">'sensitivity factor $\mu_x$ = f(distance)'</span>)
+0273     xlabel(<span class="string">'$d$'</span>)
+0274     ylabel(<span class="string">'$\mu_x$'</span>)
+0275     ylim([0,5])
+0276     
+0277     f3 = figure(<span class="string">'Name'</span>,<span class="string">'Sensitivity factor mu_offset'</span>,<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[0.7*ScrS(1) ScrS(2)-0.4*ScrS(2)-110 0.3*ScrS(1) 0.4*ScrS(2)]);
+0278     hold on
+0279     plot(range,mu1,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2);
+0280     plot(range,mux,<span class="string">'-g'</span>,<span class="string">'LineWidth'</span>,2);
+0281     title(<span class="string">'sensitivity factor $\mu_{\mbox{offset}}$ (red) and $\mu_x$ (green) = f(distance)'</span>)
+0282     ylim([0,5])
+0283     xlabel(<span class="string">'$d$'</span>)
+0284     ylabel(<span class="string">'$\mu_1,\ \mu_x$'</span>)
+0285     ylim([0,5])
+0286     
+0287     f4 = figure(<span class="string">'Name'</span>,<span class="string">'Sensitivity factor mu_offset'</span>,<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[30 20 0.3*ScrS(1) 0.4*ScrS(2)]);
+0288     hold on
+0289     plot(range,mu2,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2);
+0290     plot(range,mux,<span class="string">'-g'</span>,<span class="string">'LineWidth'</span>,2);
+0291     title(<span class="string">'sensitivity factor $\mu_{scale}$ (red) and $\mu_x$ (green) = f(distance)'</span>)
+0292     ylim([0,5])
+0293     xlabel(<span class="string">'$d$'</span>)
+0294     ylabel(<span class="string">'$\mu_2,\ \mu_x$       '</span>)
+0295     ylim([0,5])
+0296     
+0297 <span class="keyword">end</span>
+0298 
+0299 
+0300 
+0301 <span class="comment">%% 2. checking the correctness</span>
+0302 <span class="keyword">if</span> choice(2) == 1
+0303     
+0304     disp(<span class="string">'========================================================'</span>)
+0305     disp(<span class="string">'             checking the correctness                   '</span>)
+0306     disp(<span class="string">'........................................................'</span>)
+0307     
+0308     <span class="comment">% initializing random numbers -----------------------------------------</span>
+0309     <span class="comment">% the next two lines can be exchanged</span>
+0310     <a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand)
+0311       
+0312     <span class="comment">% K: number of samples ------------------------------------------------</span>
+0313     K=K2;  <span class="comment">% relative accuracy is sqrt(1/K)</span>
+0314     
+0315     
+0316     <span class="keyword">switch</span> data_type2
+0317         <span class="keyword">case</span> 1
+0318             tv = [-1,1,2,14]';
+0319         <span class="keyword">otherwise</span>
+0320             tv = rand(10,1)*10;
+0321             tv = sort(tv);
+0322             <span class="comment">% sigma  = 1.5;</span>
+0323     <span class="keyword">end</span>
+0324     
+0325     N   = length(tv);
+0326     disp([<span class="string">'Number of observations = '</span>, num2str(N)])
+0327     Am  = [ones(N,1), tv];
+0328     av  = zeros(N,1);
+0329     
+0330     <span class="comment">% stochastical model --------------------------------------------------</span>
+0331     sigma= 0.5;
+0332     Cov_ll = sigma^2 * eye(N);
+0333     
+0334     <span class="comment">% K samples</span>
+0335     est_xs   = zeros(K,2);
+0336     est_s0qs = zeros(K,1);
+0337     start=cputime;
+0338     <span class="keyword">for</span> k = 1:K
+0339         true_error = randn(N,1)*sigma;
+0340         lv = Am*xt+true_error;
+0341         
+0342         <span class="comment">% estimate parameters</span>
+0343         
+0344         [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=<span class="keyword">...</span>
+0345             <a href="../../../04-Estimation/GMM/Functions-GMM/GaussMarkovModelLinear.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=GaussMarkovModelLinear(lv,Cov_ll,Am,av,rU)">GaussMarkovModelLinear</a>(lv,Cov_ll,Am,av,rU);
+0346         est_s0qs(k)   = sigma_0q;
+0347         est_xs(k,:)   = est_x';
+0348     <span class="keyword">end</span>
+0349     
+0350     CPU_time_per_sample=(cputime-start)/K
+0351     
+0352     warning(<span class="string">'off'</span>,<span class="string">'all'</span>);
+0353     
+0354     <span class="comment">% output and diagnostics ----------------------------------------------</span>
+0355        
+0356     f5 = <a href="../../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(R,xt,Cov_xx,est_s0qs,est_xs,S,<span class="string">'linear regression'</span>);
+0357     set(f5,<span class="string">'Name'</span>,<span class="string">'Variance Factors'</span>,<span class="string">'Position'</span>,[30+0.35*ScrS(1) 20 0.3*ScrS(1) 0.4*ScrS(2)])
+0358     
+0359 <span class="keyword">end</span>
+0360 
+0361 <span class="comment">%% 3. the effect of varying noise level</span>
+0362 
+0363 <span class="keyword">if</span> choice(3) == 1
+0364     clear tv 
+0365     disp(<span class="string">'========================================================'</span>) 
+0366     disp(<span class="string">'          effect of varying noise level                 '</span>)
+0367     disp(<span class="string">'........................................................'</span>)
+0368     <span class="comment">% initializing random numbers -----------------------------------------</span>
+0369     <a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand)
+0370     
+0371     <span class="keyword">switch</span> data_type3
+0372         <span class="keyword">case</span> 1
+0373             tv    = [-1,1,2,14]';
+0374         <span class="keyword">otherwise</span>
+0375             tv=rand(10,1)*10;
+0376             tv=sort(tv);
+0377             sigma  = 1.5;
+0378     <span class="keyword">end</span>
+0379     
+0380     N   = length(tv);
+0381     disp([<span class="string">'Number of observations = '</span>, num2str(N)])
+0382     Am  = [ones(N,1), tv];
+0383     av  = zeros(N,1);
+0384     
+0385     
+0386     K = K3;
+0387     disp([<span class="string">'Number of samples per sigma = '</span>, num2str(K)])
+0388     
+0389     
+0390     disp([<span class="string">'sigma''s = ['</span>, num2str(sigmas),<span class="string">']'</span>])
+0391     L = length(sigmas);
+0392     
+0393     <span class="comment">% for all sigmas</span>
+0394     sigma_x12 = zeros(L,2);
+0395     <span class="keyword">for</span> l=1:L
+0396         sigma= sigmas(l);
+0397         Cov_ll = sigma^2 * eye(N);
+0398         <span class="comment">%% generate K samples and estimate</span>
+0399         est_xs   = zeros(K,2);
+0400         est_s0qs = zeros(K,1);
+0401         
+0402         <span class="comment">% for all samples</span>
+0403         start=cputime;
+0404         <span class="keyword">for</span> k=1:K
+0405             
+0406             true_error = randn(N,1)*sigma;
+0407             lv = Am*xt+true_error;
+0408             
+0409             <span class="comment">% estimate parameters</span>
+0410             
+0411             [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=<span class="keyword">...</span>
+0412                 <a href="../../../04-Estimation/GMM/Functions-GMM/GaussMarkovModelLinear.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=GaussMarkovModelLinear(lv,Cov_ll,Am,av,rU)">GaussMarkovModelLinear</a>(lv,Cov_ll,Am,av,rU);
+0413             est_s0qs(k)   = sigma_0q;
+0414             est_xs(k,:)   = est_x';
+0415         <span class="keyword">end</span>
+0416         
+0417         warning(<span class="string">'off'</span>,<span class="string">'all'</span>);
+0418         
+0419         Cov_est_x_emp = cov(est_xs);
+0420         <span class="comment">%  set sigmas</span>
+0421         sigma_x12(l,:)=<span class="keyword">...</span>
+0422             [sqrt(Cov_est_x_emp(1,1)),sqrt(Cov_est_x_emp(2,2))];
+0423         
+0424     <span class="keyword">end</span>
+0425     
+0426     <span class="comment">% plot dependencies</span>
+0427     f6 = figure(<span class="string">'Name'</span>,<span class="string">'Effect of varying noise level '</span>,<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[30 20 0.6*ScrS(1) 0.7*ScrS(2)]);
+0428     subplot(2,2,1)
+0429     hold on
+0430     plot(sigmas,sigmas/sigmas(L)*sqrt(Cov_xx(1,1))',<span class="string">'--b'</span>,<span class="string">'Linewidth'</span>,2);
+0431     plot(sigmas,sigma_x12(:,1)',<span class="string">'-r'</span>,<span class="string">'Linewidth'</span>,2);
+0432     plot(sigmas,sigma_x12(:,1)',<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0433     title(<span class="string">'$\sigma_1(\sigma)$'</span>)
+0434     xlabel(<span class="string">'$\sigma$'</span>)
+0435     subplot(2,2,2)
+0436     hold on
+0437     plot(sigmas,sigmas/sigmas(L)*sqrt(Cov_xx(2,2))',<span class="string">'--b'</span>,<span class="string">'Linewidth'</span>,2);
+0438     plot(sigmas,sigma_x12(:,2)',<span class="string">'-r'</span>,<span class="string">'Linewidth'</span>,2);
+0439     plot(sigmas,sigma_x12(:,2)',<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0440     title(<span class="string">'$\sigma_2(\sigma)$'</span>)
+0441     xlabel(<span class="string">'$\sigma$'</span>)
+0442     subplot(2,2,3)
+0443     hold on
+0444     plot(sigmas,ones(1,L)./sigmas(L)*sqrt(Cov_xx(1,1))',<span class="string">'--b'</span>,<span class="string">'Linewidth'</span>,2);
+0445     plot(sigmas,sigma_x12(:,1)./sigmas',<span class="string">'-r'</span>,<span class="string">'Linewidth'</span>,2);
+0446     plot(sigmas,sigma_x12(:,1)./sigmas',<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0447     title(<span class="string">'$\sigma_1(\sigma)/\sigma$'</span>)
+0448     ylim([0,1.2*max(sigma_x12(:,1)./sigmas')])
+0449     xlabel(<span class="string">'$\sigma$'</span>)
+0450     subplot(2,2,4)
+0451     hold on   
+0452     plot(sigmas,ones(1,L)./sigmas(L)*sqrt(Cov_xx(2,2))',<span class="string">'--b'</span>,<span class="string">'Linewidth'</span>,2);
+0453     plot(sigmas,sigma_x12(:,2)./sigmas',<span class="string">'-r'</span>,<span class="string">'Linewidth'</span>,2);
+0454     plot(sigmas,sigma_x12(:,2)./sigmas',<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0455     title(<span class="string">'$\sigma_2(\sigma)/\sigma$'</span>)
+0456     ylim([0,1.2*max(sigma_x12(:,2)./sigmas')])
+0457     xlabel(<span class="string">'$\sigma$'</span>)
+0458     
+0459 <span class="keyword">end</span>
+0460 
+0461 <span class="comment">%% 4. the effect of varying density of observations</span>
+0462 
+0463 <span class="keyword">if</span> choice(4) ==1
+0464     
+0465     disp(<span class="string">'========================================================'</span>)
+0466     disp(<span class="string">'     effect of varying density of observations          '</span>)
+0467     disp(<span class="string">'........................................................'</span>)
+0468     
+0469     <span class="comment">% initializing random numbers -----------------------------------------</span>
+0470     <span class="comment">% the next two lines can be exchanged</span>
+0471     <a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand)
+0472     
+0473     disp(strcat(<span class="string">'Ns = ['</span>,num2str(Ns),<span class="string">']'</span>))
+0474 
+0475     L = length(Ns);
+0476     K = K4;
+0477     
+0478     disp([<span class="string">'Number of samples per N and estimates = '</span>, num2str(K)])
+0479 
+0480     <span class="comment">% sigma</span>
+0481     sigma=0.02;
+0482     
+0483     <span class="comment">% needs to be set ...</span>
+0484     rU=1;
+0485     
+0486     lm=0;
+0487     <span class="comment">% for all Ns</span>
+0488     <span class="keyword">for</span> l=1:L
+0489         N=Ns(l);
+0490         
+0491         <span class="comment">% also repeat sqrt(K) times Ns(l)</span>
+0492         v1=0;
+0493         v2=0;
+0494         <span class="keyword">for</span> m=1:K
+0495             
+0496             <span class="comment">% sorted observations in interval [0..100]</span>
+0497             <span class="comment">%tv=(rand(N,1))*100;</span>
+0498             tv=(1/(2*N):100/(N):100-1/(2*N))';
+0499             tv = sort(tv);                                                  <span class="comment">%#ok&lt;TRSRT&gt;</span>
+0500             Am  = [ones(N,1), tv];
+0501             av  = zeros(N,1);
+0502             
+0503             Cov_ll = sigma^2 * eye(N);
+0504             
+0505             <span class="comment">% generate K samples and estimate</span>
+0506             est_xs   = zeros(K,2);
+0507             est_s0qs = zeros(K,1);
+0508             
+0509             <span class="comment">% for all samples</span>
+0510             start=cputime;
+0511             <span class="keyword">for</span> k=1:K
+0512                 
+0513                 true_error = randn(N,1)*sigma;
+0514                 lv         = Am*xt + true_error;
+0515                 
+0516                 <span class="comment">% estimate parameters</span>
+0517                 
+0518                 [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=<span class="keyword">...</span>
+0519                     <a href="../../../04-Estimation/GMM/Functions-GMM/GaussMarkovModelLinear.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=GaussMarkovModelLinear(lv,Cov_ll,Am,av,rU)">GaussMarkovModelLinear</a>(lv,Cov_ll,Am,av,rU);
+0520                 est_s0qs(k)   = sigma_0q;
+0521                 est_xs(k,:)   = est_x';
+0522             <span class="keyword">end</span>
+0523             
+0524             warning(<span class="string">'off'</span>,<span class="string">'all'</span>);
+0525             
+0526             Cov_est_x_emp = cov(est_xs);
+0527             <span class="comment">%  set sigmas</span>
+0528             v1=v1+Cov_est_x_emp(1,1);
+0529             v2=v2+Cov_est_x_emp(2,2);
+0530             
+0531         <span class="keyword">end</span>
+0532         sigma_x12(l,:)=sqrt([v1/K,v2/K]);
+0533     <span class="keyword">end</span>
+0534     
+0535     <span class="comment">% plot dependencies</span>
+0536     f7 = figure(<span class="string">'Name'</span>,<span class="string">'Effect of varying density of observations '</span>,<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[ScrS(1)-0.6*ScrS(1) 20 0.6*ScrS(1) 0.7*ScrS(2)]);
+0537     subplot(2,2,1)
+0538     hold on
+0539     plot(Ns,sqrt(Cov_xx(1,1))./sqrt(Ns/Ns(L))',<span class="string">'--b'</span>,<span class="string">'Linewidth'</span>,2);
+0540     plot(Ns,sigma_x12(:,1)',<span class="string">'-r'</span>,<span class="string">'Linewidth'</span>,2);
+0541     plot(Ns,sigma_x12(:,1)',<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0542     title(<span class="string">'$\sigma_1(N)$'</span>)
+0543     xlabel(<span class="string">'$N$'</span>)
+0544     subplot(2,2,2)
+0545     hold on
+0546     plot(Ns,sqrt(Cov_xx(2,2))./sqrt(Ns/Ns(L))',<span class="string">'--b'</span>,<span class="string">'Linewidth'</span>,2);
+0547     plot(Ns,sigma_x12(:,2)',<span class="string">'-r'</span>,<span class="string">'Linewidth'</span>,2);
+0548     plot(Ns,sigma_x12(:,2)',<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0549     title(<span class="string">'$\sigma_2(N)$'</span>)
+0550     xlabel(<span class="string">'N'</span>)
+0551     subplot(2,2,3)
+0552     hold on
+0553     plot(Ns,sqrt(Cov_xx(1,1))./sqrt(1/Ns(L))*ones(1,L),<span class="string">'--b'</span>,<span class="string">'Linewidth'</span>,2);
+0554     plot(Ns,sqrt(Ns').*sigma_x12(:,1),<span class="string">'-r'</span>,<span class="string">'Linewidth'</span>,2);
+0555     plot(Ns,sqrt(Ns').*sigma_x12(:,1),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0556     title(<span class="string">'$\sqrt{N} \sigma_1(N)$'</span>)
+0557     xlabel(<span class="string">'$N$'</span>)
+0558     ylim([0,1.2*max(sqrt(Ns').*sigma_x12(:,1))])
+0559     subplot(2,2,4)
+0560     xlabel(<span class="string">'$N$'</span>)
+0561     hold on
+0562     plot(Ns,sqrt(Cov_xx(2,2))./sqrt(1/Ns(L))*ones(1,L),<span class="string">'--b'</span>,<span class="string">'Linewidth'</span>,2);
+0563     plot(Ns,sqrt(Ns').*sigma_x12(:,2),<span class="string">'-r'</span>,<span class="string">'Linewidth'</span>,2);
+0564     plot(Ns,sqrt(Ns').*sigma_x12(:,2),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15);
+0565     title(<span class="string">'$\sqrt{N} \sigma_2(N)$'</span>)
+0566     ylim([0,1.2*max(sqrt(Ns').*sigma_x12(:,2))])
+0567     xlabel(<span class="string">'$N$'</span>)
+0568     
+0569 <span class="keyword">end</span>
+0570 
+0571 figure(f1)
+0572 figure(f2)
+0573 figure(f3)
+0574 figure(f6)
+0575 figure(f7)
+0576 figure(f4)
+0577 figure(f5)</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_20_demo_surface_reconstruction</title>
+  <meta name="keywords" content="fig_16_20_demo_surface_reconstruction">
+  <meta name="description" content="% Fig. 16.20 page 761">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="Documentation.html">Surface-Reconstruction</a> &gt; fig_16_20_demo_surface_reconstruction.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Surface-Reconstruction&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_20_demo_surface_reconstruction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Fig. 16.20 page 761</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 16.20 page 761
+ Surface reconstruction: test dem smoothing, plots of sparse matrices A, N etc.
+
+ Wolfgang Förstner 07/14
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/interpolate_bilinear.html" class="code" title="function z=interpolate_bilinear(S,x,y,dx,BB,sigma_h);">interpolate_bilinear</a>	% interpolate_bilinear</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_0.html" class="code" title="function [points,BB,dx,sigma_k,sigma_h,out_in,dem]=simulate_points_dem_0">simulate_points_dem_0</a>	% generate a set of points for dem-interpolation</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,out_in_0,print_type,plot_type)">smooth_dem_robust_bilinear</a>	% smooth_dem_robust_bilinear</li><li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/Graphics/plot_surface.html" class="code" title="function h = plot_surface(ds,BB,delta_x,varargin)">plot_surface</a>	% Ploting 2.5D surfaces</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 16.20 page 761</span>
+0002 <span class="comment">% Surface reconstruction: test dem smoothing, plots of sparse matrices A, N etc.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner 07/14</span>
+0005 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0007 
+0008 addpath(genpath(<span class="string">'../../General-Functions/'</span>));
+0009 addpath(<span class="string">'Functions'</span>)
+0010 
+0011 close all
+0012 
+0013 <span class="comment">%% set parameters</span>
+0014 
+0015 <span class="comment">% params for generating the data</span>
+0016 init_rand = 6;            <span class="comment">% seed for random generator - may be changed for other example</span>
+0017 
+0018 <span class="comment">% smoothing</span>
+0019 type_robust = 0;
+0020 <span class="comment">%             0 not robust</span>
+0021 <span class="comment">%             1 only dem</span>
+0022 <span class="comment">%             2 only points</span>
+0023 <span class="comment">%             3 both</span>
+0024 out_C = 1;    <span class="comment">% 0 no covariance matrix as output</span>
+0025               <span class="comment">% 1 covariance matrix as output</span>
+0026 
+0027 <span class="comment">% output settings</span>
+0028 print_type = 0;
+0029 plot_type  = 0;
+0030 
+0031 <span class="comment">%% initialize random number generation by fixed seed</span>
+0032 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0033 
+0034 <span class="comment">%% ---------------------- LETS GO -----------------------------------------</span>
+0035 
+0036 disp(<span class="string">'----- Fig. 16.20: Demo surface interpolation -----'</span>)
+0037 
+0038 <span class="comment">%% generate dem point cloud</span>
+0039 [points,BB,delta_x,sigma_k,sigma_h,out_in,dem] = <a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_0.html" class="code" title="function [points,BB,dx,sigma_k,sigma_h,out_in,dem]=simulate_points_dem_0">simulate_points_dem_0</a>;
+0040 
+0041 <span class="comment">%% interpolate</span>
+0042 
+0043 [ds,S,Sigma,Np,Nr,Mc,ver,A,w,w_f,W] = <a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,out_in_0,print_type,plot_type)">smooth_dem_robust_bilinear</a><span class="keyword">...</span>
+0044     (points,BB,delta_x,sigma_k,out_C,type_robust,out_in,<span class="keyword">...</span>
+0045     print_type,plot_type);
+0046 
+0047 
+0048 <span class="comment">%% plot</span>
+0049 
+0050 <span class="comment">% plot settings</span>
+0051 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0052 
+0053 <span class="comment">% plot surface and points</span>
+0054 figure(<span class="string">'name'</span>,<span class="string">'Fig 16.20 Demo surface interpolation'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0055     <span class="string">'Position'</span>,[0.1*ss(1),0.2*ss(2),0.7*ss(1),0.6*ss(2)]);
+0056 
+0057 subplot(1,2,1);hold on
+0058 <a href="../../General-Functions/Graphics/plot_surface.html" class="code" title="function h = plot_surface(ds,BB,delta_x,varargin)">plot_surface</a>(ds,BB,delta_x,<span class="string">'alpha'</span>,0.3,<span class="string">'view'</span>,[-29,65],<span class="string">'colormap'</span>,<span class="string">'cool'</span>);
+0059 <span class="keyword">for</span> n=1:Np
+0060     plot3(points(n,1),points(n,2),points(n,3),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15)
+0061 <span class="keyword">end</span>
+0062 axis equal
+0063 xlabel(<span class="string">'$x$'</span>);ylabel(<span class="string">'$y$'</span>);zlabel(<span class="string">'$z$'</span>);
+0064 title(<span class="string">'Fitted surface'</span>,<span class="string">'FontSize'</span>,16)
+0065 
+0066 <span class="comment">% plot standarddeviation</span>
+0067 subplot(1,2,2);hold on
+0068 <a href="../../General-Functions/Graphics/plot_surface.html" class="code" title="function h = plot_surface(ds,BB,delta_x,varargin)">plot_surface</a>(sqrt(S),BB,delta_x,<span class="string">'alpha'</span>,0.3,<span class="string">'view'</span>,[-29,65],<span class="string">'colormap'</span>,<span class="string">'cool'</span>);
+0069 z=zeros(Np,1);
+0070 <span class="keyword">for</span> n=1:Np
+0071     z(n)=<a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/interpolate_bilinear.html" class="code" title="function z=interpolate_bilinear(S,x,y,dx,BB,sigma_h);">interpolate_bilinear</a>(S,points(n,1),points(n,2),delta_x,BB,sigma_h);
+0072     plot3(points(n,1),points(n,2),sqrt(z(n)),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15) 
+0073 <span class="keyword">end</span>
+0074 plot3(0,0,0,<span class="string">'.k'</span>)
+0075 axis equal
+0076 xlabel(<span class="string">'$x$'</span>);ylabel(<span class="string">'$y$'</span>);zlabel(<span class="string">'$\sigma_z$'</span>);
+0077 title(<span class="string">'Standard deviations $\sigma_z$ of the estimated grid points'</span>,<span class="string">'FontSize'</span>,16)
+0078 
+0079 
+0080</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

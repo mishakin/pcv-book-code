@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_perturb_Lines_2D</title>
+  <meta name="keywords" content="sugr_perturb_Lines_2D">
+  <meta name="description" content="% Perturbes given image lines through one point">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Line_2D</a> &gt; sugr_perturb_Lines_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Line_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_perturb_Lines_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Perturbes given image lines through one point</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD> </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Perturbes given image lines through one point
+
+ lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous)
+
+ * xo = [x,y,phi] true line centroid, true direction of line
+ * d   = length of line
+ * lines = Nx4 [u0,v0,phi_0,lengthl] of N true lines
+ * resolution = sampling distance for ploting
+ * sigma [pel] = standard deviation of single pixels
+      sigma_q = sigma_0/length   sigma of cross-position deviation
+      sigma_phi^2 = sigma_0^2*length^3/12
+ * rigorous = 0 approximate covariance matrix, = 1 rogorous covariance matrix
+
+ lstruct = lstruct.h    =  N x 3 matrix of homogeneous coordinates
+           lstruct.Crr  =  N x 2 x 2 matrix of reduced covariance matrices
+           lstruct.type =  N x 1 vector of type = 2        
+
+ Wolfgang Förstner 1/2011
+ wfoerstn@uni-bonn.de
+ 
+ See also <a href="sugr_Line_2D.html" class="code" title="function Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)">sugr_Line_2D</a>, <a href="sugr_generate_true_Lines_2D_one_Point.html" class="code" title="function lines = sugr_generate_true_Lines_2D_one_Point(x0,d,N,lengthq,resolution)">sugr_generate_true_Lines_2D_one_Point</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>	% get CovM of homogeneous vector x.h</li><li><a href="sugr_Line_2D.html" class="code" title="function Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)">sugr_Line_2D</a>	% create homogeneous 2D line</li><li><a href="sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>	% Plot uncertain 2D line with standard hyperbola</li><li><a href="sugr_select_Line_2D.html" class="code" title="function l = sugr_select_Line_2D(ls,n)">sugr_select_Line_2D</a>	% Select n-th line form list of lines</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_estimate_Point_2D_from_Lines.html" class="code" title="">demo_estimate_Point_2D_from_Lines</a>	% demo_estimate_Point_2D_from_Lines</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Perturbes given image lines through one point</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * xo = [x,y,phi] true line centroid, true direction of line</span>
+0006 <span class="comment">% * d   = length of line</span>
+0007 <span class="comment">% * lines = Nx4 [u0,v0,phi_0,lengthl] of N true lines</span>
+0008 <span class="comment">% * resolution = sampling distance for ploting</span>
+0009 <span class="comment">% * sigma [pel] = standard deviation of single pixels</span>
+0010 <span class="comment">%      sigma_q = sigma_0/length   sigma of cross-position deviation</span>
+0011 <span class="comment">%      sigma_phi^2 = sigma_0^2*length^3/12</span>
+0012 <span class="comment">% * rigorous = 0 approximate covariance matrix, = 1 rogorous covariance matrix</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% lstruct = lstruct.h    =  N x 3 matrix of homogeneous coordinates</span>
+0015 <span class="comment">%           lstruct.Crr  =  N x 2 x 2 matrix of reduced covariance matrices</span>
+0016 <span class="comment">%           lstruct.type =  N x 1 vector of type = 2</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Wolfgang Förstner 1/2011</span>
+0019 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% See also sugr_Line_2D, sugr_generate_true_Lines_2D_one_Point</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0024 
+0025 
+0026 <span class="keyword">global</span> plot_option
+0027 <span class="keyword">global</span> print_option
+0028 
+0029 <span class="comment">%% Initiate</span>
+0030 
+0031 [N,~] = size(lines);
+0032 c = 1;
+0033 
+0034 <span class="keyword">if</span> plot_option &gt; 0
+0035     van_1 = x0/norm(x0);
+0036     van_1(3)=van_1(3)*c;
+0037     <span class="comment">%plot(2*d*[1,-1,-1,1,1]',2*d*[1,1,-1,-1,1]','-b');</span>
+0038     xlim([-2.1,2.1]);
+0039     ylim([-2,2.7])
+0040     <span class="keyword">if</span> abs(van_1(3)) &gt; sqrt(1/2)*d* norm(van_1(1:2))
+0041         van_1_e=van_1(1:2)/van_1(3);
+0042         plot(van_1_e(1),van_1_e(2),<span class="string">'or'</span>)
+0043     <span class="keyword">end</span>
+0044 <span class="keyword">end</span>
+0045 
+0046 <span class="comment">%% prepare generation of lines</span>
+0047 
+0048 lstruct.h    = zeros(N,3);
+0049 lstruct.Crr  = zeros(N,2,2);
+0050 lstruct.type = 2 * ones(N,1);
+0051 
+0052 ii = 0;
+0053 
+0054 Delta_x=d/resolution;
+0055 sigma=sigma*Delta_x;
+0056 
+0057 <span class="comment">% colors</span>
+0058 <span class="comment">% col(0+1)='g';</span>
+0059 <span class="comment">% col(1+1)='r';</span>
+0060 
+0061 <span class="comment">% maxl=0;</span>
+0062 <span class="comment">% minl=10000;</span>
+0063 
+0064 <span class="comment">%% generate N lines</span>
+0065 <span class="keyword">for</span> n = 1:N
+0066     <span class="comment">% generate line to point van_1</span>
+0067 
+0068     <span class="comment">% Generate noisy data</span>
+0069     <span class="comment">% centre</span>
+0070     z0     = lines(n,1)+1i*lines(n,2);
+0071     
+0072     <span class="comment">% true direction</span>
+0073     phi_0  = lines(n,3);
+0074 
+0075     <span class="comment">% length</span>
+0076     lengthl= lines(n,4);
+0077     
+0078     N_points = round(lengthl);
+0079 
+0080     <span class="comment">% std. deviation across line</span>
+0081     sigma_k = sigma/sqrt(N_points);
+0082     
+0083     <span class="comment">% noisy centre</span>
+0084     z0_n = z0 + (randn(1)+1i*randn(1)) * sigma_k;
+0085     
+0086     <span class="comment">% std. dev. direction</span>
+0087     sigma_phi= sigma/sqrt(N_points^3/12)/Delta_x;
+0088     
+0089     <span class="comment">% noisy direction</span>
+0090     phi_n = phi_0 + randn(1)*sigma_phi;
+0091 
+0092     <span class="comment">% start and end point</span>
+0093     dz_n = lengthl/2*exp(1i*phi_n)/resolution*d;
+0094 
+0095     zs_0 = z0_n - dz_n;
+0096     ze_0 = z0_n + dz_n;
+0097 
+0098     <span class="comment">% convert to 2D</span>
+0099     xs = real(zs_0) ;
+0100     ys = imag(zs_0) ;
+0101     xe = real(ze_0) ;
+0102     ye = imag(ze_0) ;
+0103 <span class="comment">%     [xs,ys,xe,ye,phi_n];</span>
+0104     ii=ii+1;
+0105     Line                = <a href="sugr_Line_2D.html" class="code" title="function Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)">sugr_Line_2D</a>((xs+xe)/2,(ys+ye)/2,phi_n-pi/2,sigma_phi,sigma_k);
+0106     lstruct.h(ii,:)     = Line.h';
+0107     lstruct.Crr(ii,:,:) = Line.Crr;
+0108 <span class="keyword">end</span>;
+0109 
+0110 <span class="comment">% [maxl,minl];</span>
+0111 nii=ii;
+0112 
+0113 <span class="comment">%% Check and Plot if plot_option fulfilled</span>
+0114 
+0115 <span class="keyword">if</span> print_option &gt; 0
+0116     Omega_d = 0;
+0117     Omega_p = 0;
+0118     <span class="keyword">for</span> j=1:nii
+0119         l       = <a href="sugr_select_Line_2D.html" class="code" title="function l = sugr_select_Line_2D(ls,n)">sugr_select_Line_2D</a>(lstruct,j);
+0120         Clhh    = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>(l);
+0121         var_c   = van_1' * Clhh * van_1;
+0122         c       = l.h' * van_1;
+0123         Omega_d = Omega_d + c^2;
+0124         Omega_p = Omega_p + c^2 / var_c;
+0125     <span class="keyword">end</span>;
+0126     <span class="comment">% check</span>
+0127 <span class="comment">%     RMS_d=sqrt(Omega_d/nii)*resolution;</span>
+0128 <span class="comment">%     sigma_0_est = sqrt(Omega_p/(nii-2));</span>
+0129 <span class="keyword">end</span>
+0130 
+0131 <span class="keyword">if</span> plot_option &gt; 0
+0132     <span class="keyword">for</span> j=1:nii        
+0133         l       = <a href="sugr_select_Line_2D.html" class="code" title="function l = sugr_select_Line_2D(ls,n)">sugr_select_Line_2D</a>(lstruct,j);
+0134         <a href="sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>(l,<span class="string">'-w'</span>,<span class="string">'-k'</span>,2,100,[0,0]);
+0135     <span class="keyword">end</span>
+0136     axis equal
+0137 <span class="keyword">end</span>
+0138 
+0139 
+0140 
+0141             
+0142   
+0143 
+0144 
+0145 
+0146</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

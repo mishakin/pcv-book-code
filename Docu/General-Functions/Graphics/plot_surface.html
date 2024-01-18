@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_surface</title>
+  <meta name="keywords" content="plot_surface">
+  <meta name="description" content="% Ploting 2.5D surfaces">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Graphics</a> &gt; plot_surface.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Graphics&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>plot_surface
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Ploting 2.5D surfaces</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function h = plot_surface(ds,BB,delta_x,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Ploting 2.5D surfaces
+
+ Usage:
+    plot_surface(ds,BB,delta_x)
+    h = plot_surface(ds,BB,delta_x, [varargin])
+ 
+ ds: double NxM, grid containing surface to plot
+ BB: double 1x4 Bounding Box of surface footprint
+     [xmin, ymin, xmax, ymax]
+ delta_x: double, grid size
+ varagin: key-value pairs according to matlabs plot parameters</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="plot_surfaceArgs.html" class="code" title="function args = plot_surfaceArgs(varargin)">plot_surfaceArgs</a>	% parses arguments for plotting surfaces</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_6.html" class="code" title="function [points,BB,delta_x,sigma_k,out_in,dem] =simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)">simulate_points_dem_6</a>	% simulate_points_dem_6: generate test image of Uwe 1994</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_20_demo_surface_reconstruction.html" class="code" title="">fig_16_20_demo_surface_reconstruction</a>	% Fig. 16.20 page 761</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_22_demo_robust_surface_reconstruction.html" class="code" title="">fig_16_22_demo_robust_surface_reconstruction</a>	% Fig. 16.22 page 762</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_23_aurelo_result.html" class="code" title="">fig_16_23_aurelo_result</a>	% Fig. 16.23 page 764</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_9b_demo_surface_reconstruction.html" class="code" title="">fig_16_9b_demo_surface_reconstruction</a>	% Fig. 16.9 bottom page 740</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Ploting 2.5D surfaces</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage:</span>
+0004 <span class="comment">%    plot_surface(ds,BB,delta_x)</span>
+0005 <span class="comment">%    h = plot_surface(ds,BB,delta_x, [varargin])</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% ds: double NxM, grid containing surface to plot</span>
+0008 <span class="comment">% BB: double 1x4 Bounding Box of surface footprint</span>
+0009 <span class="comment">%     [xmin, ymin, xmax, ymax]</span>
+0010 <span class="comment">% delta_x: double, grid size</span>
+0011 <span class="comment">% varagin: key-value pairs according to matlabs plot parameters</span>
+0012 <span class="comment">%</span>
+0013 
+0014 <a name="_sub0" href="#_subfunctions" class="code">function h = plot_surface(ds,BB,delta_x,varargin)</a>
+0015 
+0016 args = <a href="plot_surfaceArgs.html" class="code" title="function args = plot_surfaceArgs(varargin)">plot_surfaceArgs</a>(varargin{:});
+0017 
+0018 Nr = size(ds,1); Mc = size(ds,2);
+0019 
+0020 X = ([0:Nr-1]'*ones(1,Mc))*delta_x+BB(1);                                   <span class="comment">%#ok&lt;*NBRAK&gt;</span>
+0021 Y = (ones(Nr,1)*[0:Mc-1])*delta_x+BB(2);
+0022 
+0023 colormap(args.colormap)
+0024 
+0025 <span class="keyword">switch</span> args.ColorFct
+0026     <span class="keyword">case</span> <span class="string">'smoothtanh'</span>    
+0027         shade = -[ 0 -1; 1 0]/sqrt(2);
+0028         col=conv2(ds,shade,<span class="string">'same'</span>);
+0029         <span class="comment">%col=(1+col./sqrt(1+col.^2))/2;</span>
+0030         colo=min(1, max(0,tanh(100*(col-0)/(max(col(:))-min(col(:))))));
+0031 
+0032         h = args.plotfun(X,Y,ds,colo);
+0033     <span class="keyword">case</span> <span class="string">'none'</span>
+0034         h = args.plotfun(X,Y,ds);
+0035 <span class="keyword">end</span>
+0036 set(h,<span class="string">'FaceLighting'</span>,args.FaceLighting,<span class="string">'EdgeColor'</span>,args.EdgeColor)
+0037 set(gca,<span class="string">'XGrid'</span>,args.Grid)
+0038 set(gca,<span class="string">'YGrid'</span>,args.Grid)
+0039 set(gca,<span class="string">'ZGrid'</span>,args.Grid)
+0040     
+0041 alpha(args.alpha);
+0042 <span class="keyword">if</span> ~strcmp(args.shading,<span class="string">'none'</span>)
+0043     shading(args.shading);
+0044 <span class="keyword">end</span>
+0045 view(args.view);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

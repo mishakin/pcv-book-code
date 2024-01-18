@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_construct_join_Line_3D</title>
+  <meta name="keywords" content="sugr_construct_join_Line_3D">
+  <meta name="description" content="% calculate line from two statistically independent points">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Line_3D</a> &gt; sugr_construct_join_Line_3D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Line_3D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_construct_join_Line_3D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% calculate line from two statistically independent points</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function L = sugr_construct_join_Line_3D(X,Y) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% calculate line from two statistically independent points
+
+ L = sugr_construct_join_line_3D(X,Y)
+
+ X,Y    given 3D points as sugr objects
+
+ L      joining 3D line as sugr object
+ 
+ Wolfgang Förstner 2013-09-17
+ wfoerstn@uni-bonn.de 
+
+ wf 2016-09-02 added variance propagation
+ sw 9/2016
+
+ See also <a href="sugr_Line_3D.html" class="code" title="function Line_3D = sugr_Line_3D(a1,a2)">sugr_Line_3D</a>, <a href="sugr_minimal_3D_Line.html" class="code" title="function Ls = sugr_minimal_3D_Line(L,CLL)">sugr_minimal_3D_Line</a>, <a href="sugr_constrain_3D_Line.html" class="code" title="function L = sugr_constrain_3D_Line(L)">sugr_constrain_3D_Line</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>	% get CovM of homogeneous vector x.h</li><li><a href="sugr_Line_3D.html" class="code" title="function Line_3D = sugr_Line_3D(a1,a2)">sugr_Line_3D</a>	% Create 3D line</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% calculate line from two statistically independent points</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% L = sugr_construct_join_line_3D(X,Y)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% X,Y    given 3D points as sugr objects</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% L      joining 3D line as sugr object</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Wolfgang Förstner 2013-09-17</span>
+0010 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% wf 2016-09-02 added variance propagation</span>
+0013 <span class="comment">% sw 9/2016</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% See also sugr_Line_3D, sugr_minimal_3D_Line, sugr_constrain_3D_Line</span>
+0016 
+0017 <a name="_sub0" href="#_subfunctions" class="code">function L = sugr_construct_join_Line_3D(X,Y)</a>
+0018 
+0019 <span class="comment">%% determine homogeneous vectors</span>
+0020 
+0021 <span class="comment">% Jacobians dL/dX, dL/dY</span>
+0022 J_LX =   sugr_calc_Pi(X.h);
+0023 J_LY = - sugr_calc_Pi(Y.h);
+0024 
+0025 h = J_LX*Y.h;
+0026 
+0027 <span class="comment">%% determine covariance matrix</span>
+0028 <span class="comment">% CovM of homogeneous 4-vectors</span>
+0029 CovM_X = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>(X);
+0030 CovM_Y = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>(Y);
+0031 
+0032 <span class="comment">% covariance matrix of Plücker vector</span>
+0033 CovM_Lh = J_LX * CovM_X *  J_LX' + J_LY * CovM_Y *  J_LY';
+0034 
+0035 <span class="comment">% generate sugr object</span>
+0036 L = <a href="sugr_Line_3D.html" class="code" title="function Line_3D = sugr_Line_3D(a1,a2)">sugr_Line_3D</a>(h,CovM_Lh);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

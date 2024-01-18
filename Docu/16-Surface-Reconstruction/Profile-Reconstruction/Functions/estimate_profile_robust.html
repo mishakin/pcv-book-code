@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of estimate_profile_robust</title>
+  <meta name="keywords" content="estimate_profile_robust">
+  <meta name="description" content="% estimate_profile_robust">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="../Documentation.html">Profile-Reconstruction</a> &gt; <a href="Documentation.html">Functions</a> &gt; estimate_profile_robust.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Profile-Reconstruction\Functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>estimate_profile_robust
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% estimate_profile_robust</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% estimate_profile_robust
+
+ xest = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,
+                    Niter,type_out,type_r,print_type,plot_type)
+
+ N        = scalar, length of profile
+ ts,ys    = Mx1 vectors, observed profile
+ sigma_e  = std of curvature
+ sigma_n  = std of observations
+ Niter    = number of iterations
+          = 1 -&gt; no robust estimation
+ type_out = type of outlier (0=symm, 1=asymm)
+ type_r   (1) &gt; 0 = L1, 1 = Kraus 
+          (2) = g for Kraus
+          (3) = w for Kraus
+          (4) = 1 only dem
+                2 only points
+ plot_type    = 0,1,2 (no, low, high)
+ print_type   = 0,1,2 (no, low, high)
+
+ Wolfgang Förstner 2014-10-05
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_13_profile_reconstruction_demo_precision.html" class="code" title="function fig_16_13_profile_reconstruction_demo_precision()">fig_16_13_profile_reconstruction_demo_precision</a>	% Fig 16.13 page 750</li><li><a href="../../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_14_test_scale.html" class="code" title="">fig_16_14_test_scale</a>	% Fig. 16.14 page 754</li><li><a href="../../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_15_symmetric_outliers.html" class="code" title="">fig_16_15_symmetric_outliers</a>	% Fig. 16.15 page 755</li><li><a href="../../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_17_asymmetric_outliers.html" class="code" title="">fig_16_17_asymmetric_outliers</a>	% Fig. 16.17 page 756</li><li><a href="../../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_18_step_break.html" class="code" title="">fig_16_18_step_break</a>	% Fig. 15.18 page 758</li><li><a href="../../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_3_16_4_example_demo_profile.html" class="code" title="">fig_16_3_16_4_example_demo_profile</a>	% Fig. 16.3 page 731 and 16.4 page 732</li><li><a href="../../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_9_demo_profile_reconstruction.html" class="code" title="">fig_16_9_demo_profile_reconstruction</a>	% Fig. 16.9 page 740</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% estimate_profile_robust</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% xest = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,</span>
+0004 <span class="comment">%                    Niter,type_out,type_r,print_type,plot_type)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% N        = scalar, length of profile</span>
+0007 <span class="comment">% ts,ys    = Mx1 vectors, observed profile</span>
+0008 <span class="comment">% sigma_e  = std of curvature</span>
+0009 <span class="comment">% sigma_n  = std of observations</span>
+0010 <span class="comment">% Niter    = number of iterations</span>
+0011 <span class="comment">%          = 1 -&gt; no robust estimation</span>
+0012 <span class="comment">% type_out = type of outlier (0=symm, 1=asymm)</span>
+0013 <span class="comment">% type_r   (1) &gt; 0 = L1, 1 = Kraus</span>
+0014 <span class="comment">%          (2) = g for Kraus</span>
+0015 <span class="comment">%          (3) = w for Kraus</span>
+0016 <span class="comment">%          (4) = 1 only dem</span>
+0017 <span class="comment">%                2 only points</span>
+0018 <span class="comment">% plot_type    = 0,1,2 (no, low, high)</span>
+0019 <span class="comment">% print_type   = 0,1,2 (no, low, high)</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% Wolfgang Förstner 2014-10-05</span>
+0022 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0023 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0024 
+0025 <a name="_sub0" href="#_subfunctions" class="code">function [xest,A,v,weights,Cov] = estimate_profile_robust</a><span class="keyword">...</span>
+0026     (N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,<span class="keyword">...</span>
+0027     print_type,plot_type)
+0028 
+0029 <span class="comment">% robust - explore sensistivity of result wrt k! Choose k in [1:3]</span>
+0030 k = 2; 
+0031 
+0032 type_robust = type_r(1);
+0033 g_factor    = type_r(2);
+0034 w_factor    = type_r(3);
+0035 rob_p_d     = type_r(4);
+0036 
+0037 <span class="comment">% Number of observations</span>
+0038 M = length(ts);
+0039 A = zeros(M+N-2,N);
+0040 
+0041 <span class="comment">% initialize</span>
+0042 xa = zeros(N,1);
+0043 weights = ones(M+N-2,1);
+0044 Cov = 0;
+0045 sigma_e0 = sigma_e;
+0046 gain = 1;
+0047 
+0048 <span class="comment">%% robust estimation</span>
+0049 <span class="keyword">for</span> iter = 1:Niter+1
+0050     <span class="keyword">if</span> plot_type&gt; 0
+0051         figure
+0052     <span class="keyword">end</span>
+0053     
+0054     sigma_e = sigma_e0*gain^(Niter-iter);
+0055     
+0056     <span class="keyword">if</span> print_type &gt; 0
+0057         iter__sigmae_sigma_n_ratio = [iter,sigma_e,sigma_n,sigma_e/sigma_n] <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0058         weight_before_iteration = weights(1:20)' <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0059     <span class="keyword">end</span>
+0060     
+0061     b=zeros(M+N-2,1);
+0062     <span class="comment">% set A and b for observed points</span>
+0063     <span class="keyword">for</span> m = 1:M
+0064         w = 1/sigma_n*sqrt(weights(m));
+0065         A(m,ts(m)) = w;
+0066         dl      = ys(m)-xa(ts(m));
+0067         b(m)    = dl*w;
+0068     <span class="keyword">end</span>
+0069     
+0070     kk = M;
+0071     <span class="comment">% set A and b for regularizing observations</span>
+0072     <span class="keyword">for</span> n = 2:N-1
+0073         kk = kk+1;
+0074         w = 1/sigma_e*sqrt(weights(kk));
+0075         A(kk,n-1:n+1)= [1 -2 1]*w;
+0076         dl           = -(xa(n+1)-2*xa(n)+xa(n-1));
+0077         b(kk)        = dl*w;
+0078     <span class="keyword">end</span>
+0079     
+0080     <span class="comment">% normal equation system</span>
+0081     Nmatrix = A'*A;
+0082     nvector = A'*b;
+0083     <span class="keyword">if</span> N &lt;= 1000
+0084         Cov = inv(Nmatrix);
+0085     <span class="keyword">end</span>
+0086     
+0087     <span class="comment">% solution of correction</span>
+0088     dx = Nmatrix\nvector;
+0089     <span class="comment">% corrected estimate</span>
+0090     xa = xa+dx;
+0091     
+0092 <span class="comment">%     % ----------------</span>
+0093 <span class="comment">%     % apply conjugate gradients</span>
+0094 <span class="comment">%     reorth=0;</span>
+0095 <span class="comment">%     k=2*N;</span>
+0096 <span class="comment">%     start_time=cputime</span>
+0097 <span class="comment">%     [dx_cg,rho,eta,F] = cgls_mod(A,b,k,reorth);</span>
+0098 <span class="comment">%</span>
+0099 <span class="comment">%     check_conjugate_gradients = norm(dx-dx_cg)</span>
+0100 <span class="comment">%         time_for_solution=cputime-start_time</span>
+0101 <span class="comment">%     % -----------------------</span>
+0102 
+0103     <span class="keyword">if</span> iter == Niter+1 &amp;&amp; print_type &gt; 0
+0104         xa_dx = [xa';dx'] <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0105     <span class="keyword">end</span>
+0106     v = A*dx-b;                             <span class="comment">% estimated standardized residuals</span>
+0107     
+0108     <span class="comment">%eso        = norm(v)/sqrt(M-2);              % estimated sigma0</span>
+0109     eso_robust = median(abs(v()))*1.48;
+0110     
+0111     vori=v;
+0112     vori(1:M)      = v(1:M)*sigma_n./sqrt(weights(1:M));
+0113     vori(M+1:end)  = v(M+1:end)*sigma_e./sqrt(weights(M+1:end));
+0114     vs    = vori;
+0115     
+0116     <span class="comment">%eso_n = median(abs(v(1:M)))*1.48;      % estimated RMS of point residuals</span>
+0117     eso_n = median(abs(vs(1:M)))*1.48;      <span class="comment">% estimated RMS of point residuals</span>
+0118     
+0119     <span class="comment">%eso_e = median(abs(v(M+1:end)))*1.48;  % estimated RMS curvature residuals</span>
+0120     eso_e = median(abs(vs(M+1:end)))*1.48;  <span class="comment">% estimated RMS curvature residuals</span>
+0121     
+0122     <span class="keyword">if</span> print_type &gt; 0
+0123         estimated_s0_s0p_s0k=[eso,eso_p,eso_k] <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0124     <span class="keyword">end</span>
+0125 
+0126     <span class="comment">% critical values</span>
+0127     kn = k*eso_n;
+0128     ke = k*eso_e;
+0129 
+0130 <span class="comment">%% adapt weights</span>
+0131     <span class="keyword">if</span> iter &lt; Niter
+0132         <span class="keyword">if</span> type_out == 0                            <span class="comment">% symmetric</span>
+0133             <span class="keyword">if</span> print_type &gt; 0
+0134                 disp(<span class="string">'rob_p_d'</span>)
+0135             <span class="keyword">end</span>
+0136             <span class="keyword">if</span> iter &lt; 4                             <span class="comment">% first iterations</span>
+0137                 <span class="keyword">if</span> rob_p_d == 1 || rob_p_d == 3     <span class="comment">% dem</span>
+0138                     weights(M+1:M+N-2) = <span class="keyword">...</span>
+0139                         min(1,1./(abs(vs(M+1:M+N-2))/ke+0.0001));
+0140 <span class="comment">%                     weights(M+1:M+N-2) = ...</span>
+0141 <span class="comment">%                         min(1,1./(abs(v(M+1:M+N-2))/ke+0.0001));</span>
+0142                    
+0143                     <span class="keyword">if</span> print_type &gt; 1
+0144                         iter_ke_max_v_min_w = <span class="keyword">...</span>
+0145                             [iter,ke,max(abs(vs(M+1:M+N-2))),<span class="keyword">...</span>
+0146                             min(weights(M+1:M+N-2))]; <span class="comment">%#ok&lt;NASGU&gt;</span>
+0147                         disp(<span class="string">'iter_ke_max_v_min_w'</span>)
+0148                         disp(<span class="string">'modify dem weights'</span>)
+0149                         residuals_new_weights_of_dem=<span class="keyword">...</span>
+0150                             [vs(M+1:M+N-2)';weights(M+1:M+N-2)']; <span class="comment">%#ok&lt;NASGU&gt;</span>
+0151                         disp(<span class="string">'residuals_new_weights_of_dem'</span>)
+0152                     <span class="keyword">end</span>
+0153                     <span class="keyword">if</span> plot_type &gt; 0
+0154                         subplot(3,1,1)
+0155                         plot(2:N-1,xa(2:N-1),<span class="string">'-b'</span>)
+0156                         title(num2str(sigma_e/sigma_n));
+0157                         subplot(3,1,2);
+0158                         hold on
+0159                         plot(2:N-1,vs(M+1:M+N-2),<span class="string">'-b'</span>)
+0160                         plot(2:N-1,vori(M+1:M+N-2),<span class="string">'-r'</span>)
+0161                         plot(2:N-1,ones(N-2,1)*ke,<span class="string">'-b'</span>)
+0162                         plot(2:N-1,-ones(N-2,1)*ke,<span class="string">'-b'</span>)
+0163                         title(num2str(ke))
+0164                         subplot(3,1,3);
+0165                         plot(2:N-1,weights(M+1:M+N-2),<span class="string">'-b'</span>)
+0166                         title(num2str(iter))
+0167                     <span class="keyword">end</span>
+0168                 <span class="keyword">end</span>
+0169                 <span class="keyword">if</span> rob_p_d == 2 || rob_p_d == 3     <span class="comment">% points</span>
+0170                     weights(1:M) = min(1,1./(abs(vs(1:M))/kn+0.0001));
+0171                     <span class="comment">%weights(1:M) = min(1,1./(abs(v(1:M))/kn+0.0001));</span>
+0172                     
+0173                     
+0174                     <span class="keyword">if</span> print_type &gt; 1
+0175                         residuals_new_weights_of_points_L1 = <span class="keyword">...</span>
+0176                             [(1:20);v(1:20)';vs(1:20)';weights(1:20)'] <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0177                     <span class="keyword">end</span>
+0178                 <span class="keyword">end</span>               
+0179             <span class="keyword">else</span>                                    <span class="comment">% iteration 4 following</span>
+0180                 <span class="keyword">if</span> rob_p_d == 1 || rob_p_d == 3     <span class="comment">% dem</span>
+0181                     weights(M+1:M+N-2) = exp(-abs(vs(M+1:M+N-2)).^2./ke^2/2)+0.0001;
+0182                     <span class="comment">%weights(M+1:M+N-2) = exp(-abs(v(M+1:M+N-2)).^2./ke^2/2)+0.0001;</span>
+0183                     
+0184                     
+0185                     <span class="keyword">if</span> print_type &gt; 1
+0186                         iter_kk_max_v_min_w = <span class="keyword">...</span>
+0187                             [iter,ke,max(abs(vs(M+1:M+N-2))),min(weights(M+1:M+N-2))] <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0188                         disp(<span class="string">'modify dem weights'</span>)
+0189                         residuals_new_weights_of_dem = <span class="keyword">...</span>
+0190                             [vs(M+1:M+N-2)';weights(M+1:M+N-2)'] <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0191                     <span class="keyword">end</span>
+0192                     <span class="comment">%</span>
+0193                     <span class="keyword">if</span> plot_type &gt; 0
+0194                         subplot(3,1,1)
+0195                         plot(2:N-1,xa(2:N-1),<span class="string">'-b'</span>)
+0196                         title(num2str(sigma_e/sigma_n));
+0197                         subplot(3,1,2);
+0198                         hold on
+0199                         plot(2:N-1,vs(M+1:M+N-2),<span class="string">'-b'</span>)
+0200                         plot(2:N-1,vori(M+1:M+N-2),<span class="string">'-r'</span>)
+0201                         plot(2:N-1,ones(N-2,1)*ke,<span class="string">'-b'</span>)
+0202                         plot(2:N-1,-ones(N-2,1)*ke,<span class="string">'-b'</span>)
+0203                         title(num2str(ke))
+0204                         subplot(3,1,3);
+0205                         plot(2:N-1,weights(M+1:M+N-2),<span class="string">'-b'</span>)
+0206                         title(num2str(iter))
+0207                     <span class="keyword">end</span>
+0208                 <span class="keyword">end</span>
+0209                 <span class="keyword">if</span> rob_p_d == 2 || rob_p_d == 3         <span class="comment">%points</span>
+0210                     weights(1:M) = exp(-abs(vs(1:M)).^2/kn^2/2)+0.0001;
+0211                     <span class="comment">%weights(1:M) = exp(-abs(v(1:M)).^2/kn^2/2)+0.0001;</span>
+0212                     
+0213                     
+0214                     <span class="keyword">if</span> print_type &gt; 1
+0215                         residuals_new_weights_of_points_exp = <span class="keyword">...</span>
+0216                             [(1:20);v(1:20)';vs(1:20)'/kn;weights(1:20)'] <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0217                     <span class="keyword">end</span>
+0218                 <span class="keyword">end</span>                
+0219             <span class="keyword">end</span>
+0220         <span class="keyword">else</span>  <span class="comment">%  aymmetric</span>
+0221             k = 1;
+0222             g = g_factor*k;
+0223             w = w_factor*k;
+0224             <span class="keyword">if</span> type_robust==0   <span class="comment">% asymmetric L1</span>
+0225                 weights(1:M) = max(min(1,1./abs(vs(1:M))/k+0.0001),((sign(vs(1:M))/k)+1)/2);
+0226             <span class="keyword">else</span>                <span class="comment">% Kraus/Pfeifer</span>
+0227                 <span class="keyword">for</span> m=1:M
+0228                     <span class="keyword">if</span> vs(m) &lt; g-w
+0229                         weights(m) = 0;
+0230                     <span class="keyword">elseif</span> vs(m) &gt; g
+0231                         weights(m)=1;
+0232                     <span class="keyword">else</span>
+0233                         weights(m)=1/(1+(vs(m)-g)^4);
+0234                     <span class="keyword">end</span>
+0235                 <span class="keyword">end</span>
+0236             <span class="keyword">end</span>
+0237         <span class="keyword">end</span>
+0238     <span class="keyword">else</span>
+0239 
+0240         weights = 0.9999*ceil(weights-0.5)+0.0001;
+0241         <span class="comment">% initiate last iteration (Niter+1) with approximate values 0</span>
+0242         <span class="keyword">if</span> iter == Niter
+0243             xa = zeros(N,1);
+0244         <span class="keyword">end</span>
+0245     <span class="keyword">end</span>
+0246 <span class="keyword">end</span>
+0247 
+0248 xest = xa;
+0249 
+0250 
+0251</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

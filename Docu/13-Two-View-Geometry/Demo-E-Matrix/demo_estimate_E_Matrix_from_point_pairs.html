@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_estimate_E_Matrix_from_point_pairs</title>
+  <meta name="keywords" content="demo_estimate_E_Matrix_from_point_pairs">
+  <meta name="description" content="% test_estimate_E_Matrix_from_point_pairs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">13-Two-View-Geometry</a> &gt; <a href="Documentation.html">Demo-E-Matrix</a> &gt; demo_estimate_E_Matrix_from_point_pairs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry\Demo-E-Matrix&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_estimate_E_Matrix_from_point_pairs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% test_estimate_E_Matrix_from_point_pairs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% test_estimate_E_Matrix_from_point_pairs
+
+ direct solution following Sect. 13.3.2.3, p. 575 ff
+   with covariance matrix following Sect. 4.9.2.4
+ iterative solution following Sect. 13.3.5, p. 585 ff
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 06/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>	% Cayley rotation matrix</li><li><a href="../../General-Functions/Geometry/calc_r_phi_from_R.html" class="code" title="function [r,p]= calc_r_phi_from_R(R)">calc_r_phi_from_R</a>	% rotation axis and rotation angle from rotation matrix R</li><li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_CovM_E_matrix.html" class="code" title="function CovM = sugr_CovM_E_matrix(X, Cpp, B, R)">sugr_CovM_E_matrix</a>	% Covariance matrix of parameters of essential matrix</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>	% create E-matrix</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_estimation_algebraic_E_Matrix_from_point_pairs.html" class="code" title="function [E,est_sigma_0,error] = sugr_estimation_algebraic_E_Matrix_from_point_pairs(P)">sugr_estimation_algebraic_E_Matrix_from_point_pairs</a>	% Algebraic estimation of E-Matrix from point pairs,</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_estimation_ml_E_Matrix_from_point_pairs.html" class="code" title="function [E, sigma_0, R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_E_Matrix_from_point_pairs</a>	% ML estimation of E-Matrix from point pairs</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_generate_true_2D_point_pairs_E_matrix.html" class="code" title="function [PP,X] = sugr_generate_true_2D_point_pairs_E_matrix(b,R,N,br,Z0)">sugr_generate_true_2D_point_pairs_E_matrix</a>	% Generate true 2D point pairs from Relative Orientation,</li><li><a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li><li><a href="../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs_spherical.html" class="code" title="function PP = sugr_perturb_2D_point_pairs_spherical(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs_spherical</a>	% Perturb sampled 2D points pairs sphericaly</li><li><a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>	% check estimation result, PCV Sect. 4.6.8</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% test_estimate_E_Matrix_from_point_pairs</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% direct solution following Sect. 13.3.2.3, p. 575 ff</span>
+0004 <span class="comment">%   with covariance matrix following Sect. 4.9.2.4</span>
+0005 <span class="comment">% iterative solution following Sect. 13.3.5, p. 585 ff</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Wolfgang Förstner</span>
+0008 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% last changes: Susanne Wenzel 06/18</span>
+0011 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0012 
+0013 <span class="comment">%clear all</span>
+0014 clearvars
+0015 close all
+0016 
+0017 disp(<span class="string">' '</span>)
+0018 disp(<span class="string">' '</span>)
+0019 disp(<span class="string">'================================================='</span>)
+0020 disp(<span class="string">'---- Demo_estimate_E_Matrix_from_point_pairs ----'</span>)
+0021 disp(<span class="string">'-------------------------------------------------'</span>)
+0022 
+0023 <span class="keyword">global</span> min_redundancy
+0024 <span class="keyword">global</span> plot_option
+0025 <span class="keyword">global</span> print_option
+0026 <span class="keyword">global</span> print_option_estimation
+0027 
+0028 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0029 
+0030 <a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0031 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0032 
+0033 <span class="comment">%% control parameters</span>
+0034 
+0035 <span class="comment">%% random number intialization</span>
+0036 init_rand      = 2;            
+0037 <span class="comment">% init_rand      = 0;</span>
+0038 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0039 
+0040 <span class="comment">% number of corresponding points</span>
+0041 <span class="comment">% N             = 100;</span>
+0042 N             = 30;              
+0043 <span class="comment">% N             = 15;</span>
+0044 
+0045 <span class="comment">% number of samples for checking covariance matrix</span>
+0046 <span class="comment">%N_samples     = 1000;</span>
+0047 N_samples     = 50;         
+0048 <span class="comment">%N_samples     = 1;</span>
+0049 
+0050 <span class="comment">%% standard deviations</span>
+0051 <span class="comment">% sigma_x       = 0.003;                  % std. dev.</span>
+0052 <span class="comment">% sigma_y       = 0.003;                  % std. dev.</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">% for Ladybug 3:  2*pi/(5*1400) rad/pixel, Lowe 0.3 pixel -&gt; std radiant = 2.0944e-004</span>
+0055 <span class="comment">% sigma_x       = 0.00021;                  % std. dev.</span>
+0056 <span class="comment">% sigma_y       = 0.00021;                  % std. dev.</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">% for testing program</span>
+0059 sigma_x       = 0.000001;                  <span class="comment">% std. dev.</span>
+0060 sigma_y       = 0.000001;                  <span class="comment">% std. dev.</span>
+0061 
+0062 <span class="comment">% correlation between points in left and right image</span>
+0063 rho           = 0; <span class="comment">%0.99;</span>
+0064 
+0065 <span class="comment">% Threshold for iteration</span>
+0066 <span class="comment">%(can be reduced to T = 0.1 and maxiter = 2 for practical purposes)</span>
+0067 T       = 10^(-6);
+0068 maxiter = 5;
+0069 S = 0.999;
+0070 
+0071 <span class="comment">% in order to check also for low redundacies</span>
+0072 min_redundancy = 2;
+0073 
+0074 <span class="comment">%% Generate points in unit cube</span>
+0075 
+0076 r_tilde       = [3.1,-2,-1.3];          <span class="comment">%zeros(3,1); %</span>
+0077 <span class="comment">% r_tilde       = [0 0 0];                %zeros(3,1); %</span>
+0078 R_tilde       = <a href="../../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>(r_tilde);    <span class="comment">% true rotation matrix</span>
+0079 b_tilde       = [0.2,1.0,1.35]';
+0080 <span class="comment">% b_tilde       = [0 1 0]';</span>
+0081 b_tilde       = b_tilde/norm(b_tilde);        <span class="comment">% true basis</span>
+0082 b_l_true      = 1;
+0083 
+0084 <span class="comment">% Representation of relative orientation without uncertainty</span>
+0085 b_R = [b_tilde,R_tilde];
+0086 true_basis_Rotation_matrix = b_R                                           <span class="comment">%#ok&lt;*NOPTS&gt;</span>
+0087 <span class="comment">% structure for relative orientation</span>
+0088 E_tilde       = <a href="../../General-Functions/SUGR/E-Matrix/sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>(b_tilde,R_tilde);   <span class="comment">% true basis, rotation</span>
+0089 E_t           = E_tilde.E;
+0090 true_E_matrix = E_t
+0091 
+0092 factor_p      = 12;                   <span class="comment">% factor for plotting standard ellipses</span>
+0093 b_random      = 1;                    <span class="comment">% box for random points in [-1,+1]^3</span>
+0094 Z0            = -1;                  <span class="comment">% shift of bounding box (best to be negative)</span>
+0095 
+0096 print_option_estimation = 1;            <span class="comment">% medium output</span>
+0097 <span class="keyword">if</span> N_samples &gt;1 
+0098     print_option_estimation = 0;
+0099 <span class="keyword">end</span>
+0100 
+0101 <span class="comment">% do not plot samples</span>
+0102 print_option = 2;
+0103 <span class="keyword">if</span> N_samples &gt; 1
+0104     plot_option  = 0;
+0105     print_option = 0;
+0106 <span class="keyword">end</span>
+0107 
+0108 <span class="comment">%% generate true points</span>
+0109 [PPt,Xt] = <a href="../../General-Functions/SUGR/E-Matrix/sugr_generate_true_2D_point_pairs_E_matrix.html" class="code" title="function [PP,X] = sugr_generate_true_2D_point_pairs_E_matrix(b,R,N,br,Z0)">sugr_generate_true_2D_point_pairs_E_matrix</a>(b_tilde*b_l_true,R_tilde,N,b_random,Z0);
+0110 set(gcf,<span class="string">'Name'</span>,<span class="string">'Points and cameras'</span>,<span class="string">'Position'</span>,[100 0.25*ss(2) 0.3*ss(1) 0.4*ss(2)])
+0111 set(gca,<span class="string">'CameraPosition'</span>,[-15, -8, 6])
+0112 <span class="comment">%% initiate</span>
+0113 est_E_samples_a  = zeros(N_samples,5);
+0114 est_bR_samples_a = zeros(N_samples,12);
+0115 est_E_samples_ml  = zeros(N_samples,5);
+0116 est_bR_samples_ml = zeros(N_samples,12);
+0117 
+0118 total_time_a=0;
+0119 total_time_ml=0;
+0120 
+0121 <span class="comment">%% estimate</span>
+0122 disp(<span class="string">'Monitor samples:'</span>)
+0123 iii = 0;
+0124 s_a = zeros(1,N_samples);
+0125 s_ml = zeros(1,N_samples);
+0126 start = cputime;
+0127 <span class="keyword">for</span> ii = 1:N_samples
+0128     
+0129     iii = iii+1;
+0130     
+0131     <span class="keyword">if</span> N_samples &lt; 100
+0132         fprintf(num2str(ii)),fprintf(<span class="string">','</span>)
+0133         <span class="keyword">if</span> mod(ii,10) == 0
+0134             disp(<span class="string">' '</span>)
+0135         <span class="keyword">end</span>
+0136     <span class="keyword">else</span>
+0137         <span class="keyword">if</span> mod(ii,10) == 0
+0138             fprintf(num2str(ii)),fprintf(<span class="string">','</span>)
+0139         <span class="keyword">end</span>
+0140         <span class="keyword">if</span> mod(ii,100) == 0
+0141             disp(<span class="string">' '</span>)
+0142         <span class="keyword">end</span>
+0143     <span class="keyword">end</span>
+0144     
+0145     <span class="comment">%% perturb point pairs</span>
+0146     PP = <a href="../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs_spherical.html" class="code" title="function PP = sugr_perturb_2D_point_pairs_spherical(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs_spherical</a>(PPt,sigma_x,sigma_y,rho,factor_p);
+0147 
+0148     <span class="comment">%% check</span>
+0149     <span class="comment">% diag(PP.h(:,1:3)*calc_S(b_tilde)*R_tilde'*PP.h(:,4:6)')';</span>
+0150     
+0151     <span class="comment">%% Estimate E_matrix algebraically</span>
+0152     start = cputime;
+0153 
+0154     [est_E_a,sigma_0_a,error] = <a href="../../General-Functions/SUGR/E-Matrix/sugr_estimation_algebraic_E_Matrix_from_point_pairs.html" class="code" title="function [E,est_sigma_0,error] = sugr_estimation_algebraic_E_Matrix_from_point_pairs(P)">sugr_estimation_algebraic_E_Matrix_from_point_pairs</a>(PP);
+0155     <span class="keyword">if</span> error &gt; 0
+0156         disp([<span class="string">'sample '</span>,num2str(ii),<span class="string">' failed'</span>])
+0157         iii = iii-1;
+0158     <span class="keyword">else</span>
+0159         check_algebraic = diag(PP.h(:,1:3)*est_E_a.E*PP.h(:,4:6)')';
+0160         
+0161         b_a_r                  = null(b_tilde')' * est_E_a.bR(:,1);
+0162         [r_a,a_a]              = <a href="../../General-Functions/Geometry/calc_r_phi_from_R.html" class="code" title="function [r,p]= calc_r_phi_from_R(R)">calc_r_phi_from_R</a>(est_E_a.bR(:,2:4)*R_tilde');
+0163         est_E_samples_a(ii,:)  = [b_a_r',r_a'*a_a];
+0164         est_bR_samples_a(ii,:) = est_E_a.bR(:)';
+0165 
+0166         s_a(ii)  = 1;
+0167 
+0168         total_time_a = total_time_a + cputime-start;
+0169         <span class="comment">%% Estimate E_matrix maximum likelihood</span>
+0170         start = cputime;
+0171 
+0172         [est_E_ml,sigma_0_ml,R] = <a href="../../General-Functions/SUGR/E-Matrix/sugr_estimation_ml_E_Matrix_from_point_pairs.html" class="code" title="function [E, sigma_0, R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_E_Matrix_from_point_pairs</a>(PP,est_E_a.bR,T,maxiter);
+0173         total_time_ml           = total_time_ml + cputime-start;
+0174         
+0175 
+0176         b_ml_r                  = null(b_tilde')' * est_E_ml.bR(:,1);
+0177         [r_ml,a_ml]             = <a href="../../General-Functions/Geometry/calc_r_phi_from_R.html" class="code" title="function [r,p]= calc_r_phi_from_R(R)">calc_r_phi_from_R</a>(est_E_ml.bR(:,2:4)*R_tilde');
+0178         est_E_samples_ml(ii,:)  = [b_ml_r',r_ml'*a_ml];
+0179         est_bR_samples_ml(ii,:) = est_E_ml.bR(:)';
+0180 
+0181         s_ml(ii) = sigma_0_ml;
+0182     <span class="keyword">end</span>
+0183 <span class="keyword">end</span>
+0184 disp([<span class="string">'CPU time for '</span>, num2str(N_samples),<span class="string">' samples              : '</span>,num2str(cputime-start)]);
+0185 disp(<span class="string">' '</span>)
+0186 
+0187 <span class="comment">%%</span>
+0188 rho_degree = 180/pi;
+0189 disp(strcat(<span class="string">'sigma basis direction [mrad] = '</span>,<span class="keyword">...</span>
+0190     num2str(1000*sqrt(diag(est_E_ml.CbRbR(1:2,1:2)))')));
+0191 disp(strcat(<span class="string">'sigma rotation        [mrad] = '</span>,<span class="keyword">...</span>
+0192     num2str(1000*sqrt(diag(est_E_ml.CbRbR(3:5,3:5)))')));
+0193 disp(strcat(<span class="string">'sigma basis direction [degree] = '</span>,<span class="keyword">...</span>
+0194     num2str(rho_degree*sqrt(diag(est_E_ml.CbRbR(1:2,1:2)))')));
+0195 disp(strcat(<span class="string">'sigma rotation        [degree] = '</span>,<span class="keyword">...</span>
+0196     num2str(rho_degree*sqrt(diag(est_E_ml.CbRbR(3:5,3:5)))')));
+0197 
+0198 <span class="comment">%% check algorithm</span>
+0199 <span class="keyword">if</span> N_samples &gt; 5 
+0200     
+0201     <span class="comment">% check of ALG</span>
+0202     <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(N-5,zeros(5,1),est_E_a.CbRbR,s_a.^2,<span class="keyword">...</span>
+0203         est_E_samples_a,S,<span class="string">' ALG'</span>)
+0204    
+0205     <span class="comment">% ML</span>
+0206     <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(N-5,zeros(5,1),est_E_ml.CbRbR,s_ml.^2,<span class="keyword">...</span>
+0207         est_E_samples_ml,S,<span class="string">' ML'</span>);
+0208     
+0209     set(gcf,<span class="string">'Name'</span>,<span class="string">'Histogram var.factors'</span>,<span class="string">'Position'</span>,[0.4*ss(1) 0.25*ss(2) ss(1)/2 0.4*ss(2)])
+0210 <span class="keyword">end</span>
+0211 
+0212 total_CPUtime_alg_mle_seconds  = [total_time_a,total_time_ml]
+0213 
+0214 CovM_dir = <a href="../../General-Functions/SUGR/E-Matrix/sugr_CovM_E_matrix.html" class="code" title="function CovM = sugr_CovM_E_matrix(X, Cpp, B, R)">sugr_CovM_E_matrix</a>(Xt, PP.Crr, b_tilde, R_tilde);
+0215 CovM_comparison_generalized_eigenvalues_should_be_one = <span class="keyword">...</span>
+0216     eigs(inv(est_E_ml.CbRbR)*CovM_dir)'                                    <span class="comment">%#ok&lt;MINV&gt;</span>
+0217 
+0218 disp(<span class="string">'          ========= End of Demo ==========='</span>)
+0219 disp(<span class="string">' '</span>)
+0220 disp(<span class="string">' '</span>)</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

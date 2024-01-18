@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cg_similarity_2D</title>
+  <meta name="keywords" content="cg_similarity_2D">
+  <meta name="description" content="% determines constraint values and Jacobians for 2D similarity">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GHM</a> &gt; <a href="Documentation.html">Functions-GHM</a> &gt; cg_similarity_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GHM\Functions-GHM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>cg_similarity_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% determines constraint values and Jacobians for 2D similarity</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [cg,At,Bt] = cg_similarity_2D(l,la,xa) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% determines constraint values and Jacobians for 2D similarity
+
+ Model:
+ cg(x,l) = zr - s*zl - t = 0
+
+ [l(3)]    - [x(1) -x(2)] [l(1)] - [x(3)] = [0]
+ [l(4)]    - [x(2)  x(1)] [l(2)] - [x(4)]   [0]
+
+ l         = 4x1-vector [xl yl,xr yr] = [zl, zr]
+ x         = 4x1-vector [ a  b, c  d] = [ s,  t]
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../04-Estimation/GHM/Demo-GHM/demo_GHM_similarity.html" class="code" title="">demo_GHM_similarity</a>	% GHM with similarity</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% determines constraint values and Jacobians for 2D similarity</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Model:</span>
+0004 <span class="comment">% cg(x,l) = zr - s*zl - t = 0</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% [l(3)]    - [x(1) -x(2)] [l(1)] - [x(3)] = [0]</span>
+0007 <span class="comment">% [l(4)]    - [x(2)  x(1)] [l(2)] - [x(4)]   [0]</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% l         = 4x1-vector [xl yl,xr yr] = [zl, zr]</span>
+0010 <span class="comment">% x         = 4x1-vector [ a  b, c  d] = [ s,  t]</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Wolfgang Förstner</span>
+0013 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0014 
+0015 <a name="_sub0" href="#_subfunctions" class="code">function [cg,At,Bt] = cg_similarity_2D(l,la,xa)</a>
+0016 
+0017 At  = [-la(1)  la(2) -1  0 ;<span class="keyword">...</span>
+0018     -la(2) -la(1)  0 -1];
+0019 Bt  = [-xa(1)  xa(2) 1 0;<span class="keyword">...</span>
+0020     -xa(2) -xa(1) 0 1];
+0021 
+0022 cg = -( [la(3);<span class="keyword">...</span>
+0023     la(4)] - <span class="keyword">...</span>
+0024     [xa(1) -xa(2);
+0025     xa(2)  xa(1)] * <span class="keyword">...</span>
+0026     [la(1);<span class="keyword">...</span>
+0027     la(2)] - <span class="keyword">...</span>
+0028     [xa(3); <span class="keyword">...</span>
+0029     xa(4)])<span class="keyword">...</span>
+0030     + Bt * (la-l);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

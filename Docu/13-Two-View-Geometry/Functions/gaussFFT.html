@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of gaussFFT</title>
+  <meta name="keywords" content="gaussFFT">
+  <meta name="description" content="GAUSSFFT convolves an image IMG with Gaussian kernels via FFT.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">13-Two-View-Geometry</a> &gt; <a href="Documentation.html">Functions</a> &gt; gaussFFT.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>gaussFFT
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>GAUSSFFT convolves an image IMG with Gaussian kernels via FFT.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function varargout = gaussFFT(img, sigma, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> GAUSSFFT convolves an image IMG with Gaussian kernels via FFT.
+ 
+ Kernels with SIGMA smaller than 0.4 pixel will be neglected since the
+ algorithm gets very slow and thus not suited for small scales.
+
+ Input:
+   img         image to be convolved
+   sigma       kernel parameter of length 1 or 2
+   varargin    first optional argument can be a look-up table for fft2
+               computational costs in order to predict optimal image
+               sizes (vector format),
+               all other arguments are kernel names, possible names are:
+                 'G',
+                 'Gx', 'Gy',
+                 'Gxx', 'Gyy', 'Gxy',
+                 'x2G', 'y2G', 'xyG'
+
+ Output:
+   varargout   convolved images, corresponding to one kernel each
+
+ Example:
+   img = zeros(512);
+   img(150, 100) = 1;
+   fftResult = gaussFFT(img, 20, 'G');
+   imshow(fftResult, []);
+
+ See also: buildScaleSpace, omega
+
+ Warranty:
+   No warranty for validity of this implementation.
+
+ Author:
+   Falko Schindler (falko.schindler@uni-bonn.de)
+   Department of Photogrammetry
+   Institute of Geodesy and Geoinformation
+   University of Bonn
+   Bonn, Germany
+
+ Copyright 2009-2009</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="structure_tensor.html" class="code" title="function T  = structure_tensor(im,tau,sigma)">structure_tensor</a>	% determine structure tensor from image patch</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = gaussFFT(img, sigma, varargin)</a>
+0002 <span class="comment">% GAUSSFFT convolves an image IMG with Gaussian kernels via FFT.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Kernels with SIGMA smaller than 0.4 pixel will be neglected since the</span>
+0005 <span class="comment">% algorithm gets very slow and thus not suited for small scales.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   img         image to be convolved</span>
+0009 <span class="comment">%   sigma       kernel parameter of length 1 or 2</span>
+0010 <span class="comment">%   varargin    first optional argument can be a look-up table for fft2</span>
+0011 <span class="comment">%               computational costs in order to predict optimal image</span>
+0012 <span class="comment">%               sizes (vector format),</span>
+0013 <span class="comment">%               all other arguments are kernel names, possible names are:</span>
+0014 <span class="comment">%                 'G',</span>
+0015 <span class="comment">%                 'Gx', 'Gy',</span>
+0016 <span class="comment">%                 'Gxx', 'Gyy', 'Gxy',</span>
+0017 <span class="comment">%                 'x2G', 'y2G', 'xyG'</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Output:</span>
+0020 <span class="comment">%   varargout   convolved images, corresponding to one kernel each</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% Example:</span>
+0023 <span class="comment">%   img = zeros(512);</span>
+0024 <span class="comment">%   img(150, 100) = 1;</span>
+0025 <span class="comment">%   fftResult = gaussFFT(img, 20, 'G');</span>
+0026 <span class="comment">%   imshow(fftResult, []);</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% See also: buildScaleSpace, omega</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% Warranty:</span>
+0031 <span class="comment">%   No warranty for validity of this implementation.</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% Author:</span>
+0034 <span class="comment">%   Falko Schindler (falko.schindler@uni-bonn.de)</span>
+0035 <span class="comment">%   Department of Photogrammetry</span>
+0036 <span class="comment">%   Institute of Geodesy and Geoinformation</span>
+0037 <span class="comment">%   University of Bonn</span>
+0038 <span class="comment">%   Bonn, Germany</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% Copyright 2009-2009</span>
+0041 
+0042 
+0043 <span class="comment">%% get two values for sigma not smaller than 0.4</span>
+0044 <span class="comment">% duplicate a single value</span>
+0045 <span class="keyword">if</span> numel(sigma) == 1
+0046     sigma = [sigma, sigma];
+0047 <span class="keyword">end</span>
+0048 <span class="comment">% neglect small values</span>
+0049 sigma = sigma .* (sigma &gt;= 0.4);
+0050 
+0051 <span class="comment">%% pad and transform image</span>
+0052 <span class="comment">% image padding in spatial domain, depending on sigma</span>
+0053 padding = 4;
+0054 <span class="comment">% default size of padding</span>
+0055 pad = round(sigma * padding);
+0056 <span class="comment">% use LUT</span>
+0057 <span class="keyword">if</span> isnumeric(varargin{1})
+0058     <span class="comment">% use LUT for fft2 computational times</span>
+0059     time = varargin{1};
+0060     varargin = varargin(2:end);
+0061     <span class="comment">% minimum size of padding</span>
+0062     padMin = round(sigma * padding);
+0063     <span class="comment">% maximum size of padding</span>
+0064     padMax = (2.^ceil(log2(2 * padMin + size(img))) - size(img)) ./ 2;
+0065     <span class="comment">% optimal size of padding</span>
+0066     pad = zeros(1, 2);
+0067     <span class="keyword">for</span> dim = 1 : 2
+0068         <span class="comment">% possible image sizes</span>
+0069         sizes = size(img, dim) + 2 * (padMin(dim) : padMax(dim));
+0070         <span class="comment">% fastest image size</span>
+0071         [~, idx] = min(time(sizes &lt;= numel(time)));
+0072         <span class="comment">% optimal padding</span>
+0073         <span class="keyword">if</span> ~isempty(idx), pad(dim) = (sizes(idx) - size(img, dim)) / 2; <span class="keyword">end</span>
+0074     <span class="keyword">end</span>
+0075 <span class="keyword">end</span>
+0076 <span class="comment">% signal f: padded image</span>
+0077 f = img([ones(1, pad(1)), 1 : size(img, 1), end * ones(1, pad(1))], <span class="keyword">...</span>
+0078         [ones(1, pad(2)), 1 : size(img, 2), end * ones(1, pad(2))]);
+0079 <span class="comment">% Fast Fourier Transformation of the image</span>
+0080 F = fft2(f);
+0081 <span class="comment">% size of padded image</span>
+0082 N = size(F);
+0083 
+0084 <span class="comment">%% gaussians Hc for rows and columns separately</span>
+0085 <span class="comment">% transition function: gaussians</span>
+0086 Hc = cell(1, 2);
+0087 <span class="comment">% build them for rows and columns separately</span>
+0088 <span class="keyword">for</span> dim = 1 : 2
+0089     <span class="comment">% circular repetitions in frequency domain</span>
+0090     <span class="keyword">if</span> sigma(dim) &gt; 0
+0091         nShah = ceil(6 / sigma(dim));
+0092     <span class="keyword">else</span>
+0093         nShah = 0;
+0094     <span class="keyword">end</span>
+0095     <span class="comment">% multiple repetitions of each pixel</span>
+0096     [j, n] = ndgrid(-nShah : nShah, 0 : N(dim) - 1);
+0097     <span class="comment">% gaussian value at each position</span>
+0098     Hc{dim} = exp(- 2 .* (sigma(dim) .* pi .* (j + n ./ N(dim))).^2);
+0099 <span class="keyword">end</span>
+0100 <span class="comment">% sum over all repetitions</span>
+0101 Hy_temp = sum(Hc{1}, 1);
+0102 Hx_temp = sum(Hc{2}, 1);
+0103 <span class="comment">% normalization (divide by N, so it won't have to be done when using fft2</span>
+0104 <span class="comment">% instead of ifft2)</span>
+0105 Hy = Hy_temp ./ Hy_temp(1, 1) ./ N(1);
+0106 Hx = Hx_temp ./ Hx_temp(1, 1) ./ N(2);
+0107 
+0108 <span class="comment">%% construct kernels</span>
+0109 <span class="comment">% see handwritten notes</span>
+0110 dy  = - 1i *      sin(2 * pi * (0 : N(1) - 1) ./ N(1));
+0111 dx  =   1i *      sin(2 * pi * (0 : N(2) - 1) ./ N(2));
+0112 dyy = - 2 * (1 - cos(2 * pi * (0 : N(1) - 1) ./ N(1)));
+0113 dxx = - 2 * (1 - cos(2 * pi * (0 : N(2) - 1) ./ N(2)));
+0114 <span class="keyword">for</span> k = 1 : length(varargin)
+0115     <span class="keyword">switch</span> varargin{k}
+0116         <span class="keyword">case</span> <span class="string">'G'</span>,   H =  Hy'         *  Hx;
+0117         <span class="keyword">case</span> <span class="string">'Gy'</span>,  H = (Hy .* dy)'  *  Hx;
+0118         <span class="keyword">case</span> <span class="string">'Gx'</span>,  H =  Hy'         * (Hx .* dx);
+0119         <span class="keyword">case</span> <span class="string">'Gyy'</span>, H = (Hy .* dyy)' *  Hx;
+0120         <span class="keyword">case</span> <span class="string">'Gxx'</span>, H =  Hy'         * (Hx .* dxx);
+0121         <span class="keyword">case</span> <span class="string">'Gxy'</span>, H = (Hy .* dy)'  * (Hx .* dx);
+0122         <span class="keyword">case</span> <span class="string">'y2G'</span>, H = (Hy .* dyy)' *  Hx         * sigma(1)^4 + <span class="keyword">...</span>
+0123                          Hy'         *  Hx         * sigma(1)^2;
+0124         <span class="keyword">case</span> <span class="string">'x2G'</span>, H =  Hy'         * (Hx .* dxx) * sigma(2)^4 + <span class="keyword">...</span>
+0125                          Hy'         *  Hx         * sigma(2)^2;
+0126         <span class="keyword">case</span> <span class="string">'xyG'</span>, H = (Hy .* dy)'  * (Hx .* dx)  * prod(sigma)^2;
+0127         <span class="keyword">otherwise</span>,  error <span class="string">'gaussFFT: unknown kernel name'</span>;
+0128     <span class="keyword">end</span>
+0129     <span class="comment">% fft convolution (inverse fft transformation via ifft, normalization</span>
+0130     <span class="comment">% is already done)</span>
+0131     G = real(fft2((F .* H)')');
+0132     <span class="comment">% crop result</span>
+0133     varargout{k} = G(pad(1) + 1 : end - pad(1), pad(2) + 1 : end - pad(2)); <span class="comment">%#ok&lt;AGROW&gt;</span>
+0134 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

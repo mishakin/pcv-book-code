@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_minimal_Point_Projection_3D_2D</title>
+  <meta name="keywords" content="sugr_minimal_Point_Projection_3D_2D">
+  <meta name="description" content="% Minimal representation of Projection P 3D--&gt;2D">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Projection_3D_2D</a> &gt; sugr_minimal_Point_Projection_3D_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Projection_3D_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_minimal_Point_Projection_3D_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Minimal representation of Projection P 3D--&gt;2D</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function Ps = sugr_minimal_Point_Projection_3D_2D(P,Cpp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Minimal representation of Projection P 3D--&gt;2D
+
+ P = sugr_minimal_Projection_3D_2D(P,Cpp)
+
+ Wolfgang Förstner 2/2013
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_Projection_3D_2D.html" class="code" title="function Point_Projection_3D_2D = sugr_Projection_3D_2D(a1,a2,a3)">sugr_Projection_3D_2D</a>, sugr_minimal_vector</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>	% generate minimal representation for homogeneous vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_Projection_3D_2D.html" class="code" title="function Point_Projection_3D_2D = sugr_Projection_3D_2D(a1,a2,a3)">sugr_Projection_3D_2D</a>	% Create pose</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Minimal representation of Projection P 3D--&gt;2D</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% P = sugr_minimal_Projection_3D_2D(P,Cpp)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Wolfgang Förstner 2/2013</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% See also sugr_Projection_3D_2D, sugr_minimal_vector</span>
+0009 
+0010 <a name="_sub0" href="#_subfunctions" class="code">function Ps = sugr_minimal_Point_Projection_3D_2D(P,Cpp)</a>
+0011 
+0012 p = P(:);                                  <span class="comment">% vectorize</span>
+0013 p_minimal  = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(p,Cpp);   <span class="comment">% determine minimal vector</span>
+0014 Ps.P       = reshape(p_minimal.h,3,4);     <span class="comment">% build P-matrix</span>
+0015 Ps.Crr     = p_minimal.Crr;                <span class="comment">% store CovM_rr</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

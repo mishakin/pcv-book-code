@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of GaussMarkovModelLinear</title>
+  <meta name="keywords" content="GaussMarkovModelLinear">
+  <meta name="description" content="% Gauss-Markov model linear, individual observations">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GMM</a> &gt; <a href="Documentation.html">Functions-GMM</a> &gt; GaussMarkovModelLinear.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GMM\Functions-GMM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>GaussMarkovModelLinear
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Gauss-Markov model linear, individual observations</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=GaussMarkovModelLinear(lv,Cov_ll,Am,av,rU) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Gauss-Markov model linear, individual observations
+
+ lv       = Nx1 vector of observations
+ Cov_ll   = NxN covariance matrix of observations (Cov_ll^a)
+ Am       = NxU Jacobian
+ av       = Nx1 additive vector
+ rU       = range of unknown parameters of interest
+
+ est_x    = Ux1 estimated parameter
+ Cov_xx   = UxU theoretical covariance matrix of estimated parameters
+ sigma_0q = estimated variance factor (=1 if R=1)
+ R        = redundancy
+ vv       = Nx1 vector of estimated corrections
+ zv       = Nx1 vector of standardized residuals (using sigma_0=1)
+ riv      = Nx1 vector of redundacy numbers
+ mu       = Nx1 vector of senstivity factors
+
+ [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,muv]=...
+            GaussMarkovModelLinear(l,Cov_ll,A,a)
+
+ Wolfgang Förstner 2015-06-04
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="diagnostics_GMM_1d.html" class="code" title="function [riv,zv,nabla_lv,muv,muv1,uv1q,uv2] =diagnostics_GMM_1d(r_U,Am,Cov_ll,W_ll,Cov_xx,W_xx,vv)">diagnostics_GMM_1d</a>	% diagnostics 1d</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../04-Estimation/GMM/Demo-GMM/demos_GMM_regression.html" class="code" title="">demos_GMM_regression</a>	% test GMM with linear regression with check</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Gauss-Markov model linear, individual observations</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% lv       = Nx1 vector of observations</span>
+0004 <span class="comment">% Cov_ll   = NxN covariance matrix of observations (Cov_ll^a)</span>
+0005 <span class="comment">% Am       = NxU Jacobian</span>
+0006 <span class="comment">% av       = Nx1 additive vector</span>
+0007 <span class="comment">% rU       = range of unknown parameters of interest</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% est_x    = Ux1 estimated parameter</span>
+0010 <span class="comment">% Cov_xx   = UxU theoretical covariance matrix of estimated parameters</span>
+0011 <span class="comment">% sigma_0q = estimated variance factor (=1 if R=1)</span>
+0012 <span class="comment">% R        = redundancy</span>
+0013 <span class="comment">% vv       = Nx1 vector of estimated corrections</span>
+0014 <span class="comment">% zv       = Nx1 vector of standardized residuals (using sigma_0=1)</span>
+0015 <span class="comment">% riv      = Nx1 vector of redundacy numbers</span>
+0016 <span class="comment">% mu       = Nx1 vector of senstivity factors</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,muv]=...</span>
+0019 <span class="comment">%            GaussMarkovModelLinear(l,Cov_ll,A,a)</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% Wolfgang Förstner 2015-06-04</span>
+0022 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0023 
+0024 
+0025 <a name="_sub0" href="#_subfunctions" class="code">function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=</a><span class="keyword">...</span>
+0026     GaussMarkovModelLinear(lv,Cov_ll,Am,av,rU)
+0027 
+0028 <span class="comment">%% initialization</span>
+0029 
+0030 <span class="comment">% number N and U</span>
+0031 [N,U] = size(Am);
+0032 
+0033 <span class="comment">% redundancy</span>
+0034 R = N-U;
+0035 <span class="keyword">if</span> R &lt; 0
+0036     disp(<span class="string">'not enough observations'</span>)
+0037     <span class="keyword">return</span>;
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">%% estimation</span>
+0041 W_ll   = inv(Cov_ll);                  <span class="comment">% weight matrix of lv</span>
+0042 Bm     = W_ll*Am;                         <span class="comment">%#ok&lt;*MINV&gt; % ancillary matrix</span>
+0043 Nm     = Bm'*Am;                       <span class="comment">% normal equation matrix</span>
+0044 mv     = Bm'*(lv-av);                  <span class="comment">% right hand sides</span>
+0045 Cov_xx =inv(Nm);                       <span class="comment">% covariance matrix of est. parameters</span>
+0046 est_x  = Cov_xx*mv;                    <span class="comment">% estimated parameters</span>
+0047 vv     = Am*est_x+av-lv;               <span class="comment">% estimated residuals</span>
+0048 <span class="keyword">if</span> R &gt; 0
+0049     sigma_0q = vv'*W_ll*vv/R;          <span class="comment">% estimated variance factor</span>
+0050 <span class="keyword">else</span>
+0051     sigma_0q = 1;
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="comment">%% diagnostics (useful if observations are uncorrelated)</span>
+0055 [riv,zv,nabla_lv,muv,muv1,uv1q,uv2] = <a href="diagnostics_GMM_1d.html" class="code" title="function [riv,zv,nabla_lv,muv,muv1,uv1q,uv2] =diagnostics_GMM_1d(r_U,Am,Cov_ll,W_ll,Cov_xx,W_xx,vv)">diagnostics_GMM_1d</a>(rU,Am,Cov_ll,W_ll,Cov_xx,Nm,vv);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

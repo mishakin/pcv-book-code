@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sparseinv</title>
+  <meta name="keywords" content="sparseinv">
+  <meta name="description" content="SPARSEINV computes the sparse inverse subset of a real sparse square matrix A.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../Documentation.html">Home</a> &gt;  <a href="../../../Documentation.html">General-Functions</a> &gt; <a href="../../Documentation.html">external</a> &gt; <a href="#">sparse_inverse</a> &gt; <a href="Documentation.html">sparseinv</a> &gt; sparseinv.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../Documentation.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\external\sparse_inverse\sparseinv&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>sparseinv
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>SPARSEINV computes the sparse inverse subset of a real sparse square matrix A.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SPARSEINV computes the sparse inverse subset of a real sparse square matrix A.
+ This function is typically much faster than computing all of inv(A).
+
+ [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)
+
+ Z is a subset of the inverse a sparse matrix A of full rank.  On output, if
+ Zpattern(i,j)=1, it means that Z(i,j) has been computed.  That is, the norm
+ of (Zpattern .* (Z - inv (A))) will be small.
+
+ Method: The permuted matrix C = P*A*Q is first factorized into C =
+ (L+I)*D*(U+I) where D is diagonal, L+I is lower triangular with unit
+ diagonal, and U+I is upper triangular with unit diagonal (I = speye (n)).  If
+ A is symmetric and positive definite, then a Cholesky factorization is used
+ (in which case P=Q' and L=U', and Z will include all diagonal entries of
+ inv(A)).  Next, the entries in the inverse of C that correspond to nonzero
+ values in Zpattern are found via Takahashi's method.  Zpattern is the
+ symbolic Cholesky factorization of C+C', so it includes all entries in L+U
+ and its transpose.
+
+ stats is an optional struct containing statistics on the factorization.
+
+ Example:
+   load west0479
+   A = west0479 ;
+   [Z, Zpattern] = sparseinv (A) ;
+   S = inv (A) ;
+   err = norm (Zpattern .* (Z - S), 1) / norm (S, 1)
+
+ See also inv, lu, chol.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,out_in_0,print_type,plot_type)">smooth_dem_robust_bilinear</a>	% smooth_dem_robust_bilinear</li><li><a href="sparseinv_test.html" class="code" title="function sparseinv_test (extensive)">sparseinv_test</a>	SPARSEINV_TEST tests the sparseinv function.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)</a>
+0002 <span class="comment">%SPARSEINV computes the sparse inverse subset of a real sparse square matrix A.</span>
+0003 <span class="comment">% This function is typically much faster than computing all of inv(A).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Z is a subset of the inverse a sparse matrix A of full rank.  On output, if</span>
+0008 <span class="comment">% Zpattern(i,j)=1, it means that Z(i,j) has been computed.  That is, the norm</span>
+0009 <span class="comment">% of (Zpattern .* (Z - inv (A))) will be small.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Method: The permuted matrix C = P*A*Q is first factorized into C =</span>
+0012 <span class="comment">% (L+I)*D*(U+I) where D is diagonal, L+I is lower triangular with unit</span>
+0013 <span class="comment">% diagonal, and U+I is upper triangular with unit diagonal (I = speye (n)).  If</span>
+0014 <span class="comment">% A is symmetric and positive definite, then a Cholesky factorization is used</span>
+0015 <span class="comment">% (in which case P=Q' and L=U', and Z will include all diagonal entries of</span>
+0016 <span class="comment">% inv(A)).  Next, the entries in the inverse of C that correspond to nonzero</span>
+0017 <span class="comment">% values in Zpattern are found via Takahashi's method.  Zpattern is the</span>
+0018 <span class="comment">% symbolic Cholesky factorization of C+C', so it includes all entries in L+U</span>
+0019 <span class="comment">% and its transpose.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% stats is an optional struct containing statistics on the factorization.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% Example:</span>
+0024 <span class="comment">%   load west0479</span>
+0025 <span class="comment">%   A = west0479 ;</span>
+0026 <span class="comment">%   [Z, Zpattern] = sparseinv (A) ;</span>
+0027 <span class="comment">%   S = inv (A) ;</span>
+0028 <span class="comment">%   err = norm (Zpattern .* (Z - S), 1) / norm (S, 1)</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% See also inv, lu, chol.</span>
+0031 
+0032 <span class="comment">% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com</span>
+0033 
+0034 get_stats = (nargout &gt; 7) ;
+0035 <span class="keyword">if</span> (get_stats)
+0036     t1 = tic ;
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="comment">% check inputs</span>
+0040 <span class="keyword">if</span> (~issparse (A))
+0041     error (<span class="string">'A must be sparse'</span>) ;
+0042 <span class="keyword">end</span>
+0043 [m n] = size (A) ;
+0044 <span class="keyword">if</span> (m ~= n)
+0045     error (<span class="string">'A must be square'</span>) ;
+0046 <span class="keyword">end</span>
+0047 <span class="keyword">if</span> (~isreal (A))
+0048     error (<span class="string">'complex matrices not supported'</span>) ;
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% construct the factorization: C = P*A*Q = (L+I)*D*(U+I)</span>
+0052 p = 1 ;
+0053 <span class="keyword">if</span> (all (diag (A)) &gt; 0 &amp;&amp; nnz (A-A') == 0)
+0054     [L,p,Q] = chol (A, <span class="string">'lower'</span>) ;
+0055 <span class="keyword">end</span>
+0056 <span class="keyword">if</span> (p == 0)
+0057     <span class="comment">% Cholesky worked.</span>
+0058     P = Q' ;
+0059     d = diag (L) ;
+0060     L = tril (L / diag (d), -1) ;
+0061     U = L' ;
+0062     d = d.^2 ;
+0063     D = diag (d) ;
+0064 <span class="keyword">else</span>
+0065     <span class="comment">% Cholesky failed, or wasn't attempted.  Use LU instead.</span>
+0066     [L,U,P,Q] = lu (A) ;
+0067     d = diag (U) ;
+0068     <span class="keyword">if</span> (any (d == 0))
+0069         error (<span class="string">'A must be full-rank'</span>) ;
+0070     <span class="keyword">end</span>
+0071     D = diag (d) ;
+0072     U = triu (D \ U, 1) ;
+0073     L = tril (L, -1) ;
+0074 <span class="keyword">end</span>
+0075 d = full (d) ;
+0076 
+0077 <span class="comment">% find the symbolic Cholesky of C+C'</span>
+0078 S = spones (P*A*Q) ;
+0079 [c,h,pa,po,R] = symbfact (S+S') ;
+0080 clear h pa po
+0081 Zpattern = spones (R+R') ;
+0082 clear R S
+0083 
+0084 <span class="keyword">if</span> (get_stats)
+0085     t1 = toc (t1) ;
+0086     t2 = tic ;
+0087 <span class="keyword">end</span>
+0088 
+0089 <span class="comment">% compute the sparse inverse subset</span>
+0090 [Z takflops] = sparseinv_mex (L, d, U', Zpattern) ;
+0091 <span class="keyword">if</span> (p == 0)
+0092     <span class="comment">% Force Z to be symmetric.  This is because sparseinv_mex does not</span>
+0093     <span class="comment">% exploit the symmetry in the factorization, but computes both upper and</span>
+0094     <span class="comment">% lower triangular parts of Z separately.  The work for the Takahashi</span>
+0095     <span class="comment">% equations could be cut in half as a result.</span>
+0096     Z = (Z + Z') / 2 ;
+0097 <span class="keyword">end</span>
+0098 
+0099 <span class="comment">% permute the result</span>
+0100 Z = Q*Z*P ;
+0101 Zpattern = Q*Zpattern*P ;
+0102 
+0103 <span class="comment">% return stats, if requested</span>
+0104 <span class="keyword">if</span> (nargout &gt; 7)
+0105     t2 = toc (t2) ;
+0106     <span class="keyword">if</span> (p == 0)
+0107         stats.kind = <span class="string">'Cholesky'</span> ;
+0108         fl = 2*n + sum (c.^2) ;
+0109         stats.nnz_factors = sum (c) ;
+0110     <span class="keyword">else</span>
+0111         stats.kind = <span class="string">'LU'</span> ;
+0112         Lnz = full (sum (spones (L))) ;            <span class="comment">% off diagonal nz in cols of L</span>
+0113         Unz = full (sum (spones (U')))' ;    <span class="comment">% off diagonal nz in rows of U</span>
+0114         fl = n + 2*Lnz*Unz + sum (Lnz) ;
+0115         stats.nnz_factors = nnz (L) + nnz (U) + n ;
+0116     <span class="keyword">end</span>
+0117     stats.flops_factorization = fl ;
+0118     stats.flops_Takahashi = takflops ;
+0119     stats.time_factorization = t1 ;
+0120     stats.time_Takahashi = t2 ;
+0121 <span class="keyword">end</span>
+0122</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

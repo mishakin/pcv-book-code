@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_check_CovM</title>
+  <meta name="keywords" content="sugr_check_CovM">
+  <meta name="description" content="% test CovM">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../Documentation.html">Home</a> &gt;  <a href="../../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="../Documentation.html">General</a> &gt; <a href="Documentation.html">Statistics</a> &gt; sugr_check_CovM.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../Documentation.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\General\Statistics&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_check_CovM
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>% test CovM</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [lambda, T, F] = sugr_check_CovM(C_empir, C_theor, m, S) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% test CovM
+
+ [lambda,T,F] = check_CovM(C_empir,C_theor,m,S)
+
+ C_empir = empirical covariance matrix
+ C_theor = theoretical covariance matrix
+ m       = sample size for determining empirical CovM
+ S       = significance level (close to 1)
+
+ lambda  = test statistic
+ T       = chi^2 threshold [high,low]
+ F       = refined F threshold  [high,low]
+
+ Wolfgang Förstner 2/2012
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>	% check estimation result, PCV Sect. 4.6.8</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% test CovM</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [lambda,T,F] = check_CovM(C_empir,C_theor,m,S)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% C_empir = empirical covariance matrix</span>
+0006 <span class="comment">% C_theor = theoretical covariance matrix</span>
+0007 <span class="comment">% m       = sample size for determining empirical CovM</span>
+0008 <span class="comment">% S       = significance level (close to 1)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% lambda  = test statistic</span>
+0011 <span class="comment">% T       = chi^2 threshold [high,low]</span>
+0012 <span class="comment">% F       = refined F threshold  [high,low]</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Wolfgang Förstner 2/2012</span>
+0015 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0016 
+0017 <a name="_sub0" href="#_subfunctions" class="code">function [lambda, T, F] = sugr_check_CovM(C_empir, C_theor, m, S)</a>
+0018 
+0019 p = size(C_empir, 1);
+0020 
+0021 lambda = m * (log(det(C_theor) / det(C_empir)) - p + trace(C_empir * inv(C_theor)));
+0022 
+0023 Tup = chi2inv(S, 0.5 * p * (p + 1));
+0024 Tlow = chi2inv(1 - S, 0.5 * p * (p + 1));
+0025 T = [Tup, Tlow];
+0026 
+0027 D1 = (2 * p + 1 - 2 / (p + 1)) / (6 * m);
+0028 D2 = (p - 1) * (p + 2) / (6 * m ^ 2);
+0029 q1 = p * (p + 1) / 2;
+0030 q2 = (q1 + 2) / (D2 - D1 ^ 2);
+0031 b = q1 / (1 - D1 - q1 / q2);
+0032 q2 = min(100000, q2);
+0033 Fup = b * finv(S, q1, q2);
+0034 Flow = b * finv(1 - S, q1, q2);
+0035 F = [Fup, Flow];
+0036 
+0037 
+0038</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

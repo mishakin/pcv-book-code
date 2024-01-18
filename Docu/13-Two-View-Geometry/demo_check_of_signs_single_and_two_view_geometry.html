@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_check_of_signs_single_and_two_view_geometry</title>
+  <meta name="keywords" content="demo_check_of_signs_single_and_two_view_geometry">
+  <meta name="description" content="% demo: check of signs single and two view geometry">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">13-Two-View-Geometry</a> &gt; demo_check_of_signs_single_and_two_view_geometry.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>demo_check_of_signs_single_and_two_view_geometry
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% demo: check of signs single and two view geometry</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% demo: check of signs single and two view geometry
+
+ 1. Epipoles as projections and vectors of determinants 
+ 2. Signs of epipolar lines 
+ 3. Positivity of projection centre Z_h &gt; 0
+ 4. l' e'+l'' e'' = 0, PCV (12.286)
+ 5. Sign of reconstructed 3D lines, PCV (13.288)
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 06/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>	% dualizing matrix</li><li><a href="../General-Functions/Geometry/calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>	% dual Plückermatrix from Plücker vector</li><li><a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>	% Pi-matrix from 3D-point 4-vector</li><li><a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>	% Pidual-matrix from 3D-point 4-vector</li><li><a href="../General-Functions/Geometry/calc_Q_from_P.html" class="code" title="function Q = calc_Q_from_P (P)">calc_Q_from_P</a>	% calculates projection matrix Q for lines from P</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% demo: check of signs single and two view geometry</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% 1. Epipoles as projections and vectors of determinants</span>
+0004 <span class="comment">% 2. Signs of epipolar lines</span>
+0005 <span class="comment">% 3. Positivity of projection centre Z_h &gt; 0</span>
+0006 <span class="comment">% 4. l' e'+l'' e'' = 0, PCV (12.286)</span>
+0007 <span class="comment">% 5. Sign of reconstructed 3D lines, PCV (13.288)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Wolfgang Förstner</span>
+0010 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% last changes: Susanne Wenzel 06/18</span>
+0013 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0014 
+0015 clc
+0016 
+0017 addpath(genpath(<span class="string">'../General-Functions'</span>))
+0018 
+0019 disp(<span class="string">'----------------------------------------------------------------'</span>)
+0020 disp(<span class="string">'----- check Werner/Pajdla_s ls*es+lss*ess = 0 PCV (12.286) -----'</span>)
+0021 disp(<span class="string">'----------------------------------------------------------------'</span>)
+0022 
+0023 disp(<span class="string">'Create Fundamental matrix F, assuming randomly given positive projection centres Z1 and Z2 '</span>)
+0024 <span class="comment">% random Projection matrices with positive projection centres</span>
+0025 P1  = randn(3,4);                    <span class="comment">% random P</span>
+0026 DP1 = det(P1(1:3,1:3));              <span class="comment">% determinant of A</span>
+0027 P1  = P1/sign(DP1);                  <span class="comment">% proper P, see PCV p. 474</span>
+0028                                      <span class="comment">% --&gt; positive projection centre</span>
+0029 <span class="comment">% Projection centre as intersection of principal planes, see PCV (12.45)</span>
+0030 Z1  = -<a href="../General-Functions/Geometry/calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>(<a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(P1(1,:)')*P1(2,:)')'*P1(3,:)';
+0031 
+0032 <span class="comment">% same for P2</span>
+0033 P2  = randn(3,4);
+0034 DP2 = det(P2(1:3,1:3));
+0035 P2  = P2/sign(DP2);
+0036 Z2  = -<a href="../General-Functions/Geometry/calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>(<a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(P2(1,:)')*P2(2,:)')'*P2(3,:)';
+0037 
+0038 <span class="comment">% corresponding Q's</span>
+0039 Q1 = <a href="../General-Functions/Geometry/calc_Q_from_P.html" class="code" title="function Q = calc_Q_from_P (P)">calc_Q_from_P</a>(P1);             
+0040 Q2 = <a href="../General-Functions/Geometry/calc_Q_from_P.html" class="code" title="function Q = calc_Q_from_P (P)">calc_Q_from_P</a>(P2);
+0041 
+0042 <span class="comment">% Fundamental matrix, see PCV (13.19)</span>
+0043 F = Q1*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*Q2'                                                       <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0044 
+0045 <span class="comment">% epipoles, see PCV (13.71)</span>
+0046 e1 = P1*Z2;
+0047 e2 = P2*Z1;
+0048 
+0049 <span class="comment">% epipoles, see PCV (13.72)</span>
+0050 e1_det = [<span class="keyword">...</span>
+0051     det([P2(1,:)',P2(2,:)',P2(3,:)',P1(1,:)']);<span class="keyword">...</span>
+0052     det([P2(1,:)',P2(2,:)',P2(3,:)',P1(2,:)']);<span class="keyword">...</span>
+0053     det([P2(1,:)',P2(2,:)',P2(3,:)',P1(3,:)']);<span class="keyword">...</span>
+0054       ];
+0055 
+0056 disp(<span class="string">' '</span>)
+0057 disp(<span class="string">'----- Check epipoles -----'</span>)  
+0058 check_e1_minus_e1det_zero = (e1 - e1_det)';
+0059 disp(<span class="string">'Epipole e1 = P1 times Z2 (13.71) minus e1 from camera planes in the '</span>)
+0060 disp([<span class="string">'projection matrices (13.72) should be zero vector:   ['</span>, num2str(check_e1_minus_e1det_zero),<span class="string">']'</span>])
+0061 
+0062 check_e1F_zero=(e1'*F)';
+0063 check_Fe2_zero=(F*e2)';
+0064 disp(<span class="string">' '</span>)
+0065 disp([<span class="string">'e1^T times F should be zero vector:   ['</span>, num2str(check_e1F_zero'),<span class="string">']^T'</span>])
+0066 disp([<span class="string">'F times e2 should be zero vector:     ['</span>, num2str(check_Fe2_zero),<span class="string">']'</span>])
+0067 
+0068 disp(<span class="string">' '</span>)
+0069 disp(<span class="string">'----- Create random 3D Line and according projections into images ...'</span>)
+0070 <span class="comment">% random 3D Line</span>
+0071 X1 = randn(4,1);            <span class="comment">% two random 3D points</span>
+0072 X2 = randn(4,1);
+0073 L  = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(X1)*X2;        <span class="comment">% resulting 3D line</span>
+0074 l1 = Q1*L;                  <span class="comment">% lines in images</span>
+0075 l2 = Q2*L;
+0076 
+0077 disp(<span class="string">'Object point X1 is projected into image 1 as x11, into image 2 as x12'</span>)
+0078 disp(<span class="string">'Object point X2 is projected into image 2 as x21, into image 2 as x22'</span>)
+0079 <span class="comment">% projections</span>
+0080 x11 = P1*X1;                <span class="comment">% first point in images</span>
+0081 x12 = P2*X1;
+0082 x21 = P1*X2;                <span class="comment">% second point in images</span>
+0083 x22 = P2*X2;
+0084 
+0085 disp(<span class="string">' '</span>)
+0086 disp(<span class="string">'----- Calculate epipolar lines l1 and l2 of X1 ...'</span>)
+0087 <span class="comment">% epipolar lines l1 and l2 of X1</span>
+0088 l1x = cross(e1,x11)                                                        <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0089 l1xF = F*x12;
+0090 l2x = cross(e2,x12)                                                        <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0091 l2xF = F'*x11;
+0092 
+0093 disp(<span class="string">' '</span>)
+0094 disp(<span class="string">'----- Check epipolar lines'</span>)
+0095 check_l1x_minus_l1xF_zero = (l1x-l1xF)';
+0096 check_l2x_minus_l2xF_zero = (l2x-l2xF)';
+0097 disp([<span class="string">'epipolar line l1 = e1 cross x11 minus l1 = F times x12 should be zero vector:     ['</span>, <span class="keyword">...</span>
+0098     num2str(check_l1x_minus_l1xF_zero),<span class="string">']'</span>])
+0099 disp([<span class="string">'epipolar line l2 = e2 cross x12 minus l2 = F^T times x11 should be zero vector:   ['</span>, <span class="keyword">...</span>
+0100     num2str(check_l2x_minus_l2xF_zero),<span class="string">']'</span>])
+0101 
+0102 check_l_on_x_1_zero = (l1x'*x11)';
+0103 disp([<span class="string">'image point x11 should be on l1, thus l1^T times x11 should be zero:              '</span>, num2str(check_l_on_x_1_zero)])
+0104 check_e_on_x_1_zero = (l1x'*e1)';
+0105 disp([<span class="string">'epipole e1 should be on l1, thus l1^T times e1 should be zero:                    '</span>, num2str(check_e_on_x_1_zero)])
+0106 
+0107 check_l_on_x_2_zero = (l2x'*x12)';
+0108 disp([<span class="string">'image point x12 should be on l2, thus l2^T times x12 should be zero:              '</span>, num2str(check_l_on_x_2_zero)])
+0109 check_e_on_x_2_zero = (l2x'*e2)';
+0110 disp([<span class="string">'epipole e2 should be on l2, thus l2^T times e2 should be zero:                    '</span>, num2str(check_e_on_x_2_zero)])
+0111 
+0112 <span class="comment">%% start of check</span>
+0113 disp(<span class="string">' '</span>)
+0114 disp(<span class="string">'---- Check positive sign and value of Z0 vs abs|det(A)| , see PCV p. 474 -----'</span>)
+0115 Z_s_positive_Dets       = [Z1',abs(DP1);Z2',abs(DP2)]                      <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0116 
+0117 
+0118 disp(<span class="string">'----- Check sign of l1*e1 and l2*e2 -----'</span>)
+0119 lses   = l1'*e1;
+0120 lssess = l2'*e2;
+0121 check_lses_plus_lssess_zero = lses+lssess;
+0122 disp([<span class="string">'PCV (13.287)   l1*e1 + l2*e2 should be zero:        '</span>, num2str(check_lses_plus_lssess_zero)])
+0123 check_QP_minus_PiZ_zero = <a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*Q1'*P1-<a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(Z1);
+0124 disp([<span class="string">'PCV (13.288)   Q_dual(P1) - Pi(Z1) should be zero:  '</span>, num2str(check_lses_plus_lssess_zero)])
+0125 disp(<span class="string">' '</span>)
+0126 <span class="comment">%%</span>
+0127 disp(<span class="string">'Check sign of 3D line reconstruction PCV (13.288)'</span>)
+0128 A1 = P1'*l1;
+0129 A2 = P2'*l2;
+0130 Lc = sign(l1'*e1)*<a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(A1)*A2;   
+0131 disp( [<span class="string">'L = A2 cap A1 =                                    ['</span>,num2str(Lc'),<span class="string">']'</span>])
+0132 <span class="comment">% Lc/Lc(1)*sign(Lc(1));</span>
+0133 <span class="comment">% L/L(1)*sign(L(1));</span>
+0134 factor_12 = sign(l1'*e1);
+0135 disp([<span class="string">'Sign of 3D line: '</span>, num2str(factor_12)])
+0136 check_L_and_Lreconstructed_zero = (Lc/Lc(1)*sign(Lc(1))-L/L(1)*sign(L(1)))';
+0137 disp([<span class="string">'Diff L and reconstructed 3D line should be zero:   ['</span>, num2str(check_L_and_Lreconstructed_zero),<span class="string">']'</span>])
+0138 
+0139 disp(<span class="string">' '</span>)
+0140 Lc = sign(l2'*e2)*<a href="../General-Functions/Geometry/calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>(A2)*A1;
+0141 disp( [<span class="string">'L = A1 cap A2 =                                    ['</span>,num2str(Lc'),<span class="string">']'</span>])
+0142 <span class="comment">% Lc/Lc(1)*sign(Lc(1));</span>
+0143 <span class="comment">% L/L(1)*sign(L(1));</span>
+0144 factor_21 = sign(l2'*e2);
+0145 disp([<span class="string">'Sign of 3D line: '</span>, num2str(factor_21)])
+0146 check_zero = (Lc/Lc(1)*sign(Lc(1))-L/L(1)*sign(L(1)))';
+0147 disp([<span class="string">'Diff L and reconstructed 3D line should be zero:   ['</span>, num2str(check_zero),<span class="string">']'</span>])
+0148 
+0149 
+0150 
+0151 
+0152</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_CovM_E_matrix</title>
+  <meta name="keywords" content="sugr_CovM_E_matrix">
+  <meta name="description" content="% Covariance matrix of parameters of essential matrix">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">E-Matrix</a> &gt; sugr_CovM_E_matrix.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\E-Matrix&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_CovM_E_matrix
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Covariance matrix of parameters of essential matrix</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function CovM = sugr_CovM_E_matrix(X, Cpp, B, R) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Covariance matrix of parameters of essential matrix
+
+ CovM = sugr_CovM_E_matrix(X, Cpp, B, R)
+
+ model
+        xl' * E * xr = 0
+        E = S(B) R'
+        xl = [I |  0] X
+        xr = [R | -B] X
+
+ X   = N x 4 matrix of homogeneous 3D points, N &gt;= 5
+ Cpp = N x 4 x 4 Covariance matrix of reduced image coordinate pairs
+ R   = 3 x 3 rotation matrix
+ B   = 3 x 1 direction of base line, 1--&gt;2
+
+ Checked in sugr_estimation_ml_E_Matrix_from_point_pairs.m
+
+  see: PCV 13.3.5.1
+
+ Wolfgang Förstner 2016-09-01
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_estimate_E_Matrix_from_point_pairs.html" class="code" title="">demo_estimate_E_Matrix_from_point_pairs</a>	% test_estimate_E_Matrix_from_point_pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Covariance matrix of parameters of essential matrix</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% CovM = sugr_CovM_E_matrix(X, Cpp, B, R)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% model</span>
+0006 <span class="comment">%        xl' * E * xr = 0</span>
+0007 <span class="comment">%        E = S(B) R'</span>
+0008 <span class="comment">%        xl = [I |  0] X</span>
+0009 <span class="comment">%        xr = [R | -B] X</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% X   = N x 4 matrix of homogeneous 3D points, N &gt;= 5</span>
+0012 <span class="comment">% Cpp = N x 4 x 4 Covariance matrix of reduced image coordinate pairs</span>
+0013 <span class="comment">% R   = 3 x 3 rotation matrix</span>
+0014 <span class="comment">% B   = 3 x 1 direction of base line, 1--&gt;2</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Checked in sugr_estimation_ml_E_Matrix_from_point_pairs.m</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%  see: PCV 13.3.5.1</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% Wolfgang Förstner 2016-09-01</span>
+0021 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% See also sugr_E_Matrix</span>
+0024 
+0025 <a name="_sub0" href="#_subfunctions" class="code">function CovM = sugr_CovM_E_matrix(X, Cpp, B, R)</a>
+0026 
+0027 <span class="comment">% number of points</span>
+0028 NN = size(X, 1);
+0029 
+0030 <span class="comment">% essential matrix</span>
+0031 E = <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(B) * R';
+0032 
+0033 <span class="comment">% projection matrix right</span>
+0034 Pr = R * [eye(3), - B];
+0035 
+0036 n = 0;
+0037 <span class="comment">% fitted image directions</span>
+0038 <span class="keyword">for</span> nn = 1:NN
+0039     <span class="keyword">if</span> norm(X(nn, :)) &gt; 10 ^ (- 10)
+0040         n = n + 1;
+0041         xl(n, :) = X(nn, 1:3) / norm(X(nn, 1:3));                          <span class="comment">%#ok&lt;*AGROW&gt;</span>
+0042         xr(n, :) = X(nn, :) * Pr';
+0043         xr(n, :) = xr(n, :) / norm(xr(n, :));
+0044     <span class="keyword">end</span>
+0045 <span class="keyword">end</span>
+0046 N = n;
+0047 
+0048 <span class="comment">% ancillary vectors</span>
+0049 ll = xr * E';
+0050 lr = xl * E;
+0051 x1 = xr * R;
+0052 
+0053 at = zeros(1, 5);
+0054 bt = zeros(1, 4);
+0055 
+0056 <span class="comment">% dtermine variances of constraints</span>
+0057 btCb = zeros(N, 1);
+0058 <span class="keyword">for</span> n = 1:N
+0059     bt(1:2) = ll(n, :) * null(xl(n, :));
+0060     bt(3:4) = lr(n, :) * null(xr(n, :));
+0061     C = reshape(Cpp(n, :, :), 4, 4);
+0062     btCb(n) = bt * C * bt';
+0063 <span class="keyword">end</span>
+0064 
+0065 <span class="comment">% determine information matrix</span>
+0066 Nm = zeros(5);
+0067 <span class="keyword">for</span> n = 1:N
+0068     at(1:2) = (<a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(x1(n, :)') * xl(n,:)')' * null(B');
+0069     at(3:5) = (<a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(lr(n, :)') * xr(n,:)')';
+0070     Nm = Nm + at' * at / btCb(n);
+0071 <span class="keyword">end</span>
+0072 
+0073 CovM = inv(Nm);
+0074 
+0075 
+0076</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

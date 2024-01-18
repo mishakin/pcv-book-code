@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_plot_Point_2D</title>
+  <meta name="keywords" content="sugr_plot_Point_2D">
+  <meta name="description" content="% Plot 2D point with standard ellipse">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Point_2D</a> &gt; sugr_plot_Point_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Point_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_plot_Point_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Plot 2D point with standard ellipse</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Plot 2D point with standard ellipse
+
+ sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)
+
+ * x      = geometric element
+ * center_type   = type of plotting the element
+ * bound_type    = type of plotting the confidence region
+ * lw      = linewidth
+ * factor  = magnification factor
+
+ Wolfgang Förstner 1/2011
+ wfoerstn@uni-bonn.de
+
+ sw 9/2016
+
+ See also <a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Maths/adjunctMatrix.html" class="code" title="function B = adjunctMatrix(A)">adjunctMatrix</a>	% determines adjunct matrix for a square matrix</li><li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>	% get CovM of homogeneous vector x.h</li><li><a href="../../../General-Functions/SUGR/General/Plots/sugr_plot_conic_explicit.html" class="code" title="function sugr_plot_conic_explicit(C,center_type,bound_type,linewidth,factor,se)">sugr_plot_conic_explicit</a>	% explicit plot of conic (ellipse or hyperbola)</li><li><a href="sugr_get_isfinite_Point_2D.html" class="code" title="function f = sugr_get_isfinite_Point_2D(x)">sugr_get_isfinite_Point_2D</a>	% Test whether 2D point is finite</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Line-2D/demo_construct_Line_2D.html" class="code" title="">demo_construct_Line_2D</a>	% test_construct_Line_2D: test routine for constructing 2D lines</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_construct_Point_2D.html" class="code" title="">demo_construct_Point_2D</a>	demo_construct_Point_2D</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_estimate_Point_2D_from_Lines.html" class="code" title="">demo_estimate_Point_2D_from_Lines</a>	% demo_estimate_Point_2D_from_Lines</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_sugr_Point_2D.html" class="code" title="">demo_sugr_Point_2D</a>	demo_sugr_Point_2D: demo routine for generating 2D point</li><li><a href="../../../10-Uncertain-Geometry/Functions/h_transfer_grid.html" class="code" title="function h_transfer_grid(H,CP,Image_l,Image_r,magnification,grid_out)">h_transfer_grid</a>	demo_h_transfer_grid: transfer point in demo_homography</li><li><a href="../../../10-Uncertain-Geometry/Functions/h_transfer_points.html" class="code" title="function h_transfer_points(H,CP,Image_l,Image_r,magnification)">h_transfer_points</a>	demo_h_transfer_points: transfer point in demo_homography</li><li><a href="../../../13-Two-View-Geometry/Demo-F-Matrix/demo_epipolar_geometry.html" class="code" title="function demo_epipolar_geometry()">demo_epipolar_geometry</a>	% Epipolar geometry</li><li><a href="../../../General-Functions/SUGR/Homography_2D/sugr_plot_Homography_2D.html" class="code" title="function sugr_plot_Homography_2D(H,center_type,bound_type,lw,factor,type)">sugr_plot_Homography_2D</a>	% plot uncertain homography 2D</li><li><a href="../../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs.html" class="code" title="function PP = sugr_perturb_2D_point_pairs(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs</a>	% Perturb sampled 2D points pairs</li><li><a href="../../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs_spherical.html" class="code" title="function PP = sugr_perturb_2D_point_pairs_spherical(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs_spherical</a>	% Perturb sampled 2D points pairs sphericaly</li><li><a href="../../../General-Functions/SUGR/Projection_3D_2D/sugr_perturb_3D_2D_point_pairs.html" class="code" title="function [X,y] = sugr_perturb_3D_2D_point_pairs(Xt,yt,sigma_X,sigma_y,fp)">sugr_perturb_3D_2D_point_pairs</a>	% Perturb sampled 3D 2D points pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Plot 2D point with standard ellipse</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * x      = geometric element</span>
+0006 <span class="comment">% * center_type   = type of plotting the element</span>
+0007 <span class="comment">% * bound_type    = type of plotting the confidence region</span>
+0008 <span class="comment">% * lw      = linewidth</span>
+0009 <span class="comment">% * factor  = magnification factor</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Wolfgang Förstner 1/2011</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% sw 9/2016</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% See also sugr_Point_2D</span>
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)</a>
+0019 
+0020 
+0021 <span class="keyword">if</span> nargin &lt; 4
+0022     lw=2;
+0023 <span class="keyword">end</span>
+0024 <span class="keyword">if</span> nargin &lt; 5
+0025     factor=1;
+0026 <span class="keyword">end</span>
+0027 
+0028 <span class="keyword">if</span> <a href="sugr_get_isfinite_Point_2D.html" class="code" title="function f = sugr_get_isfinite_Point_2D(x)">sugr_get_isfinite_Point_2D</a>(x) <span class="comment">% only finite elements</span>
+0029     Chh = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>(x);
+0030     C   = <a href="../../../General-Functions/Maths/adjunctMatrix.html" class="code" title="function B = adjunctMatrix(A)">adjunctMatrix</a>(Chh-x.h*x.h');
+0031     <a href="../../../General-Functions/SUGR/General/Plots/sugr_plot_conic_explicit.html" class="code" title="function sugr_plot_conic_explicit(C,center_type,bound_type,linewidth,factor,se)">sugr_plot_conic_explicit</a>(C,center_type,bound_type,lw,factor);
+0032     
+0033 <span class="keyword">end</span>
+0034 
+0035</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

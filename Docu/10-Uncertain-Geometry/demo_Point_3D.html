@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_Point_3D</title>
+  <meta name="keywords" content="demo_Point_3D">
+  <meta name="description" content="demo_Point_3D: test routine for generating 3D point">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">10-Uncertain-Geometry</a> &gt; demo_Point_3D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 10-Uncertain-Geometry&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>demo_Point_3D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>demo_Point_3D: test routine for generating 3D point</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> demo_Point_3D: test routine for generating 3D point
+
+ Point_3D = structure 
+
+ *           .h = spherically normalized homogeneous coordinates
+ *           .Crr = half vector of reduced covariance matrix
+ *           .type = 'Point_2D'
+
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ See also sugr_Point_3D</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li><li><a href="../General-Functions/SUGR/Point_3D/sugr_Point_3D.html" class="code" title="function Point_3D = sugr_Point_3D(a1,a2,a3,a4,a5,a6)">sugr_Point_3D</a>	% Create 3D point</li><li><a href="../General-Functions/SUGR/Point_3D/sugr_show_Point_3D.html" class="code" title="function sugr_show_Point_3D(x, name)">sugr_show_Point_3D</a>	% Show information of 3D point on console</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% demo_Point_3D: test routine for generating 3D point</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Point_3D = structure</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% *           .h = spherically normalized homogeneous coordinates</span>
+0006 <span class="comment">% *           .Crr = half vector of reduced covariance matrix</span>
+0007 <span class="comment">% *           .type = 'Point_2D'</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Wolfgang Förstner</span>
+0011 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See also sugr_Point_3D</span>
+0014 
+0015 clearvars
+0016 clc
+0017 
+0018 <span class="comment">%% initialize sugr</span>
+0019 <span class="comment">%</span>
+0020 addpath(genpath(<span class="string">'../General-Functions/'</span>));
+0021 <a href="../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0022 
+0023 <span class="comment">%% Sorted according to number of arguments</span>
+0024 
+0025 <span class="comment">%% (1) Euclidean point vector without CovM (==0)</span>
+0026 Xe = [1,2,3]';
+0027 X = <a href="../General-Functions/SUGR/Point_3D/sugr_Point_3D.html" class="code" title="function Point_3D = sugr_Point_3D(a1,a2,a3,a4,a5,a6)">sugr_Point_3D</a>(Xe);
+0028 <a href="../General-Functions/SUGR/Point_3D/sugr_show_Point_3D.html" class="code" title="function sugr_show_Point_3D(x, name)">sugr_show_Point_3D</a>(X,<span class="string">'X'</span>);
+0029 
+0030 <span class="comment">%% (1) Homogeneous point vector without CovM (==0)</span>
+0031 Xh = [1,2,3,2]';
+0032 X = <a href="../General-Functions/SUGR/Point_3D/sugr_Point_3D.html" class="code" title="function Point_3D = sugr_Point_3D(a1,a2,a3,a4,a5,a6)">sugr_Point_3D</a>(Xh);
+0033 <a href="../General-Functions/SUGR/Point_3D/sugr_show_Point_3D.html" class="code" title="function sugr_show_Point_3D(x, name)">sugr_show_Point_3D</a>(X,<span class="string">'X'</span>);
+0034 
+0035 <span class="comment">%% (2) Homogeneous point vector with CovM</span>
+0036 Xh = [1,2,3,2]';
+0037 Chh = [3,2,1,0;2,3,2,1;1,2,3,2;0,1,2,3]*0.1;
+0038 X = <a href="../General-Functions/SUGR/Point_3D/sugr_Point_3D.html" class="code" title="function Point_3D = sugr_Point_3D(a1,a2,a3,a4,a5,a6)">sugr_Point_3D</a>(Xh,Chh);
+0039 <a href="../General-Functions/SUGR/Point_3D/sugr_show_Point_3D.html" class="code" title="function sugr_show_Point_3D(x, name)">sugr_show_Point_3D</a>(X,<span class="string">'X'</span>);
+0040 
+0041 <span class="comment">%% (2) Homogeneous vanishing point vector</span>
+0042 Xh = [3,4,2,0]';
+0043 Chh = [3,2,1,0;2,3,2,1;1,2,3,2;0,1,2,3]*0.1;
+0044 X = <a href="../General-Functions/SUGR/Point_3D/sugr_Point_3D.html" class="code" title="function Point_3D = sugr_Point_3D(a1,a2,a3,a4,a5,a6)">sugr_Point_3D</a>(Xh,Chh);
+0045 <a href="../General-Functions/SUGR/Point_3D/sugr_show_Point_3D.html" class="code" title="function sugr_show_Point_3D(x, name)">sugr_show_Point_3D</a>(X,<span class="string">'X'</span>);
+0046 
+0047 <span class="comment">%% (6) Euclidean point coordinates with with standard dev</span>
+0048 x = 1;
+0049 y = 2;
+0050 z = 3;
+0051 sx = 0.1;
+0052 sy = 0.3;
+0053 sz = 0.2;
+0054 X=<a href="../General-Functions/SUGR/Point_3D/sugr_Point_3D.html" class="code" title="function Point_3D = sugr_Point_3D(a1,a2,a3,a4,a5,a6)">sugr_Point_3D</a>(x,y,z,sx,sy,sz);
+0055 <a href="../General-Functions/SUGR/Point_3D/sugr_show_Point_3D.html" class="code" title="function sugr_show_Point_3D(x, name)">sugr_show_Point_3D</a>(X,<span class="string">'X'</span>);
+0056</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_3_16_4_example_demo_profile</title>
+  <meta name="keywords" content="fig_16_3_16_4_example_demo_profile">
+  <meta name="description" content="% Fig. 16.3 page 731 and 16.4 page 732">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="Documentation.html">Profile-Reconstruction</a> &gt; fig_16_3_16_4_example_demo_profile.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Profile-Reconstruction&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_3_16_4_example_demo_profile
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Fig. 16.3 page 731 and 16.4 page 732</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 16.3 page 731 and 16.4 page 732
+ demo profile reconstruction with differente priors.
+
+ Wolfgang Förstner 2014-10-05
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a>	% estimate_profile_robust</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust_flat.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust_flat(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type)">estimate_profile_robust_flat</a>	% estimate_profile_robust_flat</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust_flat_smooth.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust_flat_smooth(N,fs,ts,ys,sigma_e1,sigma_e2,sigma_n,Niter,type_out,type_r,print_type)">estimate_profile_robust_flat_smooth</a>	% estimate_profile_robust_flat_smooth</li><li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/Statistics/generate_observed_ARp.html" class="code" title="function [x,y,sigma_x,sigma_y] = generate_observed_ARp(N,p,q,sigma_e,sigma_n)">generate_observed_ARp</a>	% generate_observed_ARp: generates samples of autoregressive processes</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 16.3 page 731 and 16.4 page 732</span>
+0002 <span class="comment">% demo profile reconstruction with differente priors.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner 2014-10-05</span>
+0005 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0007 
+0008 addpath(genpath(<span class="string">'../../General-Functions/'</span>));
+0009 addpath(<span class="string">'Functions'</span>);
+0010 
+0011 close all
+0012 
+0013 <span class="comment">%% plot settings</span>
+0014 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0015 
+0016 <span class="comment">%% initialize random number generation by fixed seed</span>
+0017 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(4);
+0018 
+0019 disp(<span class="string">' --------------------------------------------------'</span>)
+0020 disp(<span class="string">' ------ Fig. 16.3 demo profile reconstruction -----'</span>)
+0021 disp(<span class="string">' --------------------------------------------------'</span>)
+0022 
+0023 
+0024 <span class="comment">%% generate true profile</span>
+0025 
+0026 disp(<span class="string">' ------ generate true profile -----'</span>)
+0027 N = 200;   <span class="comment">% number of points total</span>
+0028 N1 = 70;   <span class="comment">% number of points in first (flat) part of the profil</span>
+0029 N2 = N-N1; <span class="comment">% remaing points</span>
+0030 
+0031 <span class="comment">% first AR(1) - flat part of the profil</span>
+0032 sigma_e = 1.0;  <span class="comment">% process noise</span>
+0033 sigma_n = 0.5;  <span class="comment">% observation noise</span>
+0034 a = 0.98;       <span class="comment">% decay</span>
+0035 
+0036 x1 = zeros(N1,1);   <span class="comment">% true profile</span>
+0037 y1 = zeros(N1,1);   <span class="comment">% observed sample points</span>
+0038 <span class="keyword">for</span> n=1+1:N1
+0039     x1(n) = sum(a.*x1(n-1:-1:n-1))+randn(1)*sigma_e;
+0040     <span class="comment">% discontinuity at position 50</span>
+0041     <span class="keyword">if</span> n==50
+0042         x1(n)=x1(n)+8;
+0043     <span class="keyword">end</span>
+0044     y1(n) = x1(n)+randn(1)*sigma_n;
+0045 <span class="keyword">end</span>
+0046 <span class="comment">% enforce slope 0</span>
+0047 <span class="keyword">for</span> i=1:N1
+0048     y1(i)=y1(i) -  (i-1)*(x1(N1)-x1(1))/(N1-1);
+0049     x1(i)=x1(i) -  (i-1)*(x1(N1)-x1(1))/(N1-1);
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="comment">% second AR(2) - valley</span>
+0053 sigma_e = 0.5;  <span class="comment">% process noise</span>
+0054 sigma_n = 0.5;  <span class="comment">% observation noise</span>
+0055 a = [2,-1]';
+0056 
+0057 x2=zeros(N2,1); <span class="comment">% true profile</span>
+0058 y2=zeros(N2,1); <span class="comment">% observed sample points</span>
+0059 <span class="keyword">for</span> n=2+1:N2
+0060     x2(n) = sum(a.*x2(n-1:-1:n-2))+randn(1)*sigma_e;
+0061     <span class="comment">% discontinuity at position 50</span>
+0062     <span class="keyword">if</span> n==50
+0063         x2(n)=x2(n)+5.0;
+0064     <span class="keyword">end</span>
+0065     y2(n) = x2(n)+randn(1)*sigma_n;
+0066 <span class="keyword">end</span>
+0067 <span class="comment">% enforce slope 0</span>
+0068 <span class="keyword">for</span> i=1:N2
+0069     y2(i)=y2(i) -  (i-1)*(x2(N2)-x2(1))/(N2-1);
+0070     x2(i)=x2(i) -  (i-1)*(x2(N2)-x2(1))/(N2-1);
+0071 <span class="keyword">end</span>
+0072 <span class="comment">% complete true profile</span>
+0073 x = [x1;x2+x1(N1)];
+0074 <span class="comment">% complete set of observed sample points</span>
+0075 y = [y1;y2+y1(N1)];
+0076 
+0077 <span class="comment">% plot the profile</span>
+0078 figure(<span class="string">'name'</span>,<span class="string">'Fig. 16.3: Profile Reconstruction'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0079     <span class="string">'Position'</span>,[0.1*ss(1),0.1*ss(2),0.8*ss(1),0.8*ss(2)]);
+0080 
+0081 ymin = min(y)-20; ymax = max(y)+20;
+0082 subplot(4,3,1); hold on;
+0083 plot(1:N,x,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0084 ylim([ymin,ymax])
+0085 title(<span class="string">'true profile'</span>)
+0086 
+0087 <span class="comment">%% sample</span>
+0088 disp(<span class="string">' ------ sample profile -----'</span>)
+0089 Mset = [6,20,48,60,100,144,164,182]';
+0090 M = length(Mset);
+0091 select = zeros(8,1);
+0092 xs = zeros(8,1); ys = zeros(8,1);
+0093 <span class="keyword">for</span> m = 1:M
+0094     select(m) = Mset(m);
+0095     xs(m) = x(Mset(m));
+0096     ys(m) = y(Mset(m));
+0097 <span class="keyword">end</span>
+0098 
+0099 subplot(4,3,2);hold on
+0100 plot(1:N,x,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0101 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0102 ylim([ymin,ymax])
+0103 title(<span class="string">'true profile with sampled points'</span>)
+0104 
+0105 subplot(4,3,3); hold on
+0106 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0107 ylim([ymin,ymax])
+0108 title(<span class="string">'sampled points'</span>)
+0109 
+0110 <span class="comment">%% interpolation polynomial 0</span>
+0111 
+0112 disp(<span class="string">' ------ interpolation polynomial 0 -----'</span>)
+0113 yest = mean(ys);
+0114 
+0115 subplot(4,3,4); hold on
+0116 plot(1:N,yest*ones(N,1),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)
+0117 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0118 plot(1:N,x,<span class="string">'--k'</span>,<span class="string">'LineWidth'</span>,1)
+0119 ylim([ymin,ymax])
+0120 title(<span class="string">'best horizontal line'</span>)
+0121 
+0122 <span class="comment">%% interpolation polynomial of order 3</span>
+0123 
+0124 disp(<span class="string">' ------ interpolation order-3-polynomial -----'</span>)
+0125 order = 3;
+0126 <span class="comment">% coefficients of sampled coordinates</span>
+0127 Xmatrix = [ones(M,1),Mset,Mset.^2,Mset.^3];
+0128 <span class="comment">% estimate params by regression</span>
+0129 estpar  = regress(ys,Xmatrix(:,1:order+1));
+0130 
+0131 <span class="comment">% reconstruction</span>
+0132 xc = (1:N)';
+0133 Xpred=[ones(N,1),xc,xc.^2,xc.^3];
+0134 xpred = Xpred(:,1:order+1)*estpar;
+0135 
+0136 subplot(4,3,5); hold on
+0137 plot(1:N,xpred,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)   <span class="comment">% reconstructed polynomial</span>
+0138 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)   <span class="comment">% sample points</span>
+0139 plot(1:N,x,<span class="string">'--k'</span>,<span class="string">'LineWidth'</span>,1)      <span class="comment">% true profile</span>
+0140 ylim([ymin,ymax])
+0141 title(strcat(<span class="string">'best order-'</span>,num2str(order),<span class="string">'-polynomial'</span>))
+0142 
+0143 <span class="comment">%% interpolation polynomial of order 6</span>
+0144 
+0145 disp(<span class="string">' ------ interpolation order-6-polynomial -----'</span>)
+0146 order = 6;
+0147 <span class="comment">% coefficients of sampled coordinates</span>
+0148 Xmatrix = [ones(M,1),Mset,Mset.^2,Mset.^3,Mset.^4,Mset.^5,Mset.^6];
+0149 <span class="comment">% estimate params by regression</span>
+0150 estpar  = regress(ys,Xmatrix(:,1:order+1));
+0151 
+0152 <span class="comment">% reconstruction</span>
+0153 xc=(1:N)';
+0154 Xpred=[ones(N,1),xc,xc.^2,xc.^3,xc.^4,xc.^5,xc.^6];
+0155 xpred = Xpred(:,1:order+1)*estpar;
+0156 
+0157 subplot(4,3,6); hold on;
+0158 plot(1:N,xpred,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)
+0159 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0160 plot(1:N,x,<span class="string">'--k'</span>,<span class="string">'LineWidth'</span>,1)
+0161 ylim([ymin,ymax])
+0162 title(strcat(<span class="string">'best order-'</span>,num2str(order),<span class="string">'-polynomial'</span>))
+0163 
+0164 <span class="comment">%% interpolation with very low smoothness</span>
+0165 
+0166 disp(<span class="string">' ------ interpolation very high smoothness -----'</span>)
+0167 sigma_e = 0.02;
+0168 xest = <a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a><span class="keyword">...</span>
+0169     (N,select,ys,sigma_e,1,1,0,[0,0,0,0],0,0);
+0170 
+0171 subplot(4,3,7);hold on;
+0172 plot(1:N,xest,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)
+0173 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0174 plot(1:N,x,<span class="string">'--k'</span>,<span class="string">'LineWidth'</span>,1)
+0175 ylim([ymin,ymax])
+0176 title([<span class="string">'smooth reconstruction, $\sigma_e ='</span>,num2str(sigma_e),<span class="string">'$'</span>])
+0177 
+0178 <span class="comment">%% interpolation with medium smoothness</span>
+0179 
+0180 disp(<span class="string">' ------ interpolation medium smoothness  -----'</span>)
+0181 sigma_e = 0.1;
+0182 xest = <a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a><span class="keyword">...</span>
+0183     (N,select,ys,sigma_e,1,1,0,[0,0,0,0],0,0);
+0184 
+0185 subplot(4,3,8);hold on;
+0186 plot(1:N,xest,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)
+0187 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0188 plot(1:N,x,<span class="string">'--k'</span>,<span class="string">'LineWidth'</span>,1)
+0189 ylim([ymin,ymax])
+0190 title([<span class="string">'smooth reconstruction, $\sigma_e ='</span>,num2str(sigma_e),<span class="string">'$'</span>])
+0191 
+0192 <span class="comment">%% interpolation with very high smoothness</span>
+0193 
+0194 disp(<span class="string">' ------ interpolation high smoothness -----'</span>)
+0195 sigma_e = 0.5;
+0196 xest = <a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a><span class="keyword">...</span>
+0197     (N,select,ys,sigma_e,1,1,0,[0,0,0,0],0,0);
+0198 
+0199 subplot(4,3,9);hold on;
+0200 plot(1:N,xest,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)
+0201 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0202 plot(1:N,x,<span class="string">'--k'</span>,<span class="string">'LineWidth'</span>,1)
+0203 ylim([ymin,ymax])
+0204 title([<span class="string">'smooth reconstruction, $\sigma_e ='</span>,num2str(sigma_e),<span class="string">'$'</span>])
+0205 
+0206 
+0207 <span class="comment">%% interpolation medium flatness</span>
+0208 
+0209 disp(<span class="string">' ------ interpolation high flatness -----'</span>)
+0210 sigma_e = 0.2;
+0211 xest = <a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust_flat.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust_flat(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type)">estimate_profile_robust_flat</a><span class="keyword">...</span>
+0212     (N,select,ys,sigma_e,1,1,0,[0,0,0,0],0);
+0213 
+0214 subplot(4,3,10);hold on;
+0215 plot(1:N,xest,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)
+0216 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0217 plot(1:N,x,<span class="string">'--k'</span>,<span class="string">'LineWidth'</span>,1)
+0218 ylim([ymin,ymax])
+0219 title([<span class="string">'flat reconstruction, $\sigma_e ='</span>,num2str(sigma_e),<span class="string">'$'</span>])
+0220 
+0221 
+0222 <span class="comment">%% interpolation with high flatness</span>
+0223 
+0224 disp(<span class="string">' ------ interpolation low flatness -----'</span>)
+0225 sigma_e = 1.0;
+0226 xest = <a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust_flat.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust_flat(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type)">estimate_profile_robust_flat</a><span class="keyword">...</span>
+0227     (N,select,ys,sigma_e,1,1,0,[0,0,0,0],0);
+0228 
+0229 subplot(4,3,11);hold on;
+0230 plot(1:N,xest,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)
+0231 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0232 plot(1:N,x,<span class="string">'--k'</span>,<span class="string">'LineWidth'</span>,1)
+0233 ylim([ymin,ymax])
+0234 title([<span class="string">'flat reconstruction, $\sigma_e ='</span>,num2str(sigma_e),<span class="string">'$'</span>])
+0235 
+0236 <span class="comment">%% interpolation mixed</span>
+0237 
+0238 disp(<span class="string">' ------ interpolation left: flat / right: smooth -----'</span>)
+0239 sigma_e1 = 0.2;
+0240 sigma_e2 = 0.5;
+0241 fs = [ones(N1,1);ones(N-N1,1)*2];
+0242 xest = <a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust_flat_smooth.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust_flat_smooth(N,fs,ts,ys,sigma_e1,sigma_e2,sigma_n,Niter,type_out,type_r,print_type)">estimate_profile_robust_flat_smooth</a><span class="keyword">...</span>
+0243     (N,fs,select,ys,sigma_e1,sigma_e2,1,1,0,[0,0,0,0],0);
+0244 
+0245 subplot(4,3,12);hold on;
+0246 plot(1:N,xest,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)
+0247 plot(Mset,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0248 plot(1:N,x,<span class="string">'--k'</span>,<span class="string">'LineWidth'</span>,1)
+0249 ylim([ymin,ymax])
+0250 title(strcat(<span class="string">'mixed reconstruction'</span>))
+0251 
+0252 <span class="comment">%% three samples</span>
+0253 disp(<span class="string">' --------------------------------------------------'</span>)
+0254 disp(<span class="string">' --------- Fig. 16.4 Three sample profiles --------'</span>)
+0255 disp(<span class="string">' --------------------------------------------------'</span>)
+0256 
+0257 N = 200;
+0258 N1 = 70;
+0259 N2 = N-N1;
+0260 
+0261 figure(<span class="string">'name'</span>,<span class="string">'Fig. 16.4: Three sample profiles'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0262     <span class="string">'Position'</span>,[0.3*ss(1),0.2*ss(2),0.5*ss(1),0.3*ss(2)]);
+0263 
+0264 <span class="keyword">for</span> samples = 1:3
+0265     
+0266     [x1,y1] = <a href="../../General-Functions/Statistics/generate_observed_ARp.html" class="code" title="function [x,y,sigma_x,sigma_y] = generate_observed_ARp(N,p,q,sigma_e,sigma_n)">generate_observed_ARp</a>(N1,1,1,sigma_e,0.5);
+0267     <span class="comment">% enforce slope 0</span>
+0268     <span class="keyword">for</span> i=1:N1
+0269         y1(i)=y1(i) -  (i-1)*(x1(N1)-x1(1))/(N1-1);
+0270         x1(i)=x1(i) -  (i-1)*(x1(N1)-x1(1))/(N1-1);
+0271     <span class="keyword">end</span>
+0272     
+0273     [x2,y2] = <a href="../../General-Functions/Statistics/generate_observed_ARp.html" class="code" title="function [x,y,sigma_x,sigma_y] = generate_observed_ARp(N,p,q,sigma_e,sigma_n)">generate_observed_ARp</a>(N2,2,1,sigma_n,0.5);
+0274     <span class="comment">% enforce slope 0</span>
+0275     <span class="keyword">for</span> i=1:N2
+0276         y2(i)=y2(i) -  (i-1)*(x2(N2)-x2(1))/(N2-1);
+0277         x2(i)=x2(i) -  (i-1)*(x2(N2)-x2(1))/(N2-1);
+0278     <span class="keyword">end</span>
+0279     
+0280     x = [x1;x2+x1(N1)];
+0281     y = [y1;y2+y1(N1)];
+0282 
+0283     ymin = -250;
+0284     ymax = 250;
+0285 
+0286     subplot(1,3,samples)
+0287     hold on
+0288     plot(1:N,x,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0289     ylim([ymin,ymax])
+0290     title([<span class="string">'sample profile no: '</span>,num2str(samples)])
+0291 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

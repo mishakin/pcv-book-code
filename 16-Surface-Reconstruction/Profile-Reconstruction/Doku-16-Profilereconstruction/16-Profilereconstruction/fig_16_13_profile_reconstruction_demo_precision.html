@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_13_profile_reconstruction_demo_precision</title>
+  <meta name="keywords" content="fig_16_13_profile_reconstruction_demo_precision">
+  <meta name="description" content="% Fig 16.13 page 750">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">16-Profilereconstruction</a> &gt; fig_16_13_profile_reconstruction_demo_precision.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Profilereconstruction&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_13_profile_reconstruction_demo_precision
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Fig 16.13 page 750</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function fig_16_13_profile_reconstruction_demo_precision() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig 16.13 page 750
+ profile recondstruction with precision
+
+ Wolfgang Förstner 2014-08-06
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../16-Profilereconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a>	% estimate_profile_robust</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [x,y,select,xs,ys] =</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig 16.13 page 750</span>
+0002 <span class="comment">% profile recondstruction with precision</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner 2014-08-06</span>
+0005 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0007 
+0008 <a name="_sub0" href="#_subfunctions" class="code">function fig_16_13_profile_reconstruction_demo_precision()</a>
+0009 
+0010 addpath(genpath(<span class="string">'../General_Functions/'</span>));
+0011 addpath(<span class="string">'Functions'</span>)
+0012 
+0013 close all
+0014 
+0015 <span class="comment">%% initialize random number generation by fixed seed</span>
+0016 init_rand_seed(23);
+0017 
+0018 <span class="comment">%% plot settings</span>
+0019 ss = plot_init;
+0020 
+0021 <span class="comment">%% set parameters</span>
+0022 N = 200;                    <span class="comment">% number of grid points</span>
+0023 sigma_e=0.5;                <span class="comment">% process noise</span>
+0024 sigma_n=0.5;                <span class="comment">% observation noise</span>
+0025 factor_sigma = 1;           <span class="comment">% factor for sigma_n</span>
+0026 type_outlier = 0;           <span class="comment">% symmetric</span>
+0027 type_robust  = [0,0,0,0];   <span class="comment">% not robust</span>
+0028 Niter = 0;                  <span class="comment">% not robust</span>
+0029 print_type = 0;
+0030 plot_type  = 0;
+0031 
+0032 <span class="comment">%% generate profile</span>
+0033 [x,y,select,xs,ys] = <span class="keyword">...</span>
+0034     generate_observed_AR2_demo(N,sigma_e,sigma_n);
+0035 
+0036 <span class="comment">%% reconstruct profile</span>
+0037 [xest,aa,ab,ac,Cov] = <a href="../16-Profilereconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a><span class="keyword">...</span>
+0038     (N,select,ys,sigma_e/factor_sigma,sigma_n,Niter,<span class="keyword">...</span>
+0039     type_outlier,type_robust,<span class="keyword">...</span>
+0040     plot_type,print_type);
+0041 
+0042 <span class="comment">%% show precision</span>
+0043 
+0044 factor = 1;               <span class="comment">% blow-up factor for error band</span>
+0045 
+0046 figure(<span class="string">'name'</span>,<span class="string">'Fig. 16.13: Profile Reconstruction and precision'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0047     <span class="string">'Position'</span>,[0.2*ss(1),0.2*ss(2),0.5*ss(1),0.5*ss(2)]);
+0048 hold on;
+0049 <span class="comment">% for n=1:N-1</span>
+0050 <span class="comment">%     plotrect([n,x(n)-3*factor*sqrt((Cov(n,n)))],...</span>
+0051 <span class="comment">%              [n+1,x(n+1)+3*factor*sqrt((Cov(n,n)))],'g' );</span>
+0052 <span class="comment">% end</span>
+0053 xbandtop = x+3*factor*sqrt(diag(Cov));
+0054 xbandbottom = x-3*factor*sqrt(diag(Cov));
+0055 fill([(1:N)';(N:-1:1)'],[xbandtop;xbandbottom(end:-1:1)],[0.3,0.97,0.02],<span class="string">'FaceAlpha'</span>,0.5,<span class="string">'EdgeAlpha'</span>,0);
+0056 plot(1:N,xest,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0057 plot(1:N,x,<span class="string">'--r'</span>,<span class="string">'LineWidth'</span>,2)
+0058 plot(1:N,xbandtop,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,1)
+0059 plot(1:N,xbandbottom,<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,1)
+0060 plot(select,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0061 plot(1:N,xest,<span class="string">'.k'</span>,<span class="string">'LineWidth'</span>,2)
+0062 title([<span class="string">'Fig 16.13: $N = '</span>,num2str(N),<span class="string">'$, $s_e = '</span>,num2str(sigma_e),<span class="string">'$, $s_n ='</span>,num2str(sigma_e),<span class="string">'$'</span>])
+0063 
+0064 
+0065 <span class="keyword">return</span>
+0066 
+0067 
+0068 <span class="comment">%% generate_observed_AR2</span>
+0069 <span class="comment">%</span>
+0070 <span class="comment">% N         = number of points</span>
+0071 <span class="comment">% sigma_e   = process noise</span>
+0072 <span class="comment">% sigma_n   = observation noise</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">% x,y       = true signal</span>
+0075 <span class="comment">% select    = indices for observed points</span>
+0076 <span class="comment">% xy,ys     = observed points</span>
+0077 
+0078 <a name="_sub1" href="#_subfunctions" class="code">function [x,y,select,xs,ys] = </a><span class="keyword">...</span>
+0079     generate_observed_AR2_demo(N,sigma_e,sigma_n)
+0080 
+0081 x=zeros(N,1);
+0082 y=zeros(N,1);
+0083 
+0084 <span class="keyword">for</span> n = 3:N
+0085     x(n) = 1.9998*x(n-1)-0.9999*x(n-2)+randn(1)*sigma_e;
+0086     y(n) = x(n)+randn(1)*sigma_n;
+0087 <span class="keyword">end</span>
+0088 <span class="keyword">for</span> i=1:N
+0089     y(i) = y(i) - (i-1)*(x(N)-x(1))/(N-1);
+0090     x(i) = x(i) - (i-1)*(x(N)-x(1))/(N-1);
+0091 <span class="keyword">end</span>
+0092 
+0093 M = [6,12,24,81,95,124,138,176];
+0094 select = zeros(8,1);
+0095 xs = zeros(8,1);
+0096 ys = zeros(8,1);
+0097 <span class="keyword">for</span> m = 1:8
+0098     select(m) = M(m);
+0099     xs(m) = x(M(m));
+0100     ys(m) = y(M(m));
+0101 <span class="keyword">end</span>
+0102 
+0103 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Mon 19-Sep-2016 01:11:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

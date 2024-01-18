@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_generate_true_2D_point_pairs_E_matrix</title>
+  <meta name="keywords" content="sugr_generate_true_2D_point_pairs_E_matrix">
+  <meta name="description" content="% Generate true 2D point pairs from Relative Orientation,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">E-Matrix</a> &gt; sugr_generate_true_2D_point_pairs_E_matrix.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\E-Matrix&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_generate_true_2D_point_pairs_E_matrix
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Generate true 2D point pairs from Relative Orientation,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [PP,X] = sugr_generate_true_2D_point_pairs_E_matrix(b,R,N,br,Z0) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Generate true 2D point pairs from Relative Orientation,
+ i.e., for given b, R generate N point pairs
+
+ PP = sugr_generate_true_2D_point_pairs_E_matrix(b,R,N,boolean_r,Z0);
+
+ b        = 3 x 1 vector 
+ R        = 3x3 matrix R
+ N         = number of points (in square/cube [-1,1]^2  / 3
+ boolean_r = boolean: points should sit random
+                else: points sit in a square +- random (N should be square)
+ Z0        = Z-shift of points from origin
+
+ PP = point pairs
+      PP.h = N x 6 matrix of pairs of homogeneous point coordinates
+      PP.Crr = N x 4 x 4 sith 4 x 4 reduced CovM of point pairs
+      PP.type = 8 * ones(N,1)
+ X  = true 3D coordinates
+
+ Wolfgang Förstner 09/2011
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 06/18
+ wenzel@igg.uni-bonn.de
+
+ See also <a href="sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_estimate_E_Matrix_from_point_pairs.html" class="code" title="">demo_estimate_E_Matrix_from_point_pairs</a>	% test_estimate_E_Matrix_from_point_pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Generate true 2D point pairs from Relative Orientation,</span>
+0002 <span class="comment">% i.e., for given b, R generate N point pairs</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% PP = sugr_generate_true_2D_point_pairs_E_matrix(b,R,N,boolean_r,Z0);</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% b        = 3 x 1 vector</span>
+0007 <span class="comment">% R        = 3x3 matrix R</span>
+0008 <span class="comment">% N         = number of points (in square/cube [-1,1]^2  / 3</span>
+0009 <span class="comment">% boolean_r = boolean: points should sit random</span>
+0010 <span class="comment">%                else: points sit in a square +- random (N should be square)</span>
+0011 <span class="comment">% Z0        = Z-shift of points from origin</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% PP = point pairs</span>
+0014 <span class="comment">%      PP.h = N x 6 matrix of pairs of homogeneous point coordinates</span>
+0015 <span class="comment">%      PP.Crr = N x 4 x 4 sith 4 x 4 reduced CovM of point pairs</span>
+0016 <span class="comment">%      PP.type = 8 * ones(N,1)</span>
+0017 <span class="comment">% X  = true 3D coordinates</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Wolfgang Förstner 09/2011</span>
+0020 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% last changes: Susanne Wenzel 06/18</span>
+0023 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% See also sugr_E_Matrix</span>
+0026 
+0027 <a name="_sub0" href="#_subfunctions" class="code">function [PP,X] = sugr_generate_true_2D_point_pairs_E_matrix(b,R,N,br,Z0)</a>
+0028 
+0029 K   = eye(3);
+0030 P1  = K *     [eye(3),zeros(3,1)];
+0031 P2  = K * R * [eye(3),-b];
+0032 <span class="comment">% random points in unit square shifted by Z0</span>
+0033 X = zeros(N,4);
+0034 <span class="keyword">if</span> br
+0035     <span class="keyword">for</span> n = 1:N
+0036         <span class="comment">%random points</span>
+0037         X(n,:)   = [rand(3,1)*2-1+[0,0,Z0]';1];
+0038         <span class="comment">% true image coordinates</span>
+0039         xs  = P1 * X(n,:)';
+0040         xss = P2 * X(n,:)';
+0041         xs  =xs/norm(xs);
+0042         xss =xss/norm(xss);
+0043         <span class="comment">% struct of true point pairs</span>
+0044         PP.h(n,:)     = [xs',xss'];
+0045         PP.Crr(n,:,:) = zeros(4);
+0046         PP.type(n)    = 8;
+0047     <span class="keyword">end</span>
+0048     cov(X);
+0049 <span class="keyword">else</span>
+0050     M = ceil(sqrt(N));
+0051     n = 0;
+0052     <span class="keyword">for</span> m = 1:M
+0053         <span class="keyword">for</span> k=1:M
+0054            n = n+1;
+0055            <span class="keyword">if</span> n &lt;= N
+0056                X(n,:) = [-(M-1)/2+2*(m-1)/(M-1);<span class="keyword">...</span>
+0057                     -(M-1)/2+2*(k-1)/(M-1);<span class="keyword">...</span>
+0058                     Z0+rand(1)-0.5;<span class="keyword">...</span>
+0059                     1];
+0060                <span class="comment">% true image coordinates</span>
+0061                 xs  = P1 * X(n,:)';
+0062                 xss = P2 * X(n,:)';
+0063                 xs  = xs/norm(xs);
+0064                 xss = xss/norm(xss);
+0065                 <span class="comment">% struct of true point pairs</span>
+0066                 PP.h(n,:)     = [xs',xss'];
+0067                 PP.Crr(n,:,:) = zeros(4);
+0068                 PP.type(n)    = 8;
+0069            <span class="keyword">end</span>
+0070         <span class="keyword">end</span>
+0071     <span class="keyword">end</span>
+0072 <span class="keyword">end</span>
+0073 
+0074 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>)
+0075 hold on
+0076 scatter3(X(:,1),X(:,2),X(:,3),<span class="string">'.r'</span>)
+0077 scatter3(0,0,0,<span class="string">'ob'</span>)
+0078 scatter3(b(1),b(2),b(3),<span class="string">'xb'</span>)
+0079 legend(<span class="string">'object points'</span>,<span class="string">'camera 1'</span>, <span class="string">'camera 2'</span>)
+0080 xlabel(<span class="string">'X'</span>)
+0081 ylabel(<span class="string">'Y'</span>)
+0082 zlabel(<span class="string">'Z'</span>)</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_17_asymmetric_outliers</title>
+  <meta name="keywords" content="fig_16_17_asymmetric_outliers">
+  <meta name="description" content="% Fig. 16.17 page 756">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="Documentation.html">Profile-Reconstruction</a> &gt; fig_16_17_asymmetric_outliers.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Profile-Reconstruction&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_17_asymmetric_outliers
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Fig. 16.17 page 756</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 16.17 page 756
+ Reconstruction of a profile with one-sided outliers
+
+ Wolfgang Förstner 2014-08-06
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a>	% estimate_profile_robust</li><li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/Statistics/generate_observed_AR2.html" class="code" title="function [x, y, out_in, select, xs, ys] =generate_observed_AR2(N, sigma_e, sigma_n, Pout, Mout, type_out, dens)">generate_observed_AR2</a>	% generate_observed_AR2 with noise and ouliers</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 16.17 page 756</span>
+0002 <span class="comment">% Reconstruction of a profile with one-sided outliers</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner 2014-08-06</span>
+0005 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0007 
+0008 close all
+0009 <span class="comment">% clear all</span>
+0010 clearvars
+0011 
+0012 addpath(genpath(<span class="string">'../../General-Functions/'</span>));
+0013 addpath(<span class="string">'Functions'</span>)
+0014 
+0015 
+0016 <span class="comment">%% plot settings</span>
+0017 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0018 
+0019 disp(<span class="string">'----- eliminate asymmetric outliers -----'</span>)
+0020 
+0021 <span class="comment">%% set parameters</span>
+0022 
+0023 <span class="comment">% params for generating the data</span>
+0024 init_rand = 8;     <span class="comment">% may be changed for other example</span>
+0025 N = 200;           <span class="comment">% number of points</span>
+0026 dens = 0.8;        <span class="comment">% percentage of observed points in (0,1]</span>
+0027 sigma_e = 0.5;     <span class="comment">% process noise</span>
+0028 sigma_n = 0.5;     <span class="comment">% observation noise</span>
+0029 Poutlier = 0.4;    <span class="comment">% fraction of outliers</span>
+0030 Max_outlier = 25;  <span class="comment">% max(outlier)</span>
+0031 type_outlier = 1;  <span class="comment">% asymmetric %type_outlier = 0; % symmetric</span>
+0032 
+0033 <span class="comment">% params for estimation</span>
+0034 type_robust  = [1,2,2,2]; <span class="comment">%</span>
+0035     <span class="comment">% 1. [0 = L1, 1 = Kraus,</span>
+0036     <span class="comment">% 2. g_factor,</span>
+0037     <span class="comment">% 3. w_factor</span>
+0038     <span class="comment">% 4. 0,1,2,3 = 00,01,10,11 robust for points and dem</span>
+0039 
+0040 print_type = 0;
+0041 plot_type  = 0;
+0042 
+0043 Niter = 6;
+0044 <span class="keyword">if</span> type_outlier ==0
+0045     factor_sigma = 1;
+0046 <span class="keyword">else</span>
+0047     factor_sigma = 8;
+0048 <span class="keyword">end</span>
+0049 
+0050 
+0051 <span class="comment">%% initialize random number generation by fixed seed</span>
+0052 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0053 
+0054 <span class="comment">%% generate profile</span>
+0055 [x,y,out_in,select,xs,ys] = <span class="keyword">...</span>
+0056     <a href="../../General-Functions/Statistics/generate_observed_AR2.html" class="code" title="function [x, y, out_in, select, xs, ys] =generate_observed_AR2(N, sigma_e, sigma_n, Pout, Mout, type_out, dens)">generate_observed_AR2</a>(N,sigma_e,sigma_n,Poutlier,Max_outlier,type_outlier,dens);
+0057 
+0058 
+0059 <span class="comment">%% reconstruct profile L1</span>
+0060 type_robust(1) = 0;
+0061 
+0062 
+0063 xest = <a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a><span class="keyword">...</span>
+0064     (N,select,ys,sigma_e/factor_sigma,sigma_n,Niter,type_outlier,<span class="keyword">...</span>
+0065     type_robust,print_type,plot_type);
+0066 
+0067 
+0068 <span class="comment">%% reconstruct profile Kraus</span>
+0069 type_robust(1) = 1;
+0070 factor_sigma= 1;
+0071 
+0072 xest_kraus = <a href="../../16-Surface-Reconstruction/Profile-Reconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a><span class="keyword">...</span>
+0073     (N,select,ys,sigma_e/factor_sigma,sigma_n,Niter,type_outlier,<span class="keyword">...</span>
+0074     type_robust,print_type,plot_type);
+0075 
+0076 
+0077 <span class="comment">%% plot</span>
+0078 figure(<span class="string">'name'</span>,<span class="string">'Fig. 16.17: Reconstruction of a profile with one-sided outliers'</span>,<span class="keyword">...</span>
+0079     <span class="string">'color'</span>,<span class="string">'w'</span>, <span class="string">'Position'</span>,[0.2*ss(1),0.1*ss(2),0.4*ss(1),0.8*ss(2)]);
+0080 
+0081 subplot(2,1,1);hold on
+0082 plot(1:N,x,<span class="string">'--r'</span>,<span class="string">'LineWidth'</span>,3)
+0083 plot(1:N,xest,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0084 plot(select,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,20)
+0085 xlabel(<span class="string">'$x$'</span>);ylabel(<span class="string">'$z$'</span>);
+0086 title(<span class="string">'Fig. 16.17a: Reconstruction with one-sided $L_{12}$-weight function'</span>);
+0087 
+0088 subplot(2,1,2);hold on
+0089 plot(select,ys,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,20)
+0090 plot(1:N,x,<span class="string">'--r'</span>,<span class="string">'LineWidth'</span>,3)
+0091 plot(1:N,xest_kraus,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0092 xlabel(<span class="string">'$x$'</span>);ylabel(<span class="string">'$z$'</span>);
+0093 title([<span class="string">'Fig. 16.17b: Reconstruction with the weight function of Kraus and Pfeifer,'</span> <span class="keyword">...</span>
+0094     <span class="string">' $g = '</span>, num2str(type_robust(2)),<span class="string">', w = '</span>,num2str(type_robust(3)),<span class="string">'$'</span>]);
+0095 
+0096</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

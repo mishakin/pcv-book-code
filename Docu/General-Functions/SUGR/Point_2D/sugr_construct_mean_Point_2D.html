@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_construct_mean_Point_2D</title>
+  <meta name="keywords" content="sugr_construct_mean_Point_2D">
+  <meta name="description" content="sugr_construct_mean_Point_2D: mid point of two 2D points">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Point_2D</a> &gt; sugr_construct_mean_Point_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Point_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_construct_mean_Point_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sugr_construct_mean_Point_2D: mid point of two 2D points</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function Point_2D = sugr_construct_mean_Point_2D(x,y) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> sugr_construct_mean_Point_2D: mid point of two 2D points
+
+ m = sugr_construct_mean_Point_2D(x,y)
+
+ Wolfgang Förstner 7/2014
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>, <a href="sugr_get_isfinite_Point_2D.html" class="code" title="function f = sugr_get_isfinite_Point_2D(x)">sugr_get_isfinite_Point_2D</a>, sugr_Line_2D,
+ <a href="sugr_construct_midpoint_Point_2D.html" class="code" title="function Point_2D = sugr_construct_midpoint_Point_2D(x,y)">sugr_construct_midpoint_Point_2D</a>, <a href="sugr_construct_intersection_Point_2D.html" class="code" title="function Point_2D = sugr_construct_intersection_Point_2D(l,m)">sugr_construct_intersection_Point_2D</a>,
+ <a href="sugr_construct_footpoint_Ol_Point_2D.html" class="code" title="function Point_2D = sugr_construct_footpoint_Ol_Point_2D(l)">sugr_construct_footpoint_Ol_Point_2D</a>, <a href="sugr_construct_footpoint_xl_Point_2D.html" class="code" title="function Point_2D = sugr_construct_footpoint_xl_Point_2D(x,l)">sugr_construct_footpoint_xl_Point_2D</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>	% minimum Rotation matrix from vector a to vector b</li><li><a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li><li><a href="sugr_construct_midpoint_Point_2D.html" class="code" title="function Point_2D = sugr_construct_midpoint_Point_2D(x,y)">sugr_construct_midpoint_Point_2D</a>	% Mid point of two 2D points</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_construct_Point_2D.html" class="code" title="">demo_construct_Point_2D</a>	demo_construct_Point_2D</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% sugr_construct_mean_Point_2D: mid point of two 2D points</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% m = sugr_construct_mean_Point_2D(x,y)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Wolfgang Förstner 7/2014</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% See also sugr_Point_2D, sugr_get_isfinite_Point_2D, sugr_Line_2D,</span>
+0009 <span class="comment">% sugr_construct_midpoint_Point_2D, sugr_construct_intersection_Point_2D,</span>
+0010 <span class="comment">% sugr_construct_footpoint_Ol_Point_2D, sugr_construct_footpoint_xl_Point_2D</span>
+0011 
+0012 <a name="_sub0" href="#_subfunctions" class="code">function Point_2D = sugr_construct_mean_Point_2D(x,y)</a>
+0013 
+0014 <span class="comment">% use mid point as approximate value</span>
+0015 xa = <a href="sugr_construct_midpoint_Point_2D.html" class="code" title="function Point_2D = sugr_construct_midpoint_Point_2D(x,y)">sugr_construct_midpoint_Point_2D</a>(x,y);
+0016 
+0017 <span class="comment">% use tangent space</span>
+0018 J = null(xa.h');
+0019 
+0020 <span class="comment">% reduced coordinates</span>
+0021 xr = J'*x.h;
+0022 yr = J'*y.h;
+0023 Jx = J'*<a href="../../../General-Functions/Geometry/calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>(x.h,xa.h)*null(x.h');
+0024 Jy = J'*<a href="../../../General-Functions/Geometry/calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>(y.h,xa.h)*null(y.h');
+0025 Wxx = inv(Jx*x.Crr*Jx');
+0026 Wyy = inv(Jy*y.Crr*Jy');
+0027 
+0028 <span class="comment">% mean in tangent space</span>
+0029 Cmrmr = inv(Wxx+Wyy);
+0030 xmr   = Cmrmr*(Wxx*xr+Wyy*yr);                                             <span class="comment">%#ok&lt;*MINV&gt;</span>
+0031 
+0032 <span class="comment">% go to homogeneous coordinates</span>
+0033 Cmm = J * Cmrmr * J';                            
+0034 xm = xa.h + J*xmr;
+0035 xm = xm/norm(xm); 
+0036 
+0037 <span class="comment">% generate reduced parameters</span>
+0038 Point_2D = <a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(xm,Cmm);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

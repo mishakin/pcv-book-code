@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_Mq_comm</title>
+  <meta name="keywords" content="calc_Mq_comm">
+  <meta name="description" content="% Multiplication matrix for quaternions, commuted factors">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_Mq_comm.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_Mq_comm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Multiplication matrix for quaternions, commuted factors</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function M=calc_Mq_comm(q) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Multiplication matrix for quaternions, commuted factors
+ p q = calc_Mq_comm(q)*p, see PCV (8.46)
+
+ Usage:
+    M = calc_Mq_comm(q)
+
+   q - double 4x1, quaternion
+
+   M - double 4x4, Multiplication matrix for quaternions
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de 
+
+ See also  <a href="calc_Mq.html" class="code" title="function M = calc_Mq(q)">calc_Mq</a>, <a href="calc_R_from_opq_kraus.html" class="code" title="function R = calc_R_from_opq_kraus(omega,phi,kappa)">calc_R_from_opq_kraus</a>, <a href="calc_r_phi_from_R.html" class="code" title="function [r,p]= calc_r_phi_from_R(R)">calc_r_phi_from_R</a>, <a href="calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>,
+ <a href="calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>, <a href="calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>, <a href="calc_Rot_rod.html" class="code" title="function R = calc_Rot_rod(q)">calc_Rot_rod</a>, <a href="calc_Rot_rp.html" class="code" title="function R = calc_Rot_rp(r,p)">calc_Rot_rp</a>,
+ <a href="calc_opq_from_R_Kraus.html" class="code" title="function [o,p,q] = calc_opq_from_R_Kraus(R)">calc_opq_from_R_Kraus</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Multiplication matrix for quaternions, commuted factors</span>
+0002 <span class="comment">% p q = calc_Mq_comm(q)*p, see PCV (8.46)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Usage:</span>
+0005 <span class="comment">%    M = calc_Mq_comm(q)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   q - double 4x1, quaternion</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   M - double 4x4, Multiplication matrix for quaternions</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Wolfgang Förstner</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also  calc_Mq, calc_R_from_opq_kraus, calc_r_phi_from_R, calc_Rot_ab,</span>
+0015 <span class="comment">% calc_Rot_q, calc_Rot_r, calc_Rot_rod, calc_Rot_rp,</span>
+0016 <span class="comment">% calc_opq_from_R_Kraus</span>
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function M=calc_Mq_comm(q)</a>
+0019 
+0020 a = q(1);
+0021 b = q(2);
+0022 c = q(3);
+0023 d = q(4);
+0024 M =[ a -b -c -d; <span class="keyword">...</span>
+0025     b  a  d -c; <span class="keyword">...</span>
+0026     c -d  a  b; <span class="keyword">...</span>
+0027     d  c -b  a
+0028     ];</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

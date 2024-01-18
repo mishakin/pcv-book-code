@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of GaussHelmertModelGroups</title>
+  <meta name="keywords" content="GaussHelmertModelGroups">
+  <meta name="description" content="% Gauss Helmert Model for Groups">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GHM</a> &gt; <a href="Documentation.html">Functions-GHM</a> &gt; GaussHelmertModelGroups.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GHM\Functions-GHM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>GaussHelmertModelGroups
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Gauss Helmert Model for Groups</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [est_x,Cov_xx,sigma_0q,R,vv,Xv,Rim,nabla_lv,muv,muv1,Uv1q,Uv2]=GaussHelmertModelGroups(lm,Cov_ll_m,cg_f,xa,ux,sx,Tx,maxiter,rU) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Gauss Helmert Model for Groups
+
+ g_i(^l_i,^x) = 0  group of constraints
+
+ all observational groups have the same dimension d_I
+ all observational groups are mutually uncorrelated
+ all groups of constraints have the same size d_G
+ constraints must not overlap, ie must not use the same observation
+ covariance matrix of estimates is assumed to be full
+ Only one vector of unknowns
+ no robust estimation
+
+ lm       = I x d_I matrix of observational groups
+ Cov_ll_m = I x d_i^2 matrix of vectorized covariance matrices
+ cg_f     = d_G x 1 constraint function -&gt; cg, A, B
+ xa       = Ux1 vector of approximate parameters
+ ux       = function to update parameters x = ux(xa,dx)
+ sx       = Ux1 vector of standard deviations of parameters
+ Tx       = threshold for convergence
+ maxiter  = maximum number of iterations
+ rU       = range of unknown parameters of interest
+
+ est_x    = Ux1 estimated parameter
+ Cov_xx   = UxU theoretical covariance matrix of estimated parameters
+                may be full
+ sigma_0q = estimated variance factor (=1 if R=0)
+ R        = redundancy
+ vv       = Ixd_I vector of estimated corrections
+ Xv       = Ix1 vector of Xhi^2-test statistic (using sigma_0=1)
+ Rim      = I x d_I^2 redundancy matrices as row vectors
+ nabla_lv = Ix1 minimum detectabele outlier
+ muv      = Ix1 vector of senstivity factors wrt to all parameters
+ muv1     = Ix1 vector of senstivity factors wrt to selected group
+ Uv1q     = I x d_I^2 matrices of contributions to selected group
+ Uv2      = I x d_I^2 matrices of contribution to remaining parameters
+
+ [est_x,Cov_xx,sigma_0q,R,vv,Xv,Rim,nabla_lv,muv,muv1,uv1q,uv2]=...
+     GaussHelmertModelGroups(lm,Cov_ll_m,cg_f,xa,ux,sx,Tx,maxiter,rU)
+
+ Wolfgang Förstner 2016-06-06
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="diagnostics_GHM_constraints_multi_d.html" class="code" title="function [vgi,Xv,Rgm,nabla_cg,muv,muv1,U1mqc,U2mc]=diagnostics_GHM_constraints_multi_d(r_U,I,d_I,d_G,Am,Bm,Cov_xx,W_xx,W_gg,vv)">diagnostics_GHM_constraints_multi_d</a>	% Diagnostics Gauss-Helmert model multidimensional</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../04-Estimation/GHM/Demo-GHM/demo_GHM_similarity.html" class="code" title="">demo_GHM_similarity</a>	% GHM with similarity</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Gauss Helmert Model for Groups</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% g_i(^l_i,^x) = 0  group of constraints</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% all observational groups have the same dimension d_I</span>
+0006 <span class="comment">% all observational groups are mutually uncorrelated</span>
+0007 <span class="comment">% all groups of constraints have the same size d_G</span>
+0008 <span class="comment">% constraints must not overlap, ie must not use the same observation</span>
+0009 <span class="comment">% covariance matrix of estimates is assumed to be full</span>
+0010 <span class="comment">% Only one vector of unknowns</span>
+0011 <span class="comment">% no robust estimation</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% lm       = I x d_I matrix of observational groups</span>
+0014 <span class="comment">% Cov_ll_m = I x d_i^2 matrix of vectorized covariance matrices</span>
+0015 <span class="comment">% cg_f     = d_G x 1 constraint function -&gt; cg, A, B</span>
+0016 <span class="comment">% xa       = Ux1 vector of approximate parameters</span>
+0017 <span class="comment">% ux       = function to update parameters x = ux(xa,dx)</span>
+0018 <span class="comment">% sx       = Ux1 vector of standard deviations of parameters</span>
+0019 <span class="comment">% Tx       = threshold for convergence</span>
+0020 <span class="comment">% maxiter  = maximum number of iterations</span>
+0021 <span class="comment">% rU       = range of unknown parameters of interest</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% est_x    = Ux1 estimated parameter</span>
+0024 <span class="comment">% Cov_xx   = UxU theoretical covariance matrix of estimated parameters</span>
+0025 <span class="comment">%                may be full</span>
+0026 <span class="comment">% sigma_0q = estimated variance factor (=1 if R=0)</span>
+0027 <span class="comment">% R        = redundancy</span>
+0028 <span class="comment">% vv       = Ixd_I vector of estimated corrections</span>
+0029 <span class="comment">% Xv       = Ix1 vector of Xhi^2-test statistic (using sigma_0=1)</span>
+0030 <span class="comment">% Rim      = I x d_I^2 redundancy matrices as row vectors</span>
+0031 <span class="comment">% nabla_lv = Ix1 minimum detectabele outlier</span>
+0032 <span class="comment">% muv      = Ix1 vector of senstivity factors wrt to all parameters</span>
+0033 <span class="comment">% muv1     = Ix1 vector of senstivity factors wrt to selected group</span>
+0034 <span class="comment">% Uv1q     = I x d_I^2 matrices of contributions to selected group</span>
+0035 <span class="comment">% Uv2      = I x d_I^2 matrices of contribution to remaining parameters</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">% [est_x,Cov_xx,sigma_0q,R,vv,Xv,Rim,nabla_lv,muv,muv1,uv1q,uv2]=...</span>
+0038 <span class="comment">%     GaussHelmertModelGroups(lm,Cov_ll_m,cg_f,xa,ux,sx,Tx,maxiter,rU)</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% Wolfgang Förstner 2016-06-06</span>
+0041 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0042 
+0043 <a name="_sub0" href="#_subfunctions" class="code">function [est_x,Cov_xx,sigma_0q,R,vv,Xv,Rim,nabla_lv,muv,muv1,Uv1q,Uv2]=</a><span class="keyword">...</span>
+0044     GaussHelmertModelGroups(lm,Cov_ll_m,cg_f,xa,ux,sx,Tx,maxiter,rU)
+0045 
+0046 <span class="comment">%% initialization ---------------------------------------------------------</span>
+0047 <span class="comment">% numbers N, G, and U</span>
+0048 <span class="comment">% numbers I, d_I</span>
+0049 [I,d_I]    = size(lm);
+0050 [cg,Am,Bm] = cg_f(lm(1,:)',lm(1,:)',xa);
+0051 nz_A = size(Am,2);
+0052 nz_B = size(Bm,2);
+0053 d_G        = size(cg,1);
+0054 N          = size(Cov_ll_m,2);
+0055 G          = I * d_G;
+0056 U          = size(xa,1);
+0057 
+0058 <span class="comment">% redundancy</span>
+0059 R = G-U;
+0060 <span class="keyword">if</span> R &lt; 0
+0061     disp(<span class="string">'not enough observations'</span>)
+0062     <span class="keyword">return</span>;
+0063 <span class="keyword">end</span>
+0064 <span class="comment">%% initialization ---------------------------------------------------------</span>
+0065 nu  = 0;                    <span class="comment">% index of iterations</span>
+0066 la  = lm;                   <span class="comment">% matrix of approximate fitted observations</span>
+0067 lnu = la;                   <span class="comment">% matrix of current fitted observations</span>
+0068 xnu = xa;                   <span class="comment">% vector of approxmate parameters</span>
+0069 s   = 0;                    <span class="comment">% iteration indicator</span>
+0070 
+0071 Am     = spalloc(G,U,G*d_G*nz_A);
+0072 Bmt    = spalloc(G,N,G*d_G*nz_B);
+0073 Cov_ll = spalloc(N,N,N*d_I^2);
+0074 W_gg   = spalloc(G,G,G*d_G^2);
+0075 
+0076 <span class="keyword">for</span> iter = 1: maxiter
+0077     
+0078     <span class="keyword">for</span> i=1:I
+0079         <span class="comment">% residual constraints, Jacobains</span>
+0080         [cg_i,Amt_i,Bmt_i] = cg_f(lm(i,:)',lnu(i,:)',xnu);
+0081         Am((i-1)*d_G+1:i*d_G,:)                 = Amt_i;                    <span class="comment">%#ok&lt;*SPRIX&gt;</span>
+0082         Bmt((i-1)*d_G+1:i*d_G,(i-1)*d_I+1:i*d_I)= Bmt_i;
+0083         cg((i-1)*d_G+1:i*d_G)                   = cg_i;
+0084         Cov_ll_i                                = reshape(Cov_ll_m(i,:),d_I,d_I);
+0085         <span class="comment">% weight matrix of lv</span>
+0086         Cov_ll((i-1)*d_I+1:i*d_I,(i-1)*d_I+1:i*d_I) <span class="keyword">...</span>
+0087             = Cov_ll_i;
+0088         <span class="comment">% weights of constraints</span>
+0089         W_gg_i     = inv(Bmt_i * Cov_ll_i * Bmt_i');
+0090         W_gg((i-1)*d_G+1:i*d_G,(i-1)*d_G+1:i*d_G)  = W_gg_i;
+0091     <span class="keyword">end</span>
+0092     Bm=Bmt';
+0093     ABWB     = Am'  * W_gg;
+0094     Nm       = ABWB * Am;               <span class="comment">% normal equation matrix</span>
+0095     nv       = ABWB * cg;               <span class="comment">% right hand sides</span>
+0096     
+0097     <span class="comment">% dNmis    = diag(1./sqrt(diag(Nm))); % condition Nm</span>
+0098     <span class="comment">% T_Nm     = dNmis * Nm * dNmis;</span>
+0099     lambda_N = eigs(Nm);
+0100     <span class="keyword">if</span> abs(log(lambda_N(1)/lambda_N(U))) &gt; 10
+0101         disp(<span class="string">'normal equation matrix nearly singular'</span>)
+0102         <span class="keyword">return</span>;
+0103     <span class="keyword">end</span>
+0104     Cov_xx  = inv(Nm);                  <span class="comment">% CovM of parameters</span>
+0105     delta_x = Nm \ nv;                  <span class="comment">% correction of parameters</span>
+0106     
+0107     nu = nu+1;
+0108     
+0109     <span class="comment">% check for final iteration</span>
+0110     <span class="keyword">if</span> max(abs(delta_x(:)./sx(:))) &lt; Tx || nu == maxiter
+0111         s = 2;
+0112     <span class="keyword">end</span>
+0113     <span class="comment">% correction of parameters</span>
+0114     xnu = ux(xnu,delta_x);
+0115     
+0116     <span class="comment">% dx   = delta_x'</span>
+0117     <span class="comment">% nu_x   = [nu,xnu']</span>
+0118     
+0119     vv        = lnu - lm;                          <span class="comment">% v^a</span>
+0120     vv_vector = reshape(vv',I*d_I,1);
+0121     <span class="comment">% residual constraints, Jacobains</span>
+0122     delta_l   = Cov_ll * Bm * W_gg <span class="keyword">...</span>
+0123         * (cg - Am * delta_x) - vv_vector;
+0124     <span class="comment">% delta_ls  = delta_l';</span>
+0125     lnu       = lnu + reshape(delta_l,d_I,I)';     <span class="comment">% fitted observations</span>
+0126     <span class="comment">% correction to fitted observations</span>
+0127     vv        = lnu - lm;                          <span class="comment">% residual matrix</span>
+0128     vv_vector = reshape(vv',I*d_I,1);
+0129     <span class="comment">% Omega</span>
+0130     <span class="comment">% from residuals of constraints,</span>
+0131     <span class="comment">% also works if covariance matrix of observations is singular</span>
+0132     cg = cg - Am * delta_x;
+0133     Omega = cg' * W_gg * cg;
+0134     
+0135     <span class="keyword">if</span> s==2
+0136         <span class="keyword">break</span>;
+0137     <span class="keyword">end</span>
+0138 <span class="keyword">end</span>
+0139 <span class="keyword">if</span> R &gt; 0
+0140     sigma_0q = Omega/R;
+0141 <span class="keyword">else</span>
+0142     sigma_0q = 1;
+0143 <span class="keyword">end</span>
+0144 est_x = xnu;
+0145 
+0146 
+0147 <span class="comment">%% diagnostics (useful if observations are groupwise uncorrelated) --------</span>
+0148 
+0149 [~,Xv,Rim,nabla_lv,muv,muv1,Uv1q,Uv2] = <span class="keyword">...</span>
+0150     <a href="diagnostics_GHM_constraints_multi_d.html" class="code" title="function [vgi,Xv,Rgm,nabla_cg,muv,muv1,U1mqc,U2mc]=diagnostics_GHM_constraints_multi_d(r_U,I,d_I,d_G,Am,Bm,Cov_xx,W_xx,W_gg,vv)">diagnostics_GHM_constraints_multi_d</a><span class="keyword">...</span>
+0151     (rU,I,d_I,d_G,Am,Bm,Cov_xx,Nm,W_gg,vv_vector);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

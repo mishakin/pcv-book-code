@@ -1,0 +1,267 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_singularity_line_through_four_lines</title>
+  <meta name="keywords" content="demo_singularity_line_through_four_lines">
+  <meta name="description" content="% Test singularity of line through four lines">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">05-08-Geometry</a> &gt; demo_singularity_line_through_four_lines.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 05-08-Geometry&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>demo_singularity_line_through_four_lines
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Test singularity of line through four lines</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Test singularity of line through four lines
+ Given four lines L_j,j=1,2,3,4, determine lines M_i passing these
+
+ See PCV Section 7.2.1.3 Three and More Entities
+
+ 0 or 2 solutions
+
+ Cases:
+   random
+   three parallel, one other line
+   three intersecting lines, one other
+   three coplanar intersecting lines, one other
+   two intersecting lines, two others
+
+ Output per case
+   3D lines
+   nullspace
+   coefficients (should not be zero) see PCV (7.53)
+   solutions (may be identical)
+   two lines, if possible
+
+ Wolfgang Förstner 10/2016
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 12/17
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>	% dualizing matrix</li><li><a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>	% Pi-matrix from 3D-point 4-vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Test singularity of line through four lines</span>
+0002 <span class="comment">% Given four lines L_j,j=1,2,3,4, determine lines M_i passing these</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% See PCV Section 7.2.1.3 Three and More Entities</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% 0 or 2 solutions</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Cases:</span>
+0009 <span class="comment">%   random</span>
+0010 <span class="comment">%   three parallel, one other line</span>
+0011 <span class="comment">%   three intersecting lines, one other</span>
+0012 <span class="comment">%   three coplanar intersecting lines, one other</span>
+0013 <span class="comment">%   two intersecting lines, two others</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Output per case</span>
+0016 <span class="comment">%   3D lines</span>
+0017 <span class="comment">%   nullspace</span>
+0018 <span class="comment">%   coefficients (should not be zero) see PCV (7.53)</span>
+0019 <span class="comment">%   solutions (may be identical)</span>
+0020 <span class="comment">%   two lines, if possible</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% Wolfgang Förstner 10/2016</span>
+0023 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% last changes: Susanne Wenzel 12/17</span>
+0026 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0027 
+0028 <span class="comment">% clear all</span>
+0029 clearvars
+0030 clc
+0031 close all
+0032 
+0033 addpath(genpath(<span class="string">'../General-Functions'</span>))
+0034 
+0035 fprintf(<span class="string">'\n------ DEMO Line Through Four Lines ------\n'</span>)
+0036 
+0037 fprintf(<span class="string">'\nIn order to shorten the output, we display transposed vectors\n'</span>)
+0038 
+0039 
+0040 <span class="comment">% four random lines</span>
+0041 disp(<span class="string">'------------- four random lines --------------'</span>)
+0042 L1 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*randn(4,1);
+0043 L2 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*randn(4,1);
+0044 L3 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*randn(4,1);
+0045 L4 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*randn(4,1);
+0046 M = [L1,L2,L3,L4]                                                           <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0047 disp([<span class="string">'rank(M) = '</span>, num2str(rank(M))])
+0048 
+0049 <span class="comment">% determine polynomial for intersecting line</span>
+0050 fprintf(<span class="string">'\ndetermine polynomial for intersecting line\n'</span>)
+0051 NM = null(M'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>);
+0052 null_space_M = NM                                                           <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0053 
+0054 N1 = NM(:,1);
+0055 N2 = NM(:,2);
+0056 a = (N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*(N1-N2);
+0057 b = 2*(N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0058 c = N2'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0059 coefficients = [a,b,c]                                                       <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0060 rr = roots([a,b,c]);
+0061 disp([<span class="string">'solutions: '</span>,num2str(rr')])
+0062 
+0063 M1 = rr(1)*N1+(1-rr(1))*N2;
+0064 M2 = rr(2)*N1+(1-rr(2))*N2;
+0065 two_lines = [M1';M2'];
+0066 fprintf(<span class="string">'\ntwo lines \n'</span>)
+0067 disp([<span class="string">'M_1 = ['</span>,num2str(M1'),<span class="string">']'</span>])
+0068 disp([<span class="string">'M_2 = ['</span>,num2str(M2'),<span class="string">']'</span>])
+0069 incidences = two_lines*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*M                                          <span class="comment">%#ok&lt;NASGU,NOPTS&gt;</span>
+0070 
+0071 <span class="comment">% three parallel</span>
+0072 fprintf(<span class="string">'\n------------- three random but parallel lines, one other --------------\n'</span>)
+0073 <span class="comment">% randomly generate two directions</span>
+0074 D123 = [rand(3,1);0];
+0075 D4 = [rand(3,1);0];
+0076 <span class="comment">% generate 3 3D lines having the same normal direction</span>
+0077 L1 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*D123;
+0078 L2 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*D123;
+0079 L3 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*D123;
+0080 <span class="comment">% generate another 3D line with different normal direction</span>
+0081 L4 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*D4;
+0082 L1 = L1/L1(1);
+0083 L2 = L2/L2(1);
+0084 L3 = L3/L3(1);
+0085 L4 = L4/L4(1);
+0086 M = [L1,L2,L3,L4]                                                           <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0087 disp([<span class="string">'rank(M) = '</span>, num2str(rank(M))])
+0088 
+0089 NM = null(M'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>);
+0090 null_space = NM                                                             <span class="comment">%#ok&lt;NASGU,NOPTS&gt;</span>
+0091 N1 = NM(:,1);
+0092 N2 = NM(:,2);
+0093 a = (N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*(N1-N2);
+0094 b = 2*(N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0095 c = N2'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0096 coefficients_polynomial_no_solution = [a,b,c]                               <span class="comment">%#ok&lt;NASGU,NOPTS&gt;</span>
+0097 solutions = roots([a,b,c])';
+0098 disp([<span class="string">'solutions: '</span>,num2str(solutions)])
+0099 
+0100 <span class="comment">% three through one point</span>
+0101 fprintf(<span class="string">'\n------------- three random but intersecting lines, one other --------------\n'</span>)
+0102 <span class="comment">% define 2 3D points</span>
+0103 X1 = rand(4,1);
+0104 X2 = rand(4,1);
+0105 
+0106 <span class="comment">% generate random 3d lines passing through the same point X1</span>
+0107 L1 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*X1;
+0108 L2 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*X1;
+0109 L3 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*X1;
+0110 <span class="comment">% generate another random 3d lines passing through X2</span>
+0111 L4 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(rand(4,1))*X2;
+0112 M = [L1,L2,L3,L4]                                                           <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0113 disp([<span class="string">'rank(M) = '</span>, num2str(rank(M))])
+0114 
+0115 NM = null(M'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>);
+0116 nullspace = NM                                                              <span class="comment">%#ok&lt;NOPTS,NASGU&gt;</span>
+0117 N1 = NM(:,1);
+0118 N2 = NM(:,2);
+0119 a = (N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*(N1-N2);
+0120 b = 2*(N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0121 c = N2'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0122 coefficients_polynomial_no_solution = [a,b,c]                               <span class="comment">%#ok&lt;NOPTS,NASGU&gt;</span>
+0123 solutions = roots([a,b,c])';
+0124 disp([<span class="string">'solutions: '</span>,num2str(solutions)])
+0125 
+0126 <span class="comment">%% three coplanar three through one point</span>
+0127 fprintf(<span class="string">'\n------------- three coplanar intersecting lines, one other --------------\n'</span>)
+0128 <span class="comment">% define three points on the plane</span>
+0129 X = [1,0,0,1]';
+0130 Y = [0,1,0,1]';
+0131 Z = [0,0,1,1]';
+0132 <span class="comment">% define another arbitrary point</span>
+0133 T = [randn(1,3),1]';
+0134 <span class="comment">% check whether they occasionally lie on a plane</span>
+0135 disp([<span class="string">'Determinant should not be zero: '</span>, num2str(det([X,Y,Z,T]))])
+0136 
+0137 <span class="comment">% 3D lines trough points on plane (X,Y,Z)</span>
+0138 L1 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(X)*Y;
+0139 L2 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(Y)*Z;
+0140 L3 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(Z)*X;
+0141 <span class="comment">% 3D line not on the same plane</span>
+0142 L4 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(X)*T;
+0143 
+0144 M = [L1,L2,L3,L4]                                                           <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0145 disp([<span class="string">'rank(M) = '</span>, num2str(rank(M))])
+0146 
+0147 NM = null(M'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>);
+0148 nullspace = NM                                                              <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0149 N1 = NM(:,1);
+0150 N2 = NM(:,2);
+0151 as = (N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*(N1-N2);
+0152 bs = 2*(N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0153 cs = N2'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0154 coefficients_polynomial_no_solution = [as,bs,cs]                            <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0155 solutions = roots([as,bs,cs])';
+0156 disp([<span class="string">'solutions: '</span>,num2str(solutions)])
+0157 
+0158 
+0159 <span class="comment">%% two intersecting lines</span>
+0160 fprintf(<span class="string">'\n------------- two intersecting lines, two others --------------\n'</span>)
+0161 <span class="comment">% define 4 3D points as points on target lines</span>
+0162 X = [-1,0,2,1]';
+0163 Y = [1,0,3,1]';
+0164 Z = [0,1,2,1]';
+0165 T = [1,-1,3,1]';
+0166 <span class="comment">% Line in direction of X-axis</span>
+0167 L1 = [1,0,0,0,0,0]';
+0168 <span class="comment">% Line in direction of Y-axis</span>
+0169 L2 = [0,1,0,0,0,0]';
+0170 <span class="comment">% Line through points X and Y, intersection the X-axis</span>
+0171 L3 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(X)*Y;
+0172 <span class="comment">% Line through points Z and T, intersecting the Y-axis</span>
+0173 L4 = <a href="../General-Functions/Geometry/calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>(Z)*T;
+0174 
+0175 M = [L1,L2,L3,L4]                                                           <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0176 disp([<span class="string">'rank(M) = '</span>, num2str(rank(M))])
+0177 
+0178 NM = null(M'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>);
+0179 null_space = NM                                                             <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0180 N1 = NM(:,1);
+0181 N2 = NM(:,2);
+0182 a = (N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*(N1-N2);
+0183 b = 2*(N1-N2)'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0184 c = N2'*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*N2;
+0185 coefficients_polynomial = [a,b,c]                                           <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0186 solutions = roots([a,b,c])';
+0187 disp([<span class="string">'solutions: '</span>,num2str(solutions)])
+0188 
+0189 M1 = rr(1)*N1+(1-rr(1))*N2;
+0190 M2 = rr(2)*N1+(1-rr(2))*N2;
+0191 two_lines = [M1';M2'];
+0192 fprintf(<span class="string">'\ntwo lines \n'</span>)
+0193 disp([<span class="string">'M_1 = ['</span>,num2str(M1'),<span class="string">']'</span>])
+0194 disp([<span class="string">'M_2 = ['</span>,num2str(M2'),<span class="string">']'</span>])
+0195 incidences = two_lines*<a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*M                                          <span class="comment">%#ok&lt;NOPTS&gt;</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

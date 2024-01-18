@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_INIT</title>
+  <meta name="keywords" content="sugr_INIT">
+  <meta name="description" content="% sugr_INIT">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">General</a> &gt; sugr_INIT.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\General&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_INIT
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% sugr_INIT</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% sugr_INIT
+ 
+ set global variables
+
+ wf 1/2011
+ sw 6/16 added global param for numerical precision</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Homography/demo_estimate_2D_homography_from_point_pairs.html" class="code" title="">demo_estimate_2D_homography_from_point_pairs</a>	% demo_estimate_2D_homography_from_point_pairs</li><li><a href="../../../10-Uncertain-Geometry/Demo-Homography/demo_homography_from_two_images.html" class="code" title="">demo_homography_from_two_images</a>	% demo_function_homography_from_two_images:</li><li><a href="../../../10-Uncertain-Geometry/Demo-Line-2D/demo_construct_Line_2D.html" class="code" title="">demo_construct_Line_2D</a>	% test_construct_Line_2D: test routine for constructing 2D lines</li><li><a href="../../../10-Uncertain-Geometry/Demo-Line-2D/demo_sugr_Line_2D.html" class="code" title="">demo_sugr_Line_2D</a>	demo_sugr_Line_2D: demo routine for creating a 2D lines</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_construct_Point_2D.html" class="code" title="">demo_construct_Point_2D</a>	demo_construct_Point_2D</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_estimate_Point_2D_from_Lines.html" class="code" title="">demo_estimate_Point_2D_from_Lines</a>	% demo_estimate_Point_2D_from_Lines</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_sugr_Point_2D.html" class="code" title="">demo_sugr_Point_2D</a>	demo_sugr_Point_2D: demo routine for generating 2D point</li><li><a href="../../../10-Uncertain-Geometry/demo_Point_3D.html" class="code" title="">demo_Point_3D</a>	demo_Point_3D: test routine for generating 3D point</li><li><a href="../../../10-Uncertain-Geometry/demo_estimate_two_symmetric_planes_from_points.html" class="code" title="">demo_estimate_two_symmetric_planes_from_points</a>	% test_two_symmetric_planes_from_points</li><li><a href="../../../12-Single-View-Geometry/Demo_Projection/demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs.html" class="code" title="">demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs</a>	% Demo estimate 3D projection from 2D point pairs, ALG 17</li><li><a href="../../../12-Single-View-Geometry/Demo_Projection/demo_estimate_Projection_3D_2D_from_point_pairs_single.html" class="code" title="">demo_estimate_Projection_3D_2D_from_point_pairs_single</a>	% Demo estimate 3D projection from 2D point pairs</li><li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_bR_from_UVuv.html" class="code" title="">demo_bR_from_UVuv</a>	% demo: bR from (U,V,xs,xss)</li><li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_estimate_E_Matrix_from_point_pairs.html" class="code" title="">demo_estimate_E_Matrix_from_point_pairs</a>	% test_estimate_E_Matrix_from_point_pairs</li><li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_triangulation_spherical.html" class="code" title="">demo_triangulation_spherical</a>	% demo triangulation</li><li><a href="../../../13-Two-View-Geometry/Demo-F-Matrix/demo_epipolar_geometry.html" class="code" title="function demo_epipolar_geometry()">demo_epipolar_geometry</a>	% Epipolar geometry</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% sugr_INIT</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% set global variables</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% wf 1/2011</span>
+0006 <span class="comment">% sw 6/16 added global param for numerical precision</span>
+0007 
+0008 <span class="comment">% function sugr_INIT</span>
+0009 
+0010 <span class="comment">% names of types of geometric elements and transformations</span>
+0011 <span class="keyword">global</span> type_name
+0012 
+0013 <span class="comment">% numericla precision for comparing elements</span>
+0014 <span class="keyword">global</span> Threshold_numerical_precision
+0015 
+0016 <span class="comment">% for checking homogeneous part</span>
+0017 <span class="keyword">global</span> Threshold_Euclidean_Normalization
+0018 
+0019 <span class="comment">% radus of disk around origin for qzuasi affine transformations</span>
+0020 <span class="keyword">global</span> Threshold_preimage_line_infinity
+0021 
+0022 
+0023 <span class="comment">% minimal redundancy for estimating sigma_0</span>
+0024 <span class="keyword">global</span> min_redundancy
+0025 
+0026 <span class="comment">% option for printing and plotting</span>
+0027 <span class="comment">% 0=non, 1=minimum, 2=average, 3=maximum (including tests)</span>
+0028 <span class="comment">%results of estimations</span>
+0029 <span class="keyword">global</span> print_option_estimation
+0030 <span class="comment">% plots</span>
+0031 <span class="keyword">global</span> plot_option
+0032 <span class="comment">% print in general</span>
+0033 <span class="keyword">global</span> print_option
+0034 
+0035 
+0036 <span class="comment">%% Entities</span>
+0037 type_name{1} = <span class="string">'Point_2D'</span>;
+0038 type_name{2} = <span class="string">'Line_2D'</span>;
+0039 type_name{3} = <span class="string">'Point_3D'</span>;
+0040 type_name{4} = <span class="string">'Line_2D'</span>;
+0041 type_name{5} = <span class="string">'Plane'</span>;
+0042 type_name{6} = <span class="string">'Conic'</span>;
+0043 type_name{7} = <span class="string">'Quadric'</span>;
+0044 type_name{8} = <span class="string">'Point_Pair_2D'</span>;
+0045 type_name{9} = <span class="string">'Circle'</span>;
+0046 type_name{10} = <span class="string">'Ellipse'</span>;
+0047 
+0048 type_name{11} = <span class="string">'Point_Pair_3D_3D'</span>;
+0049 type_name{12} = <span class="string">'Point_Pair_3D_2D'</span>;
+0050 type_name{12} = <span class="string">'Plane_Pair'</span>;
+0051 
+0052 
+0053 <span class="comment">%% Transformations 2D</span>
+0054 type_name{20} = <span class="string">'Homography_2D'</span>;
+0055 type_name{21} = <span class="string">'Affinity 2D'</span>;
+0056 type_name{22} = <span class="string">'Similarity 2D'</span>;
+0057 type_name{23} = <span class="string">'Motion 2D'</span>;
+0058 
+0059 type_name{25} = <span class="string">'Essential_Matrix'</span>;
+0060 type_name{27} = <span class="string">'Fundamental_Matrix'</span>;
+0061 
+0062 <span class="comment">%% Transformations 3D</span>
+0063 type_name{30} = <span class="string">'Homography_3D'</span>;
+0064 type_name{31} = <span class="string">'Affinity 2D'</span>;
+0065 type_name{32} = <span class="string">'Similarity 2D'</span>;
+0066 type_name{33} = <span class="string">'Motion 2D'</span>;
+0067 
+0068 <span class="comment">%% Projections</span>
+0069 type_name{123} = <span class="string">'Point_Projection_2D_1D'</span>;
+0070 type_name{134} = <span class="string">'Point_Projection_3D_2D'</span>;
+0071 type_name{143} = <span class="string">'Point_Projection_2D_3D'</span>;
+0072 type_name{136} = <span class="string">'Line_Projection_3D_2D'</span>;
+0073 type_name{163} = <span class="string">'Line_Projection_2D_3D'</span>; 
+0074 
+0075 <span class="comment">%% Korrelations</span>
+0076 type_name{205} = <span class="string">'Essential_Matrix'</span>;
+0077 type_name{207} = <span class="string">'Fundamental_Matrix'</span>;
+0078 
+0079 Threshold_Euclidean_Normalization = 10^(-8);
+0080 Threshold_preimage_line_infinity  = 100;
+0081 Threshold_numerical_precision = 10^(-12);
+0082 print_option_estimation = 2;
+0083 min_redundancy = 30;
+0084 
+0085 plot_option = 2;
+0086 print_option = 2;
+0087</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

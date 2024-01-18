@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ncx2cdf</title>
+  <meta name="keywords" content="ncx2cdf">
+  <meta name="description" content="NCX2CDF Noncentral chi-square cumulative distribution function (cdf).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">external</a> &gt; ncx2cdf.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\external&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>ncx2cdf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>NCX2CDF Noncentral chi-square cumulative distribution function (cdf).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function p = ncx2cdf(x,v,delta) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">NCX2CDF Noncentral chi-square cumulative distribution function (cdf).
+   P = NCX2CDF(X,V,DELTA) Returns the noncentral chi-square cdf with V 
+   degrees of freedom and noncentrality parameter, DELTA, at the values 
+   in X.
+
+   The size of P is the common size of the input arguments. A scalar input  
+   functions as a constant matrix of the same size as the other inputs.     
+
+   Some texts refer to this distribution as the generalized Rayleigh,
+   Rayleigh-Rice, or Rice distribution.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Statistics/distchck.html" class="code" title="function [errorcode,varargout] = distchck(nparms,varargin)">distchck</a>	DISTCHCK Checks the argument list for the probability functions.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../03-Testing/tab_3_3_delta_0_for_chi_2.html" class="code" title="">tab_3_3_delta_0_for_chi_2</a>	% Table 3.3 to 3.5 page 68</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function p = ncx2cdf(x,v,delta)</a>
+0002 <span class="comment">%NCX2CDF Noncentral chi-square cumulative distribution function (cdf).</span>
+0003 <span class="comment">%   P = NCX2CDF(X,V,DELTA) Returns the noncentral chi-square cdf with V</span>
+0004 <span class="comment">%   degrees of freedom and noncentrality parameter, DELTA, at the values</span>
+0005 <span class="comment">%   in X.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   The size of P is the common size of the input arguments. A scalar input</span>
+0008 <span class="comment">%   functions as a constant matrix of the same size as the other inputs.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Some texts refer to this distribution as the generalized Rayleigh,</span>
+0011 <span class="comment">%   Rayleigh-Rice, or Rice distribution.</span>
+0012 
+0013 <span class="comment">%   Reference:</span>
+0014 <span class="comment">%      [1]  Evans, Merran, Hastings, Nicholas and Peacock, Brian,</span>
+0015 <span class="comment">%      &quot;Statistical Distributions, Second Edition&quot;, Wiley</span>
+0016 <span class="comment">%      1993 p. 50-52.</span>
+0017 
+0018 <span class="comment">%   B.A. Jones 4-29-94</span>
+0019 <span class="comment">%   Copyright (c) 1993-98 by The MathWorks, Inc.</span>
+0020 <span class="comment">%   $Revision: 2.7 $  $Date: 1997/12/17 21:40:15 $</span>
+0021 
+0022 <span class="keyword">if</span> nargin &lt;  3, 
+0023     error(<span class="string">'Requires three input arguments.'</span>); 
+0024 <span class="keyword">end</span>
+0025 
+0026 [errorcode x v delta] = <a href="../../General-Functions/Statistics/distchck.html" class="code" title="function [errorcode,varargout] = distchck(nparms,varargin)">distchck</a>(3,x,v,delta);
+0027 
+0028 <span class="keyword">if</span> errorcode &gt; 0
+0029     error(<span class="string">'Requires non-scalar arguments to match in size.'</span>);
+0030 <span class="keyword">end</span>
+0031 
+0032 <span class="comment">% Initialize P to zero.</span>
+0033 p = zeros(size(x));
+0034 
+0035 <span class="comment">% Set up for infinite sum.</span>
+0036 done = 0;
+0037 counter = 0;
+0038 
+0039 <span class="comment">% Sum the series.</span>
+0040 s = sqrt(eps);
+0041 <span class="keyword">while</span> ~done
+0042    pplus = poisspdf(counter,delta/2).*chi2cdf(x,v+2*counter);
+0043    p = p + pplus;
+0044 
+0045    <span class="comment">% Convergence test.</span>
+0046    k = find(~isnan(pplus));
+0047    <span class="keyword">if</span> all((pplus(k)./(p(k)+s)) &lt; s)
+0048       done = 1;
+0049    <span class="keyword">end</span>
+0050    counter = counter + 1;
+0051 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

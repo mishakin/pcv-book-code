@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_construct_Line_2D</title>
+  <meta name="keywords" content="demo_construct_Line_2D">
+  <meta name="description" content="% test_construct_Line_2D: test routine for constructing 2D lines">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">10-Uncertain-Geometry</a> &gt; <a href="Documentation.html">Demo-Line-2D</a> &gt; demo_construct_Line_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 10-Uncertain-Geometry\Demo-Line-2D&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_construct_Line_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% test_construct_Line_2D: test routine for constructing 2D lines</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% test_construct_Line_2D: test routine for constructing 2D lines
+
+ see PCV Sect. 10, Fig. 10.1
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_construct_join_Line_2D.html" class="code" title="function Line_2D = sugr_construct_join_Line_2D(x,y)">sugr_construct_join_Line_2D</a>	% Construct 2D line joining two points x and y</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_construct_midline_Line_2D.html" class="code" title="function Line_2D = sugr_construct_midline_Line_2D(x,y)">sugr_construct_midline_Line_2D</a>	% Construct midline of two 2D points x and y</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_construct_parallel_lx_Line_2D.html" class="code" title="function Line_2D = sugr_construct_parallel_lx_Line_2D(l,x)">sugr_construct_parallel_lx_Line_2D</a>	% Construct 2D line parallel to line l through point x</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>	% Plot uncertain 2D line with standard hyperbola</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_show_Line_2D.html" class="code" title="function sugr_show_Line_2D(Line_2D,name)">sugr_show_Line_2D</a>	% Show/print all representations of 2D line on console</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_construct_intersection_Point_2D.html" class="code" title="function Point_2D = sugr_construct_intersection_Point_2D(l,m)">sugr_construct_intersection_Point_2D</a>	% Intersection 2D point two lines l and m</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_construct_midpoint_Point_2D.html" class="code" title="function Point_2D = sugr_construct_midpoint_Point_2D(x,y)">sugr_construct_midpoint_Point_2D</a>	% Mid point of two 2D points</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>	% Plot 2D point with standard ellipse</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% test_construct_Line_2D: test routine for constructing 2D lines</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% see PCV Sect. 10, Fig. 10.1</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Wolfgang Förstner</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0007 
+0008 
+0009 close all
+0010 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0011 
+0012 <span class="comment">%% initialize sugr</span>
+0013 <a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0014 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0015 
+0016 <span class="comment">%% join and midline</span>
+0017 <span class="comment">% define 3 points</span>
+0018 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>([1,2]',0.00001*[2,2;2,6]);
+0019 y = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>([-1,0]',0.00001*[2,-1;-1,2]);
+0020 u = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>([0,2]',0.00001*[2,1;1,1]);
+0021 
+0022 <span class="comment">%% midpoint</span>
+0023 z = <a href="../../General-Functions/SUGR/Point_2D/sugr_construct_midpoint_Point_2D.html" class="code" title="function Point_2D = sugr_construct_midpoint_Point_2D(x,y)">sugr_construct_midpoint_Point_2D</a>(x,y);
+0024 
+0025 <span class="comment">%%</span>
+0026 <span class="comment">% joining line</span>
+0027 l = <a href="../../General-Functions/SUGR/Line_2D/sugr_construct_join_Line_2D.html" class="code" title="function Line_2D = sugr_construct_join_Line_2D(x,y)">sugr_construct_join_Line_2D</a>(x,y);
+0028 <a href="../../General-Functions/SUGR/Line_2D/sugr_show_Line_2D.html" class="code" title="function sugr_show_Line_2D(Line_2D,name)">sugr_show_Line_2D</a>(l,<span class="string">'l'</span>);
+0029 <span class="comment">%%</span>
+0030 <span class="comment">% midline : check on commutativity</span>
+0031 m1 = <a href="../../General-Functions/SUGR/Line_2D/sugr_construct_midline_Line_2D.html" class="code" title="function Line_2D = sugr_construct_midline_Line_2D(x,y)">sugr_construct_midline_Line_2D</a>(x,y);
+0032 m2 = <a href="../../General-Functions/SUGR/Line_2D/sugr_construct_midline_Line_2D.html" class="code" title="function Line_2D = sugr_construct_midline_Line_2D(x,y)">sugr_construct_midline_Line_2D</a>(y,x);
+0033 <span class="comment">%%</span>
+0034 <span class="comment">% parallel to origin</span>
+0035 lp = <a href="../../General-Functions/SUGR/Line_2D/sugr_construct_parallel_lx_Line_2D.html" class="code" title="function Line_2D = sugr_construct_parallel_lx_Line_2D(l,x)">sugr_construct_parallel_lx_Line_2D</a>(l,u);
+0036 
+0037 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[20 ss(2)/3 ss(1)/3 ss(2)/2])
+0038 hold on
+0039 xlim([-2,2]);
+0040 ylim([-1,3]);
+0041 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(x,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0042 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(y,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0043 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(z,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0044 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(u,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0045 <a href="../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>(l,<span class="string">'-k'</span>,<span class="string">'-r'</span>,2,40);
+0046 <span class="comment">%sugr_plot_Line_2D(m1,'-k','-r',2,40);</span>
+0047 <span class="comment">%sugr_plot_Line_2D(lp,'-k','-r',2,40);</span>
+0048 axis equal
+0049 title(<span class="string">'Joining line '</span>)
+0050 
+0051 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[100+ss(1)/3  ss(2)/3 ss(1)/3 ss(2)/2])
+0052 hold on
+0053 xlim([-2,2]);
+0054 ylim([-1,3]);
+0055 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(x,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0056 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(y,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0057 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(z,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0058 <a href="../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>(l,<span class="string">'-k'</span>,<span class="string">'-r'</span>,2,40);
+0059 <a href="../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>(m2,<span class="string">'-k'</span>,<span class="string">'-r'</span>,2,40);
+0060 axis equal
+0061 title(<span class="string">'Midline '</span>)
+0062 
+0063 <span class="comment">%% similar to Fig. 10.1</span>
+0064 <span class="comment">% define 2D points</span>
+0065 x = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>([-2,1]',   0.000001*[2,2;2,6]);
+0066 y = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>([-1,1.5]', 0.000001*[2,-1;-1,2]);
+0067 z = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>([1,1.3]',  0.000001*[2,-2;-2,6]);
+0068 u = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>([1,-0.2]',0.000001*[2,1;1,2]);
+0069 
+0070 l = <a href="../../General-Functions/SUGR/Line_2D/sugr_construct_join_Line_2D.html" class="code" title="function Line_2D = sugr_construct_join_Line_2D(x,y)">sugr_construct_join_Line_2D</a>(x,y);
+0071 m = <a href="../../General-Functions/SUGR/Line_2D/sugr_construct_join_Line_2D.html" class="code" title="function Line_2D = sugr_construct_join_Line_2D(x,y)">sugr_construct_join_Line_2D</a>(z,u);
+0072 
+0073 v = <a href="../../General-Functions/SUGR/Point_2D/sugr_construct_intersection_Point_2D.html" class="code" title="function Point_2D = sugr_construct_intersection_Point_2D(l,m)">sugr_construct_intersection_Point_2D</a>(l,m);
+0074 
+0075 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[50+ss(1)/6  50 ss(1)/3 ss(2)/2])
+0076 hold on
+0077 xlim([-2,2]);
+0078 ylim([-1,3]);
+0079 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(x,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0080 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(y,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0081 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(z,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0082 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(u,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0083 <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(v,<span class="string">'.k'</span>,<span class="string">'-b'</span>,2,40);
+0084 <a href="../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>(l,<span class="string">'-k'</span>,<span class="string">'-r'</span>,2,40);
+0085 <a href="../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>(m,<span class="string">'-k'</span>,<span class="string">'-r'</span>,2,40);
+0086 axis equal
+0087 title(<span class="string">'Intersection'</span>)</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

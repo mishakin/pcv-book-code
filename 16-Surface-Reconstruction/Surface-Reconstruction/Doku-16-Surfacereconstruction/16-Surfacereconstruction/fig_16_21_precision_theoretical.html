@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_21_precision_theoretical</title>
+  <meta name="keywords" content="fig_16_21_precision_theoretical">
+  <meta name="description" content="% Fig. 15. 20b theoretical quality">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">16-Surfacereconstruction</a> &gt; fig_16_21_precision_theoretical.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_21_precision_theoretical
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Fig. 15. 20b theoretical quality</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 15. 20b theoretical quality
+
+ Precision as a function of position
+ Sensitivity wrt outliers in given heights
+
+ wf 6/2015
+
+ type_data: type of generated data
+ 0     a set of given points</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../16-Surfacereconstruction/Functions/interpolate_bilinear.html" class="code" title="function z=interpolate_bilinear(S,x,y,dx,BB,sigma_h);">interpolate_bilinear</a>	% interpolate_bilinear</li><li><a href="../16-Surfacereconstruction/Functions/simulate_points_dem_16_precision.html" class="code" title="function [points,BB,dx,dem,bin_im,dist_t]=simulate_points_dem_16_precision(N,sigma_h,R)">simulate_points_dem_16_precision</a>	% generate a set of points for dem-precision analysis</li><li><a href="../16-Surfacereconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type)">smooth_dem_robust_bilinear</a>	% smooth_dem_robust_bilinear</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 15. 20b theoretical quality</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Precision as a function of position</span>
+0004 <span class="comment">% Sensitivity wrt outliers in given heights</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% wf 6/2015</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% type_data: type of generated data</span>
+0009 <span class="comment">% 0     a set of given points</span>
+0010 
+0011 
+0012 
+0013 close all
+0014 
+0015 
+0016 display(<span class="string">'----- theoretical quality of surface reconstruction -----'</span>)
+0017 init_rand = 2    <span class="comment">% Example: with intit_rand = 2</span>
+0018 N=25             <span class="comment">% Example: with N = 25</span>
+0019 sigma_h=1        <span class="comment">% Example: with 1</span>
+0020 sigma_k=1        <span class="comment">% Example: with 5</span>
+0021 Resolution=50    <span class="comment">% Example: with 50</span>
+0022 
+0023 addpath(genpath(<span class="string">'../General_Functions/'</span>));
+0024 addpath(<span class="string">'Functions'</span>)
+0025 
+0026 type_data = 0;
+0027 type_robust = 0;
+0028 <span class="comment">%             0 not robust</span>
+0029 <span class="comment">%             1 only dem</span>
+0030 <span class="comment">%             2 only points</span>
+0031 <span class="comment">%             3 both</span>
+0032 
+0033 out_C = 1;
+0034 out_print = 0;
+0035 Tol =0.15
+0036 
+0037 print_type = 0;
+0038 plot_type  = 0;
+0039 
+0040 <span class="keyword">if</span> init_rand==0
+0041     init_rand=round(rand( sum(100*clock)))
+0042     r=rand(3,1);
+0043 <span class="keyword">end</span>;
+0044 rand(<span class="string">'state'</span>,init_rand);
+0045 randn(<span class="string">'state'</span>,init_rand);
+0046 
+0047 
+0048 <span class="comment">%% generate dem point cloud</span>
+0049 
+0050 [points,BB,delta_x,dem,bi,dt]=<a href="../16-Surfacereconstruction/Functions/simulate_points_dem_16_precision.html" class="code" title="function [points,BB,dx,dem,bin_im,dist_t]=simulate_points_dem_16_precision(N,sigma_h,R)">simulate_points_dem_16_precision</a>(N,sigma_h,Resolution);
+0051 out_in=zeros(size(points,1),1);
+0052 Np = size(points,1);
+0053 
+0054 
+0055 <span class="comment">%% interpolate</span>
+0056 
+0057 starttime = cputime;
+0058 
+0059 [ds,S,Sigma,Np,Nr,Mc,ver,A,w,w_f,W] =<span class="keyword">...</span>
+0060     <a href="../16-Surfacereconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type)">smooth_dem_robust_bilinear</a><span class="keyword">...</span>
+0061     (points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,<span class="keyword">...</span>
+0062     print_type,plot_type);
+0063 
+0064 complete_time_for_solution=cputime-starttime
+0065 
+0066 <span class="comment">%% sensitivity factors</span>
+0067 
+0068 rk=zeros(Np,1);
+0069 mu=zeros(Np,1);
+0070 <span class="keyword">for</span> k=1:Np
+0071     i=points(k,1)+1;
+0072     j=points(k,2)+1;
+0073     vk = A(k,:)*Sigma*A(k,:)';
+0074     rk(k) = (sigma_h^2-vk)/sigma_h^2;
+0075     mu(k)=sqrt(vk/(1-vk));
+0076 <span class="keyword">end</span>
+0077 
+0078 <span class="comment">%%</span>
+0079 X=([0:Nr-1]'*ones(1,Mc))*delta_x+BB(1);
+0080 Y=(ones(Nr,1)*[0:Mc-1])*delta_x+BB(2);
+0081 <span class="comment">%%</span>
+0082 
+0083 figure
+0084 hold on
+0085 <span class="comment">%subplot(2,2,1)</span>
+0086 
+0087 hold on
+0088 surf(X,Y,ds); <span class="comment">%,'EdgeColor',[0,0,0])% ,129*ones(size(S))</span>
+0089 colormap(gray)
+0090 
+0091 title(<span class="string">'fitted dem: z'</span>)
+0092 alpha(0.3)
+0093 col=zeros(Np,2);
+0094 <span class="keyword">for</span> n=1:Np
+0095     plot3(points(n,1),points(n,2),points(n,3),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15)
+0096 <span class="keyword">end</span>
+0097 view([-29,65])
+0098 xlim([BB(1),BB(3)])
+0099 ylim([BB(2),BB(4)])
+0100 zlim([0,10])
+0101 axis equal
+0102 
+0103 <span class="comment">%subplot(2,2,2)</span>
+0104 figure
+0105 hold on
+0106 Smax=max(sqrt(S(:)));
+0107 surf(X,Y,sqrt(S)/Smax*10,<span class="string">'EdgeColor'</span>,[0,0,0])
+0108 colormap(cool);
+0109 title(<span class="string">'standard deviations \sigma_z - sensitifyty factors \mu'</span>)
+0110 col=zeros(Np,2);
+0111 alpha(0.3)
+0112 z=zeros(Np,1);
+0113 <span class="keyword">for</span> n=1:Np
+0114     z(n)=<a href="../16-Surfacereconstruction/Functions/interpolate_bilinear.html" class="code" title="function z=interpolate_bilinear(S,x,y,dx,BB,sigma_h);">interpolate_bilinear</a>(S,points(n,1),points(n,2),delta_x,BB,sigma_h);
+0115     plot3(points(n,1),points(n,2),sqrt(z(n)),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15) 
+0116     <span class="comment">%plot3([points(n,1),points(n,1)],[points(n,2),points(n,2)],[0,mu(n)+1],'-w','LineWidth',4)</span>
+0117     plot3([points(n,1),points(n,1)],[points(n,2),points(n,2)],[0,mu(n)],<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2) 
+0118 <span class="keyword">end</span>
+0119 plot3(0,0,0,<span class="string">'.k'</span>)
+0120 view([-29,65])
+0121 xlim([BB(1),BB(3)])
+0122 ylim([BB(2),BB(4)])
+0123 zlim([-1,7])
+0124 axis equal
+0125 
+0126 x_y_sigma_std_fitted_points = [points(:,[1,2,4]),sqrt(z)];
+0127 
+0128 Std_z=sqrt(S);
+0129 
+0130 <span class="comment">%% plot sensitivity factors</span>
+0131 figure
+0132 hold on
+0133 R=Resolution;
+0134 plot([0,R+5,R+5,0,0],[0,0,R+5,R+5,0],<span class="string">'-k'</span>)
+0135 <span class="keyword">for</span> k=1:Np
+0136     i=points(k,1)+1;
+0137     j=points(k,2)+1;
+0138     plot(i,j,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,10)
+0139     text(i+0.5,j+0.5,num2str(round(mu(k)*10.001)/10,<span class="string">'%6.1f'</span>))
+0140 <span class="keyword">end</span>
+0141 title(<span class="string">'sensitivity factors'</span>)
+0142 axis equal
+0143 axis off
+0144 
+0145 display(<span class="string">'             sensitivity                '</span>)
+0146 display(<span class="string">'         i         j        rk        mu'</span>)
+0147 [points(:,1:2),rk,mu]
+0148 average_redundancy_observations=sum(rk)/Np
+0149 
+0150 
+0151      
+0152 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 19:56:24 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

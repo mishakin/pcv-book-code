@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of uncondition_Homography</title>
+  <meta name="keywords" content="uncondition_Homography">
+  <meta name="description" content="% uncondition Homography">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; uncondition_Homography.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>uncondition_Homography
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% uncondition Homography</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function H = uncondition_Homography(Hc, Tl, Tr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% uncondition Homography
+ see PCV (6.138)
+
+ Usage:
+   H = uncondition_Homography(Hc, Tl, Tr)
+  
+   Hc  - homogeneous conditioned Homography
+   Tl - condition matrix point set 1
+   Tr - condition matrix point set 2
+ 
+   H - Homography, unconditioned
+
+ Wolfgang Förstner 2/2013
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="condition_Points.html" class="code" title="function [xc,M] = condition_Points(x)">condition_Points</a>, <a href="uncondition_Points.html" class="code" title="function x = uncondition_Points(xc,M)">uncondition_Points</a>, <a href="condition_Homography.html" class="code" title="function Hc = condition_Homography(H, Tl, Tr)">condition_Homography</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% uncondition Homography</span>
+0002 <span class="comment">% see PCV (6.138)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Usage:</span>
+0005 <span class="comment">%   H = uncondition_Homography(Hc, Tl, Tr)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Hc  - homogeneous conditioned Homography</span>
+0008 <span class="comment">%   Tl - condition matrix point set 1</span>
+0009 <span class="comment">%   Tr - condition matrix point set 2</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   H - Homography, unconditioned</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Wolfgang Förstner 2/2013</span>
+0014 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% See also condition_Points, uncondition_Points, condition_Homography</span>
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function H = uncondition_Homography(Hc, Tl, Tr)</a>
+0019 
+0020 <span class="comment">% unconditioned Homography</span>
+0021 H =  inv(Tl) * Hc * Tr;                                                     <span class="comment">%#ok&lt;MINV&gt;</span>
+0022 
+0023</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

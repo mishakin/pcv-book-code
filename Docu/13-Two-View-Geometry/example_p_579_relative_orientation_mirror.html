@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of example_p_579_relative_orientation_mirror</title>
+  <meta name="keywords" content="example_p_579_relative_orientation_mirror">
+  <meta name="description" content="% test mirror image">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">13-Two-View-Geometry</a> &gt; example_p_579_relative_orientation_mirror.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>example_p_579_relative_orientation_mirror
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% test mirror image</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% test mirror image
+ example according to Figure 13.11 page 579
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 06/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>	% Rotation matrix from quaternion</li><li><a href="../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>	% Cayley rotation matrix</li><li><a href="../General-Functions/Geometry/calc_Rot_rod.html" class="code" title="function R = calc_Rot_rod(q)">calc_Rot_rod</a>	% Rotation matrix according to Rodriguez</li><li><a href="../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li><li><a href="../General-Functions/Maths/adjunctMatrix.html" class="code" title="function B = adjunctMatrix(A)">adjunctMatrix</a>	% determines adjunct matrix for a square matrix</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% test mirror image</span>
+0002 <span class="comment">% example according to Figure 13.11 page 579</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner</span>
+0005 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% last changes: Susanne Wenzel 06/18</span>
+0008 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0009 
+0010 addpath(genpath(<span class="string">'../General-Functions'</span>))
+0011 
+0012 close all
+0013 clc
+0014 
+0015 <span class="comment">% three points: X=right, Y=depth, Z=heigth</span>
+0016 disp(<span class="string">'----------- mirror image -----------'</span>)
+0017 N = 3;
+0018 
+0019 <span class="comment">%% in original position, will be rotated later</span>
+0020 <span class="comment">% points</span>
+0021 disp(<span class="string">'Create points and plane in generic situation ...'</span>)
+0022 disp(<span class="string">'original points'</span>)
+0023 X0 = [1.0,1.0,1.2;
+0024       1.2,1.0,1.5;
+0025       1.1,3.0,2.0]                                                         <span class="comment">%#ok&lt;*NOPTS&gt;</span>
+0026 
+0027 <span class="comment">% mirror plane</span>
+0028 disp(<span class="string">'mirrow plane'</span>)
+0029 A0 = [1,0,0,-2]'
+0030 
+0031 <span class="comment">% mirrored points</span>
+0032 disp(<span class="string">'mirrowed points'</span>)
+0033 Y0 = [4-X0(:,1),X0(:,2),X0(:,3)]
+0034 
+0035 <span class="comment">%% now rotate to obtain generic situation</span>
+0036 <span class="comment">% rotation</span>
+0037 disp(<span class="string">'rotation to obtain generic situation'</span>)
+0038 Rp = <a href="../General-Functions/Geometry/calc_Rot_rod.html" class="code" title="function R = calc_Rot_rod(q)">calc_Rot_rod</a>([0,0,0.05]')                                             
+0039 
+0040 <span class="comment">% rotated points, plane</span>
+0041 disp(<span class="string">'rotated points (see Tab. 13.4)'</span>)
+0042 X = X0*Rp'
+0043 Y = Y0*Rp'
+0044 disp(<span class="string">'transformation matrix for plane'</span>)
+0045 M = [Rp, zeros(3,1);zeros(1,3),1]
+0046 Ma = <a href="../General-Functions/Maths/adjunctMatrix.html" class="code" title="function B = adjunctMatrix(A)">adjunctMatrix</a>(M);
+0047 disp(<span class="string">'rotated mirrow plane'</span>)
+0048 A = Ma' * A0
+0049 
+0050 <span class="comment">% check mirroring of points X at A to yield Y</span>
+0051 disp(<span class="string">'check mirroring of points X at A to yield Y ...'</span>)
+0052 A = A/norm(A(1:3));
+0053 Normal = A(1:3);
+0054 S = -A(4);
+0055 H = [eye(3)-2*(Normal*Normal'), 2*S*Normal;[0,0,0,1]]
+0056 Xs = (H*[X,ones(3,1)]')';
+0057 disp(<span class="string">'difference should be 0:'</span>)
+0058 check_mirroring = Xs(:,1:3)-Y
+0059 
+0060 <span class="comment">% projection</span>
+0061 disp(<span class="string">'projection ...'</span>)
+0062 disp(<span class="string">'rotation matrix'</span>) <span class="comment">% freely chosen</span>
+0063 R = <a href="../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>([0.1,0.2,-0.3])
+0064 disp(<span class="string">'projection matrix'</span>) <span class="comment">% translation freely chosen</span>
+0065 P = R'*[eye(3), [2,2,-1.0]']
+0066 
+0067 <span class="comment">% image points</span>
+0068 disp(<span class="string">'projected image points'</span>)
+0069 x = (P*[X,ones(N,1)]')'
+0070 y = (P*[Y,ones(N,1)]')'
+0071 
+0072 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>)
+0073 plot(x(:,1)/x(:,3),x(:,2)/x(:,3),<span class="string">'or'</span>)
+0074 hold on
+0075 plot(y(:,1)/y(:,3),y(:,2)/y(:,3),<span class="string">'xb'</span>)
+0076 axis equal
+0077 title(<span class="string">'Original points (red), mirrowed points (blue)'</span>)
+0078 
+0079 disp(<span class="string">' '</span>)
+0080 disp(<span class="string">'Given image points, solve for E-matrix ... '</span>)
+0081 <span class="comment">%% solve for rotations</span>
+0082 disp(<span class="string">'solve for rotations ...'</span>)
+0083 <span class="comment">% normal</span>
+0084 n = cross(cross(x(2,:),y(2,:)),cross(x(3,:),y(3,:)))';
+0085 disp(<span class="string">'normal'</span>)
+0086 n = n/norm(n)
+0087 disp(<span class="string">'|[x1 cross y1, x2 cross y2, x3 cross y3]|, should be 0'</span>)
+0088 det_p = det([cross(x(1,:),y(1,:))',cross(x(2,:),y(2,:))',cross(x(3,:),y(3,:))'])
+0089 
+0090 <span class="comment">% Parameters</span>
+0091 <span class="comment">%% I. Solution</span>
+0092 disp(<span class="string">'1. Solution ....'</span>)
+0093 s = 1/(n(2)^2+n(3)^2)*(1-n(1))
+0094 q2 = -n(3)*s
+0095 q3 = n(2)*s
+0096 
+0097 <span class="comment">% Rotations</span>
+0098 disp(<span class="string">'rotations'</span>)
+0099 Rl = <a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>([1, 0,  q2,  q3])
+0100 Rr = <a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>([1, 0, -q2, -q3])
+0101 disp(<span class="string">'Essential matrix'</span>)
+0102 E  = Rl*<a href="../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>([1,0,0]')*Rr'
+0103 
+0104 <span class="comment">% check coplanarity constraints of point pairs</span>
+0105 disp(<span class="string">'check coplanarity constraints of point pairs ...'</span>)
+0106 disp(<span class="string">'contradictions w_i = x_i^T E x_i'</span>)
+0107 w1 = x(1,:)*E*[-y(1,1),y(1,2),y(1,3)]'                                     <span class="comment">%#ok&lt;*NASGU&gt;</span>
+0108 w2 = x(2,:)*E*[-y(2,1),y(2,2),y(2,3)]'
+0109 w3 = x(3,:)*E*[-y(3,1),y(3,2),y(3,3)]'
+0110 
+0111 <span class="comment">% check whether points are in front of the cameras</span>
+0112 <span class="comment">% see lines 11-13 in Alg. 20, p. 583</span>
+0113 N = cross(cross([1,0,0]',Rl'*x(1,:)'),[1,0,0]');
+0114 M = <a href="../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(N)* cross((Rl'*x(1,:)'),Rr'*[-y(1,1),y(1,2),y(1,3)]');
+0115 ssa = sign([1,0,0] * M);
+0116 sra = ssa.* sign((Rr'*[-y(1,1),y(1,2),y(1,3)]')'* N);
+0117 <span class="comment">% if positive: in front</span>
+0118 disp(<span class="string">'positive, if points in front of camera (here: correct solution)'</span>)
+0119 [sra,ssa]
+0120 
+0121 <span class="comment">%% II. solution</span>
+0122 disp(<span class="string">' '</span>)
+0123 disp(<span class="string">'2. Solution ....'</span>)
+0124 s = 1/(n(2)^2+n(3)^2)*(-1-n(1))
+0125 q2 = -n(3)*s
+0126 q3 = n(2)*s
+0127 
+0128 <span class="comment">% Rotations</span>
+0129 disp(<span class="string">'rotations'</span>)
+0130 Rl2 = <a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>([1, 0,  q2,  q3])
+0131 Rr2 = <a href="../General-Functions/Geometry/calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>([1, 0, -q2, -q3])
+0132 disp(<span class="string">'Essential matrix'</span>)
+0133 E  = Rl2*<a href="../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>([1,0,0]')*Rr2'
+0134 
+0135 <span class="comment">% check coplanarity constraints of point pairs</span>
+0136 disp(<span class="string">'check coplanarity constraints of point pairs ...'</span>)
+0137 disp(<span class="string">'contardictions w_i = x_i^T E x_i'</span>)
+0138 w1 = x(1,:)*E*[-y(1,1),y(1,2),y(1,3)]'
+0139 w2 = x(2,:)*E*[-y(2,1),y(2,2),y(2,3)]'
+0140 w3 = x(3,:)*E*[-y(3,1),y(3,2),y(3,3)]'
+0141 
+0142 <span class="comment">% check whether points are in front of the cameras</span>
+0143 <span class="comment">% see lines 11-13 in Alg. 20, p. 583</span>
+0144 N = cross(cross([1,0,0]',Rl2'*x(1,:)'),[1,0,0]');
+0145 M = <a href="../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(N)* cross((Rl2'*x(1,:)'),Rr2'*[-y(1,1),y(1,2),y(1,3)]');
+0146 ssa = sign([1,0,0] * M);
+0147 sra = ssa.* sign((Rr2'*[-y(1,1),y(1,2),y(1,3)]')'* N);
+0148 <span class="comment">% if positive: in front</span>
+0149 disp(<span class="string">'positive, if points in front of camera (here: wrong solution)'</span>)
+0150 [sra,ssa]
+0151 
+0152 Rl'*Rl2</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

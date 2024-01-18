@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cgls_mod</title>
+  <meta name="keywords" content="cgls_mod">
+  <meta name="description" content="function [X,rho,eta,F] = cgls(A,b,k,reorth,s)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">external</a> &gt; cgls_mod.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\external&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>cgls_mod
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [X,rho,eta,F] = cgls(A,b,k,reorth,s)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [x,rho,eta,F] = cgls_mod(A,b,k,reorth,s) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">function [X,rho,eta,F] = cgls(A,b,k,reorth,s)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%function [X,rho,eta,F] = cgls(A,b,k,reorth,s)</span>
+0002 <a name="_sub0" href="#_subfunctions" class="code">function [x,rho,eta,F] = cgls_mod(A,b,k,reorth,s)</a>
+0003 
+0004 <span class="comment">%CGLS Conjugate gradient algorithm applied implicitly to the normal equations.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% [X,rho,eta,F] = cgls(A,b,k,reorth,s)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Performs k steps of the conjugate gradient algorithm applied</span>
+0009 <span class="comment">% implicitly to the normal equations A'*A*x = A'*b.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% The routine returns all k solutions, stored as columns of</span>
+0012 <span class="comment">% the matrix X.  The corresponding solution and residual norms</span>
+0013 <span class="comment">% are returned in the vectors eta and rho, respectively.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% If the singular values s are also provided, cgls computes the</span>
+0016 <span class="comment">% filter factors associated with each step and stores them</span>
+0017 <span class="comment">% columnwise in the matrix F.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Reorthogonalization of the normal equation residual vectors</span>
+0020 <span class="comment">% A'*(A*X(:,i)-b) is controlled by means of reorth:</span>
+0021 <span class="comment">%    reorth = 0 : no reorthogonalization (default),</span>
+0022 <span class="comment">%    reorth = 1 : reorthogonalization by means of MGS.</span>
+0023 
+0024 <span class="comment">% References: A. Bjorck, &quot;Numerical Methods for Least Squares Problems&quot;,</span>
+0025 <span class="comment">% SIAM, Philadelphia, 1996.</span>
+0026 <span class="comment">% C. R. Vogel, &quot;Solving ill-conditioned linear systems using the</span>
+0027 <span class="comment">% conjugate gradient method&quot;, Report, Dept. of Mathematical</span>
+0028 <span class="comment">% Sciences, Montana State University, 1987.</span>
+0029 
+0030 <span class="comment">% Per Christian Hansen, IMM, July 23, 2007.</span>
+0031 
+0032 <span class="comment">% modified by Wolfgang Förstner: eliminated the storage of X.</span>
+0033 
+0034 <span class="comment">% The fudge threshold is used to prevent filter factors from exploding.</span>
+0035 fudge_thr = 1e-4;
+0036 
+0037 <span class="comment">% Initialization.</span>
+0038 <span class="keyword">if</span> (k &lt; 1), error(<span class="string">'Number of steps k must be positive'</span>), <span class="keyword">end</span>
+0039 <span class="keyword">if</span> (nargin==3), reorth = 0; <span class="keyword">end</span>
+0040 <span class="comment">%if (nargout==4 &amp; nargin&lt;5), error('Too few input arguments'), end</span>
+0041 <span class="keyword">if</span> (nargout==4 &amp; nargin&lt;4), error(<span class="string">'Too few input arguments'</span>), <span class="keyword">end</span>
+0042 <span class="keyword">if</span> (reorth&lt;0 | reorth&gt;1), error(<span class="string">'Illegal reorth'</span>), <span class="keyword">end</span>
+0043 [m,n] = size(A); 
+0044 <span class="comment">%X = zeros(n,k);</span>
+0045 <span class="keyword">if</span> (reorth==1), ATr = zeros(n,k+1); <span class="keyword">end</span>
+0046 <span class="keyword">if</span> (nargout &gt; 1)
+0047   eta = zeros(k,1); rho = eta;
+0048 <span class="keyword">end</span>
+0049 F=0;
+0050 <span class="keyword">if</span> (nargin==5)
+0051   F = zeros(n,k); Fd = zeros(n,1); s2 = s.^2;
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="comment">% Prepare for CG iteration.</span>
+0055 x = zeros(n,1);
+0056 d = A'*b;
+0057 r = b;
+0058 normr2 = d'*d;
+0059 <span class="keyword">if</span> (reorth==1), ATr(:,1) = d/norm(d); <span class="keyword">end</span>
+0060 
+0061 <span class="comment">% Iterate.</span>
+0062 <span class="keyword">for</span> j=1:k
+0063 
+0064   <span class="comment">% Update x and r vectors.</span>
+0065   Ad = A*d; alpha = normr2/(Ad'*Ad);
+0066   x  = x + alpha*d;
+0067   r  = r - alpha*Ad;
+0068   s  = A'*r;
+0069 
+0070   <span class="comment">% Reorthogonalize s to previous s-vectors, if required.</span>
+0071   <span class="keyword">if</span> (reorth==1)
+0072     <span class="keyword">for</span> i=1:j, s = s - (ATr(:,i)'*s)*ATr(:,i); <span class="keyword">end</span>
+0073     ATr(:,j+1) = s/norm(s);
+0074   <span class="keyword">end</span>
+0075 
+0076   <span class="comment">% Update d vector.</span>
+0077   normr2_new = s'*s;
+0078   beta = normr2_new/normr2;
+0079   normr2 = normr2_new;
+0080   d = s + beta*d;
+0081   <span class="comment">%X(:,j) = x;</span>
+0082 
+0083   <span class="comment">% Compute norms, if required.</span>
+0084   <span class="keyword">if</span> (nargout&gt;1), rho(j) = norm(r); <span class="keyword">end</span>
+0085   <span class="keyword">if</span> (nargout&gt;2), eta(j) = norm(x); <span class="keyword">end</span>
+0086 
+0087   <span class="comment">% Compute filter factors, if required.</span>
+0088   <span class="keyword">if</span> (nargin==5)
+0089     <span class="keyword">if</span> (j==1)
+0090       F(:,1) = alpha*s2;
+0091       Fd = s2 - s2.*F(:,1) + beta*s2;
+0092     <span class="keyword">else</span>
+0093       F(:,j) = F(:,j-1) + alpha*Fd;
+0094       Fd = s2 - s2.*F(:,j) + beta*Fd;
+0095     <span class="keyword">end</span>
+0096     <span class="keyword">if</span> (j &gt; 2)
+0097       f = find(abs(F(:,j-1)-1) &lt; fudge_thr &amp; abs(F(:,j-2)-1) &lt; fudge_thr);
+0098       <span class="keyword">if</span> ~isempty(f), F(f,j) = ones(length(f),1); <span class="keyword">end</span>
+0099     <span class="keyword">end</span>
+0100   <span class="keyword">end</span>
+0101 
+0102 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

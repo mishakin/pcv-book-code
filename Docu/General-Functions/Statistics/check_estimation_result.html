@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of check_estimation_result</title>
+  <meta name="keywords" content="check_estimation_result">
+  <meta name="description" content="% check estimation result, PCV Sect. 4.6.8">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Statistics</a> &gt; check_estimation_result.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Statistics&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>check_estimation_result
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% check estimation result, PCV Sect. 4.6.8</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% check estimation result, PCV Sect. 4.6.8
+
+ check_estimation_result(R,x_true,S0,s0q_sample,x_sample,S,text)
+
+ R          = redundancy (d.o.f. of variance factor)
+ x_true     = Ux1 vector of parameters
+ C0         = UxU reference covariance matrix of estimated parameters
+ s0q_sample = Kx1 vector of variance factors
+ x_sampl    = KxU matrix of estimated parameters
+ S          = significance level of tests
+ text       = string characterizing problem
+
+ provides three tests
+ - variance factor (if not only ones, eg for algebraic estimation)
+ - covariance matrix
+ - bias
+
+ Wolfgang Förstner 2016-09-28
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/SUGR/General/Statistics/sugr_check_CovM.html" class="code" title="function [lambda, T, F] = sugr_check_CovM(C_empir, C_theor, m, S)">sugr_check_CovM</a>	% test CovM</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../04-Estimation/GMM/Demo-GMM/demos_GMM_regression.html" class="code" title="">demos_GMM_regression</a>	% test GMM with linear regression with check</li><li><a href="../../10-Uncertain-Geometry/Demo-Homography/demo_estimate_2D_homography_from_point_pairs.html" class="code" title="">demo_estimate_2D_homography_from_point_pairs</a>	% demo_estimate_2D_homography_from_point_pairs</li><li><a href="../../10-Uncertain-Geometry/Demo-Plane/demo_direct_plane_fit.html" class="code" title="">demo_direct_plane_fit</a>	% demo plane fitting direct method</li><li><a href="../../10-Uncertain-Geometry/Demo-Point-2D/demo_estimate_Point_2D_from_Lines.html" class="code" title="">demo_estimate_Point_2D_from_Lines</a>	% demo_estimate_Point_2D_from_Lines</li><li><a href="../../12-Single-View-Geometry/Demo_Projection/demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs.html" class="code" title="">demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs</a>	% Demo estimate 3D projection from 2D point pairs, ALG 17</li><li><a href="../../12-Single-View-Geometry/Demo_Projection/demo_estimate_Projection_3D_2D_from_point_pairs_single.html" class="code" title="">demo_estimate_Projection_3D_2D_from_point_pairs_single</a>	% Demo estimate 3D projection from 2D point pairs</li><li><a href="../../13-Two-View-Geometry/Demo-E-Matrix/demo_estimate_E_Matrix_from_point_pairs.html" class="code" title="">demo_estimate_E_Matrix_from_point_pairs</a>	% test_estimate_E_Matrix_from_point_pairs</li><li><a href="../../13-Two-View-Geometry/Demo-E-Matrix/demo_triangulation_spherical.html" class="code" title="">demo_triangulation_spherical</a>	% demo triangulation</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% check estimation result, PCV Sect. 4.6.8</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% check_estimation_result(R,x_true,S0,s0q_sample,x_sample,S,text)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% R          = redundancy (d.o.f. of variance factor)</span>
+0006 <span class="comment">% x_true     = Ux1 vector of parameters</span>
+0007 <span class="comment">% C0         = UxU reference covariance matrix of estimated parameters</span>
+0008 <span class="comment">% s0q_sample = Kx1 vector of variance factors</span>
+0009 <span class="comment">% x_sampl    = KxU matrix of estimated parameters</span>
+0010 <span class="comment">% S          = significance level of tests</span>
+0011 <span class="comment">% text       = string characterizing problem</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% provides three tests</span>
+0014 <span class="comment">% - variance factor (if not only ones, eg for algebraic estimation)</span>
+0015 <span class="comment">% - covariance matrix</span>
+0016 <span class="comment">% - bias</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Wolfgang Förstner 2016-09-28</span>
+0019 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0020 
+0021 <a name="_sub0" href="#_subfunctions" class="code">function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)</a>
+0022 
+0023 <span class="comment">% number of parameters</span>
+0024 U = length(x_true);
+0025 <span class="comment">% sample size</span>
+0026 K = length(find(s0q_sample(:) &gt; 0));
+0027 
+0028 disp(<span class="string">'++++++++++++++++++++++++++++++++++++++++++++++++'</span>)
+0029 disp(strcat(<span class="string">'Checks for '</span>, text))
+0030 disp([<span class="string">'Number U of unknown parameters = '</span>, num2str(U)]);
+0031 disp([<span class="string">'Redundancy R                   = '</span>, num2str(R)]);
+0032 disp([<span class="string">'Number K of samples            = '</span>, num2str(K)]);
+0033 disp(<span class="string">'-------------------------------------------------'</span>)
+0034 
+0035 <span class="comment">%% mean and covariance matrix of sample</span>
+0036 me = mean(x_sample);
+0037 dx = me'-x_true;
+0038 Ce = cov(x_sample);
+0039 
+0040 <span class="comment">%% check of sigma_0 (two-sided), PCV (4.354) ff</span>
+0041 <span class="keyword">if</span> sum(s0q_sample) ~= K
+0042     mean_s02 = mean(s0q_sample);
+0043     F_tol_o = finv(1 - (1 - S) / 2, K * R, 100000);
+0044     F_tol_u = finv((1 - S) / 2, K * R, 100000);
+0045     
+0046     <span class="keyword">if</span> mean_s02 &gt; F_tol_u &amp;&amp; mean_s02 &lt; F_tol_o
+0047         disp([<span class="string">'variance factor s_0^2      ok: mean(s_0^2) = '</span>, <span class="keyword">...</span>
+0048             num2str(mean_s02, <span class="string">'% 12.4f'</span>), <span class="string">'     in ['</span>, <span class="keyword">...</span>
+0049             num2str(F_tol_u, <span class="string">'% 12.4f'</span>), <span class="string">','</span>, num2str(F_tol_o, <span class="string">'% 12.4f'</span>), <span class="string">']'</span>]);
+0050     <span class="keyword">else</span>
+0051         disp([<span class="string">'variance factor  s_0^2 not ok: mean(s_0^2) = '</span>, <span class="keyword">...</span>
+0052             num2str(mean_s02, <span class="string">'% 12.4f'</span>), <span class="string">' not in ['</span>, <span class="keyword">...</span>
+0053             num2str(F_tol_u, <span class="string">'% 12.4f'</span>), <span class="string">','</span>, num2str(F_tol_o, <span class="string">'% 12.4f'</span>), <span class="string">'] *****'</span>]);
+0054     <span class="keyword">end</span>
+0055     
+0056     <span class="comment">% plot histogram of variance factors with expected density (F-distibution)</span>
+0057     screensize = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0058     f = figure(<span class="string">'Color'</span>, <span class="string">'w'</span>, <span class="string">'Position'</span>, [20 20 screensize / 2]);
+0059     hold on
+0060     <span class="comment">% number of bins = sqrt(K)</span>
+0061     N_bin = ceil(sqrt(K));
+0062     <span class="comment">% plot histogram</span>
+0063     hist(s0q_sample, N_bin);
+0064     <span class="comment">% store bin-centres r</span>
+0065     [~, r] = hist(s0q_sample, N_bin);
+0066     <span class="comment">% determine scale</span>
+0067     range = abs(r(N_bin) - r(1)) * N_bin / (N_bin - 1);
+0068     <span class="comment">% plot density with correct scale</span>
+0069     plot(r, N_bin * range * fpdf(r, R, 10000), <span class="string">'-r'</span>, <span class="string">'LineWidth'</span>, 2);
+0070     title([<span class="string">'Histogram of '</span>, num2str(K), <span class="string">' variance factors with reference density ('</span>, text, <span class="string">')'</span>]);
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">%% Check of covariance matrix (two-sided), PCV (4.356) ff</span>
+0074 <span class="comment">% Koch Parametersch Schätzung und Hypothesentests in linearen Modellen,</span>
+0075 <span class="comment">% 2004, (287.5)</span>
+0076 <span class="comment">%Ce,C0,K,S</span>
+0077 [lambda, T] = <a href="../../General-Functions/SUGR/General/Statistics/sugr_check_CovM.html" class="code" title="function [lambda, T, F] = sugr_check_CovM(C_empir, C_theor, m, S)">sugr_check_CovM</a>(Ce, C0, K, S);
+0078 
+0079 <span class="keyword">if</span> lambda &gt; T(2) &amp;&amp; lambda &lt; T(1)
+0080     disp([<span class="string">'covariance matrix C_xx     ok: lambda      = '</span>, <span class="keyword">...</span>
+0081         num2str(lambda, <span class="string">'% 12.4f'</span>), <span class="string">'     in ['</span>, num2str(T(2), <span class="string">'% 12.4f'</span>), <span class="keyword">...</span>
+0082         <span class="string">','</span>, num2str(T(1), <span class="string">'% 12.4f'</span>), <span class="string">']'</span>]);
+0083 <span class="keyword">else</span>
+0084     disp([<span class="string">'covariance matrix C_xx not ok: lambda      = '</span>, <span class="keyword">...</span>
+0085         num2str(lambda, <span class="string">'% 12.4f'</span>), <span class="string">' not in ['</span>, num2str(T(2), <span class="string">'% 12.4f'</span>), <span class="keyword">...</span>
+0086         <span class="string">','</span>, num2str(T(1), <span class="string">'% 12.4f'</span>), <span class="string">'] *****'</span>]);
+0087 <span class="keyword">end</span>
+0088 
+0089 <span class="comment">%% Check of mean parameters (two-sided), PCV (4.359) ff</span>
+0090 
+0091 X_mean = K * dx' * inv(Ce) * dx;                                           <span class="comment">%#ok&lt;MINV&gt;</span>
+0092 X_mean_tol_h = chi2inv(1 - (1 - S) / 2, U);
+0093 X_mean_tol_l = chi2inv((1 - S) / 2, U);
+0094 
+0095 <span class="keyword">if</span> X_mean &lt; X_mean_tol_h &amp;&amp; X_mean &gt; X_mean_tol_l
+0096     disp([<span class="string">'mean of parameters x       ok: mean(dx)    = '</span>, <span class="keyword">...</span>
+0097         num2str(X_mean, <span class="string">'% 12.4f'</span>), <span class="string">'     in ['</span>, <span class="keyword">...</span>
+0098         num2str(X_mean_tol_l, <span class="string">'% 12.4f'</span>), <span class="string">','</span>, num2str(X_mean_tol_h, <span class="string">'% 12.4f'</span>), <span class="string">']'</span>]);
+0099 <span class="keyword">else</span>
+0100     disp([<span class="string">'mean of parameters x   not ok: mean(dx)    = '</span>, <span class="keyword">...</span>
+0101         num2str(X_mean, <span class="string">'% 12.4f'</span>), <span class="string">' not in ['</span>, <span class="keyword">...</span>
+0102         num2str(X_mean_tol_l, <span class="string">'% 12.4f'</span>), <span class="string">','</span>, num2str(X_mean_tol_h, <span class="string">'% 12.4f'</span>), <span class="string">']'</span>, <span class="string">' *****'</span>]);
+0103 <span class="keyword">end</span>
+0104</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

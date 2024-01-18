@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_single_image_geometry</title>
+  <meta name="keywords" content="demo_single_image_geometry">
+  <meta name="description" content="% DEMO single image geometry">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">05-08-Geometry</a> &gt; demo_single_image_geometry.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 05-08-Geometry&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>demo_single_image_geometry
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% DEMO single image geometry</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% DEMO single image geometry
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 07/17
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>	% dualizing matrix</li><li><a href="../General-Functions/Geometry/calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>	% dual Plückermatrix from Plücker vector</li><li><a href="../General-Functions/Geometry/calc_P_from_KRZ.html" class="code" title="function P = calc_P_from_KRZ (K,R,Z,K33)">calc_P_from_KRZ</a>	% calculates P from K, R and Z</li><li><a href="../General-Functions/Geometry/calc_Q_from_P.html" class="code" title="function Q = calc_Q_from_P (P)">calc_Q_from_P</a>	% calculates projection matrix Q for lines from P</li><li><a href="../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>	% Cayley rotation matrix</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% DEMO single image geometry</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Wolfgang Förstner</span>
+0004 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% last changes: Susanne Wenzel 07/17</span>
+0007 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0008 
+0009 clc
+0010 close all
+0011 
+0012 addpath(genpath(<span class="string">'../General-Functions'</span>))
+0013 
+0014 fprintf(<span class="string">'\n------ DEMO Single Image Geometry ------\n'</span>)
+0015 
+0016 fprintf(<span class="string">'\nIn order to shorten the output, we display transposed vectors\n'</span>)
+0017 
+0018 <span class="comment">%% Given</span>
+0019 
+0020 fprintf(<span class="string">'\nGiven:\n'</span>)
+0021 
+0022 <span class="comment">% object point</span>
+0023 fprintf(<span class="string">'\n3D object point\n'</span>)
+0024 X = [3,2,5,6]'; disp([<span class="string">'X = ['</span>, num2str(X'./X(end)),<span class="string">']'</span>])
+0025 
+0026 <span class="comment">% Interior orientation, calibration parameters</span>
+0027 c = 1;  <span class="comment">% camera constant</span>
+0028 s = 0;  <span class="comment">% shear</span>
+0029 xH = 0; <span class="comment">% principal point</span>
+0030 yH = 0;
+0031 m = 0;  <span class="comment">% scale difference</span>
+0032 
+0033 <span class="comment">% exterior orentation</span>
+0034 fprintf(<span class="string">'\nProjection center\n'</span>)
+0035 X0 = [1,2,3,1]'; disp([<span class="string">'XO = ['</span>, num2str(X0'),<span class="string">']'</span>])
+0036 <span class="comment">% rotation, rotation vector (r tan(phi/2))</span>
+0037 r=[0,0,0]';
+0038 
+0039 
+0040 fprintf(<span class="string">'\nInterior orientaion, calibration matrix\n'</span>)
+0041 K = [c,s*c,xH;0,c*(1+m),yH;0,0,1]                                          <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0042 
+0043 fprintf(<span class="string">'\nExterior orientaion, rotation matrix\n'</span>)
+0044 R = <a href="../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>(r)                                                          <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0045 
+0046 <span class="comment">%% Projection matrix for points, P = K R [I | -XO]</span>
+0047 fprintf(<span class="string">'\nProjection matrix for points, P = K R [I | -XO]\n'</span>)
+0048 P = <a href="../General-Functions/Geometry/calc_P_from_KRZ.html" class="code" title="function P = calc_P_from_KRZ (K,R,Z,K33)">calc_P_from_KRZ</a>(K,R,X0(1:3)/X0(4))                                     <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0049 
+0050 <span class="comment">%% Projection matrix for 3D-lines, see PCV Eq.(12.71)</span>
+0051 fprintf(<span class="string">'\nProjection matrix for 3D-lines, see PCV Eq.(12.71)\n'</span>)
+0052 Q = <a href="../General-Functions/Geometry/calc_Q_from_P.html" class="code" title="function Q = calc_Q_from_P (P)">calc_Q_from_P</a>(P)                                                       <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0053 
+0054 <span class="comment">%% Projection of image point</span>
+0055 fprintf(<span class="string">'\nProjection of object point --&gt; homogeneous coordiantes of image point\n'</span>)
+0056 xh = P*X; disp([<span class="string">'x_h = ['</span>, num2str(xh'),<span class="string">']'</span>])
+0057 
+0058 fprintf(<span class="string">'\nEuclidian coordinates of image point\n'</span>)
+0059 xe = xh(1:2)/xh(3); disp([<span class="string">'x = ['</span>, num2str(xe'),<span class="string">']'</span>])
+0060 
+0061 <span class="comment">%% Projection ray in Plücker coordiantes</span>
+0062 fprintf(<span class="string">'\nProjection ray in Plücker coordiantes\n'</span>)
+0063 Lxs = <a href="../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*Q'*xh ; disp([<span class="string">'L_xs = ['</span>, num2str(Lxs'),<span class="string">']'</span>])
+0064 
+0065 fprintf(<span class="string">'\nCheck  whether projection ray passes through 3D-point: should be 0\n'</span>)
+0066 test_val = <a href="../General-Functions/Geometry/calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>(Lxs) * X ; disp([<span class="string">'['</span>, num2str(test_val'),<span class="string">']'</span>])
+0067 
+0068</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

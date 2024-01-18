@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_get_CovM_homogeneous_Vector</title>
+  <meta name="keywords" content="sugr_get_CovM_homogeneous_Vector">
+  <meta name="description" content="% get CovM of homogeneous vector x.h">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../Documentation.html">Home</a> &gt;  <a href="../../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="../Documentation.html">General</a> &gt; <a href="Documentation.html">Estimation</a> &gt; sugr_get_CovM_homogeneous_Vector.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../Documentation.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\General\Estimation&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_get_CovM_homogeneous_Vector
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>% get CovM of homogeneous vector x.h</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function Chh = sugr_get_CovM_homogeneous_Vector(x) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% get CovM of homogeneous vector x.h
+
+ Chh = sugr_get_CovM_homogeneous_Vector(x); 
+ 
+ * x =  struct, homogeneous object, minimal representation {x.h,x.Crr}
+
+ * Chh = full cov. matrix of homogeneous element x.h</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../General-Functions/SUGR/Homography_2D/sugr_distance_angular_2D.html" class="code" title="function distance = sugr_distance_angular_2D(a, b)">sugr_distance_angular_2D</a>	% Angular distance of two 2D entities</li><li><a href="../../../../General-Functions/SUGR/Homography_2D/sugr_transform_with_Homography_2D.html" class="code" title="function y = sugr_transform_with_Homography_2D(H,x)">sugr_transform_with_Homography_2D</a>	% transform uncertain elements using a projective mapping</li><li><a href="../../../../General-Functions/SUGR/Line_2D/sugr_Line_2D_hom2Hes.html" class="code" title="function [e,Cee] = sugr_Line_2D_hom2Hes(ul)">sugr_Line_2D_hom2Hes</a>	% Uncertain Hessian line from homogeneous line</li><li><a href="../../../../General-Functions/SUGR/Line_2D/sugr_construct_join_Line_2D.html" class="code" title="function Line_2D = sugr_construct_join_Line_2D(x,y)">sugr_construct_join_Line_2D</a>	% Construct 2D line joining two points x and y</li><li><a href="../../../../General-Functions/SUGR/Line_2D/sugr_construct_midline_Line_2D.html" class="code" title="function Line_2D = sugr_construct_midline_Line_2D(x,y)">sugr_construct_midline_Line_2D</a>	% Construct midline of two 2D points x and y</li><li><a href="../../../../General-Functions/SUGR/Line_2D/sugr_construct_parallel_lO_Line_2D.html" class="code" title="function Line_2D = sugr_construct_parallel_lO_Line_2D(l)">sugr_construct_parallel_lO_Line_2D</a>	% Construct line parallel to line l through origin</li><li><a href="../../../../General-Functions/SUGR/Line_2D/sugr_construct_parallel_lx_Line_2D.html" class="code" title="function Line_2D = sugr_construct_parallel_lx_Line_2D(l,x)">sugr_construct_parallel_lx_Line_2D</a>	% Construct 2D line parallel to line l through point x</li><li><a href="../../../../General-Functions/SUGR/Line_2D/sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>	% Perturbes given image lines through one point</li><li><a href="../../../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>	% Plot uncertain 2D line with standard hyperbola</li><li><a href="../../../../General-Functions/SUGR/Line_2D/sugr_show_Line_2D.html" class="code" title="function sugr_show_Line_2D(Line_2D,name)">sugr_show_Line_2D</a>	% Show/print all representations of 2D line on console</li><li><a href="../../../../General-Functions/SUGR/Line_3D/sugr_construct_join_Line_3D.html" class="code" title="function L = sugr_construct_join_Line_3D(X,Y)">sugr_construct_join_Line_3D</a>	% calculate line from two statistically independent points</li><li><a href="../../../../General-Functions/SUGR/Point_2D/sugr_construct_footpoint_Ol_Point_2D.html" class="code" title="function Point_2D = sugr_construct_footpoint_Ol_Point_2D(l)">sugr_construct_footpoint_Ol_Point_2D</a>	% Foot point from 2D origin O to uncertain line l</li><li><a href="../../../../General-Functions/SUGR/Point_2D/sugr_construct_footpoint_xl_Point_2D.html" class="code" title="function Point_2D = sugr_construct_footpoint_xl_Point_2D(x,l)">sugr_construct_footpoint_xl_Point_2D</a>	% Foot point from Point_2D x onto line l</li><li><a href="../../../../General-Functions/SUGR/Point_2D/sugr_construct_intersection_Point_2D.html" class="code" title="function Point_2D = sugr_construct_intersection_Point_2D(l,m)">sugr_construct_intersection_Point_2D</a>	% Intersection 2D point two lines l and m</li><li><a href="../../../../General-Functions/SUGR/Point_2D/sugr_construct_midpoint_Point_2D.html" class="code" title="function Point_2D = sugr_construct_midpoint_Point_2D(x,y)">sugr_construct_midpoint_Point_2D</a>	% Mid point of two 2D points</li><li><a href="../../../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>	% Plot 2D point with standard ellipse</li><li><a href="../../../../General-Functions/SUGR/Point_2D/sugr_show_Point_2D.html" class="code" title="function sugr_show_Point_2D(Point_2D,name)">sugr_show_Point_2D</a>	% Show information of 2D point on console</li><li><a href="../../../../General-Functions/SUGR/Point_3D/sugr_show_Point_3D.html" class="code" title="function sugr_show_Point_3D(x, name)">sugr_show_Point_3D</a>	% Show information of 3D point on console</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% get CovM of homogeneous vector x.h</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Chh = sugr_get_CovM_homogeneous_Vector(x);</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * x =  struct, homogeneous object, minimal representation {x.h,x.Crr}</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% * Chh = full cov. matrix of homogeneous element x.h</span>
+0008 
+0009 <span class="comment">% see PCV (10.28)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Wolfgang Förstner 2016-09-02</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 
+0014 <a name="_sub0" href="#_subfunctions" class="code">function Chh = sugr_get_CovM_homogeneous_Vector(x)</a>
+0015 
+0016 J = null(x.h');        <span class="comment">% d x (d-1)</span>
+0017 
+0018 Chh = J * x.Crr * J';
+0019</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

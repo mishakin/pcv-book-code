@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_get_Jacobian_Jrh_Homography_2D</title>
+  <meta name="keywords" content="sugr_get_Jacobian_Jrh_Homography_2D">
+  <meta name="description" content="% Get Jacobian Jrh dr/dh for estimating 2D Homography">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Homography_2D</a> &gt; sugr_get_Jacobian_Jrh_Homography_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Homography_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_get_Jacobian_Jrh_Homography_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Get Jacobian Jrh dr/dh for estimating 2D Homography</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [Jrh,Jsh,Jks,Jrk] = sugr_get_Jacobian_Jrh_Homography_2D(H) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Get Jacobian Jrh dr/dh for estimating 2D Homography  
+
+ [Jrh,Jsh,Jks,Jrk] = sugr_get_Jacobian_Jhr_Homography_2D(H)
+
+ H      3x3-matrix spectrally normalized homography
+
+ Jrh    8x9-matrix Jacobian dr/dh, h -&gt; r
+ Jsh    9x9-matrix Jacobian ds/sh, h -&gt; s
+ Jks    9x9-matrix Jacobian dk/ds, s -&gt; k
+ Jrk    8x9-matrix Jacobian dr/dk, k -&gt; r
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ wf 3/2011, 
+ see PCV pp. 385 ff. (r == Delta p)
+ and App. A.15</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Homography/demo_estimate_2D_homography_from_point_pairs.html" class="code" title="">demo_estimate_2D_homography_from_point_pairs</a>	% demo_estimate_2D_homography_from_point_pairs</li><li><a href="sugr_minimal_Homography_2D.html" class="code" title="function [H,Jrh] = sugr_minimal_Homography_2D(Ha,Chh)">sugr_minimal_Homography_2D</a>	% minimal representation of homography</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Get Jacobian Jrh dr/dh for estimating 2D Homography</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [Jrh,Jsh,Jks,Jrk] = sugr_get_Jacobian_Jhr_Homography_2D(H)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% H      3x3-matrix spectrally normalized homography</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Jrh    8x9-matrix Jacobian dr/dh, h -&gt; r</span>
+0008 <span class="comment">% Jsh    9x9-matrix Jacobian ds/sh, h -&gt; s</span>
+0009 <span class="comment">% Jks    9x9-matrix Jacobian dk/ds, s -&gt; k</span>
+0010 <span class="comment">% Jrk    8x9-matrix Jacobian dr/dk, k -&gt; r</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Wolfgang Förstner</span>
+0013 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% wf 3/2011,</span>
+0016 <span class="comment">% see PCV pp. 385 ff. (r == Delta p)</span>
+0017 <span class="comment">% and App. A.15</span>
+0018 
+0019 <a name="_sub0" href="#_subfunctions" class="code">function [Jrh,Jsh,Jks,Jrk] = sugr_get_Jacobian_Jrh_Homography_2D(H)</a>
+0020 
+0021 
+0022 Hit    = inv(H');                      <span class="comment">% H^-T for Jacobian</span>
+0023 vHit   = Hit(:);                       <span class="comment">% vectorize</span>
+0024 Jsh    = eye(9) - 1/3 * H(:)*vHit';    <span class="comment">% Jacobian J: ds/dh, h -&gt; s</span>
+0025 Jks    = kron(Hit,eye(3));             <span class="comment">% Jacobian J: dk/ds, s-&gt;k (Hit otimes I_3)</span>
+0026 Jrk    = [eye(8),zeros(8,1)];          <span class="comment">% Jacobian J: dr/dk, k-&gt;h</span>
+0027 
+0028 Jrh    = Jrk * Jks * Jsh;              <span class="comment">% Jacobian J: dr/dr, h-&gt;r</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

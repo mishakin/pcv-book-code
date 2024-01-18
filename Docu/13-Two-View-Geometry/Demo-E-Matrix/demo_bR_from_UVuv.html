@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_bR_from_UVuv</title>
+  <meta name="keywords" content="demo_bR_from_UVuv">
+  <meta name="description" content="% demo: bR from (U,V,xs,xss)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">13-Two-View-Geometry</a> &gt; <a href="Documentation.html">Demo-E-Matrix</a> &gt; demo_bR_from_UVuv.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry\Demo-E-Matrix&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_bR_from_UVuv
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% demo: bR from (U,V,xs,xss)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% demo: bR from (U,V,xs,xss)
+
+ Check correctnes of basis and Rotation from 
+ (U,V) or E and corresponding points (see Alg. 20)
+
+ U,V      = from svd(E)
+ xs,xss   = points in left and right camera system
+ 
+ bR       = [b,R] matrix of relative orientation 
+
+ Wolfgang Förstner 6/2017
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 06/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>	% Cayley rotation matrix</li><li><a href="../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>	% create E-matrix</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_bR_from_E_uv.html" class="code" title="function [b, R, code] = sugr_bR_from_E_uv(E, u, v)">sugr_bR_from_E_uv</a>	% b and R from E using set of pairs of directions</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_select_bR_from_E_UV_uv.html" class="code" title="function [be,Re] = sugr_select_bR_from_E_UV_uv(U,V,u,v)">sugr_select_bR_from_E_UV_uv</a>	% Select bR from E</li><li><a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% demo: bR from (U,V,xs,xss)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Check correctnes of basis and Rotation from</span>
+0004 <span class="comment">% (U,V) or E and corresponding points (see Alg. 20)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% U,V      = from svd(E)</span>
+0007 <span class="comment">% xs,xss   = points in left and right camera system</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% bR       = [b,R] matrix of relative orientation</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Wolfgang Förstner 6/2017</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% last changes: Susanne Wenzel 06/18</span>
+0015 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0016 
+0017 clc
+0018 clear vars
+0019 
+0020 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0021 
+0022 <a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0023 
+0024 disp(<span class="string">'--------------------------------------------'</span>)
+0025 disp(<span class="string">' bR from (U,V) = svd(E),x'',x'''' (Alg. 20) '</span>)
+0026 disp(<span class="string">'--------------------------------------------'</span>)
+0027 
+0028 <span class="comment">%% generate random E-matrix</span>
+0029 <span class="comment">% choose rotation matrix</span>
+0030 Rs  = eye(3);
+0031 Rss = <a href="../../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>(randn(3,1)); <span class="comment">%diag([1,-1,-1]);</span>
+0032 <span class="comment">% choose basis direction</span>
+0033 bh  = randn(3,1); 
+0034 bh  = bh/norm(bh); <span class="comment">%[-1,0,0]';</span>
+0035 <span class="comment">% choose 3d point</span>
+0036 X = randn(3,1);
+0037 <span class="comment">% determine image coordinates</span>
+0038 xs  = Rs*X;
+0039 xss = Rss*(X-bh);
+0040 
+0041 <span class="comment">% choose E-matrix with random sign</span>
+0042 v = sign(randn(1));
+0043 disp(strcat(<span class="string">'random_sign of_E =  '</span>,num2str(v)));
+0044 E = Rs*<a href="../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(bh)*Rss'*v                                                     <span class="comment">%#ok&lt;*NOPTS&gt;</span>
+0045 
+0046 <span class="comment">% provide SVD with positive U and V</span>
+0047 [U,D,V] = svd(E);
+0048 U = U*det(U);
+0049 V = V*det(V);
+0050 
+0051 <span class="comment">% determine basis, Rotation and case for relative orientation</span>
+0052 <span class="comment">% (arguments xs' and xss' must be a list of row vectors, here only one)</span>
+0053 
+0054 <span class="comment">%% from (E,xs,xss)</span>
+0055 disp(<span class="string">'b and R from E using set of pairs of directions'</span>)
+0056 <span class="comment">% Alg. 20</span>
+0057 [bes,Res] = <a href="../../General-Functions/SUGR/E-Matrix/sugr_bR_from_E_uv.html" class="code" title="function [b, R, code] = sugr_bR_from_E_uv(E, u, v)">sugr_bR_from_E_uv</a>(E,xs',xss')
+0058 
+0059 Es_check = <a href="../../General-Functions/SUGR/E-Matrix/sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>(bes,Res);
+0060 disp(<span class="string">'check results, differences of given and estimated b and R should be zero'</span> )
+0061 diff_bRs_should_be_zero = [bh-bes,Rss-Res,v*E-Es_check.E]
+0062 
+0063 <span class="comment">%% from (U,V,xs,xss)</span>
+0064 disp(<span class="string">'b and R from U and V using set of pairs of directions'</span>)
+0065 <span class="comment">% similar to Alg. 20, but starting from (U,V) instead from E</span>
+0066 [be,Re] = <a href="../../General-Functions/SUGR/E-Matrix/sugr_select_bR_from_E_UV_uv.html" class="code" title="function [be,Re] = sugr_select_bR_from_E_UV_uv(U,V,u,v)">sugr_select_bR_from_E_UV_uv</a>(U,V,xs',xss')                              
+0067 
+0068 E_check = <a href="../../General-Functions/SUGR/E-Matrix/sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>(be,Re);
+0069 disp(<span class="string">'check results, differences of given and estimated b and R should be zero'</span> )
+0070 diff_bR_should_be_zero = [bh-be,Rss-Re,v*E-E_check.E]                        
+0071 
+0072 
+0073</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

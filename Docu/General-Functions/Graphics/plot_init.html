@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_init</title>
+  <meta name="keywords" content="plot_init">
+  <meta name="description" content="% plot_init: initialize visualization">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Graphics</a> &gt; plot_init.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Graphics&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>plot_init
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% plot_init: initialize visualization</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function varargout = plot_init </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% plot_init: initialize visualization
+
+ usage: plot_init
+             set Latex as default interpreter for all text props
+        screensize = plot_init   
+             set Latex as default interpreter for all text props and
+             return screensize: 1x2 int, size of current screen [width, height]
+
+ Susane Wenzel 09/16
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../02-Probability/demo_plot_histogram_with_theoretical_density.html" class="code" title="">demo_plot_histogram_with_theoretical_density</a>	% plot histogram with theoretical density function</li><li><a href="../../02-Probability/fig_2_10_demo_AR_process.html" class="code" title="">fig_2_10_demo_AR_process</a>	% Fig. 2.10 page 54</li><li><a href="../../02-Probability/fig_2_11_demo_scatter_histogram.html" class="code" title="">fig_2_11_demo_scatter_histogram</a>	% Fig. 2.11 page 56</li><li><a href="../../02-Probability/fig_2_9_simulate_hom_profiles_gaussian.html" class="code" title="">fig_2_9_simulate_hom_profiles_gaussian</a>	% Fig. 2.9 page 51 and Fig 16.11 page 742</li><li><a href="../../04-Estimation/GHM/Demo-GHM/demo_GHM_2D_line.html" class="code" title="">demo_GHM_2D_line</a>	% Demo nonlinear GHM without constraints</li><li><a href="../../04-Estimation/GHM/Demo-GHM/demo_GHM_similarity.html" class="code" title="">demo_GHM_similarity</a>	% GHM with similarity</li><li><a href="../../04-Estimation/GMM/Demo-GMM/demos_GMM_regression.html" class="code" title="">demos_GMM_regression</a>	% test GMM with linear regression with check</li><li><a href="../../04-Estimation/GMM/Demo-GMM/fig_4_11_test_sensitivity_factors_GMM_similarity.html" class="code" title="">fig_4_11_test_sensitivity_factors_GMM_similarity</a>	% Fig. 4.11 test sensitivity factors in GMM with similarity</li><li><a href="../../05-08-Geometry/demo_2D_geometry.html" class="code" title="">demo_2D_geometry</a>	% DEMO 2D projective geometry</li><li><a href="../../05-08-Geometry/demo_3D_Points_distances.html" class="code" title="">demo_3D_Points_distances</a>	% demo distanc 3D point</li><li><a href="../../10-Uncertain-Geometry/Demo-Homography/demo_estimate_2D_homography_from_point_pairs.html" class="code" title="">demo_estimate_2D_homography_from_point_pairs</a>	% demo_estimate_2D_homography_from_point_pairs</li><li><a href="../../10-Uncertain-Geometry/Demo-Line-2D/demo_construct_Line_2D.html" class="code" title="">demo_construct_Line_2D</a>	% test_construct_Line_2D: test routine for constructing 2D lines</li><li><a href="../../10-Uncertain-Geometry/Demo-Line-2D/demo_sugr_Line_2D.html" class="code" title="">demo_sugr_Line_2D</a>	demo_sugr_Line_2D: demo routine for creating a 2D lines</li><li><a href="../../10-Uncertain-Geometry/Demo-Point-2D/demo_construct_Point_2D.html" class="code" title="">demo_construct_Point_2D</a>	demo_construct_Point_2D</li><li><a href="../../10-Uncertain-Geometry/Demo-Point-2D/demo_estimate_Point_2D_from_Lines.html" class="code" title="">demo_estimate_Point_2D_from_Lines</a>	% demo_estimate_Point_2D_from_Lines</li><li><a href="../../10-Uncertain-Geometry/Demo-Point-2D/demo_sugr_Point_2D.html" class="code" title="">demo_sugr_Point_2D</a>	demo_sugr_Point_2D: demo routine for generating 2D point</li><li><a href="../../10-Uncertain-Geometry/Functions/determine_Homography_2D_from_two_images.html" class="code" title="function [H,X] = determine_Homography_2D_from_two_images(Image_l,Image_r,readX)">determine_Homography_2D_from_two_images</a>	demo_h_determine_homography_from_two_images: read/interactively determine homography</li><li><a href="../../10-Uncertain-Geometry/Functions/h_transfer_grid.html" class="code" title="function h_transfer_grid(H,CP,Image_l,Image_r,magnification,grid_out)">h_transfer_grid</a>	demo_h_transfer_grid: transfer point in demo_homography</li><li><a href="../../10-Uncertain-Geometry/demo_estimate_two_symmetric_planes_from_points.html" class="code" title="">demo_estimate_two_symmetric_planes_from_points</a>	% test_two_symmetric_planes_from_points</li><li><a href="../../12-Single-View-Geometry/Demo_Projection/demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs.html" class="code" title="">demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs</a>	% Demo estimate 3D projection from 2D point pairs, ALG 17</li><li><a href="../../12-Single-View-Geometry/Demo_Projection/demo_estimate_Projection_3D_2D_from_point_pairs_single.html" class="code" title="">demo_estimate_Projection_3D_2D_from_point_pairs_single</a>	% Demo estimate 3D projection from 2D point pairs</li><li><a href="../../13-Two-View-Geometry/Demo-E-Matrix/demo_estimate_E_Matrix_from_point_pairs.html" class="code" title="">demo_estimate_E_Matrix_from_point_pairs</a>	% test_estimate_E_Matrix_from_point_pairs</li><li><a href="../../13-Two-View-Geometry/Demo-E-Matrix/demo_triangulation_spherical.html" class="code" title="">demo_triangulation_spherical</a>	% demo triangulation</li><li><a href="../../13-Two-View-Geometry/Demo-F-Matrix/demo_epipolar_geometry.html" class="code" title="function demo_epipolar_geometry()">demo_epipolar_geometry</a>	% Epipolar geometry</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_11_simulate_inhom_profiles_gaussian.html" class="code" title="">fig_16_11_simulate_inhom_profiles_gaussian</a>	% Fig. 2.9 page 51 and Fig 16.11 page 742</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_13_profile_reconstruction_demo_precision.html" class="code" title="function fig_16_13_profile_reconstruction_demo_precision()">fig_16_13_profile_reconstruction_demo_precision</a>	% Fig 16.13 page 750</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_14_test_scale.html" class="code" title="">fig_16_14_test_scale</a>	% Fig. 16.14 page 754</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_15_symmetric_outliers.html" class="code" title="">fig_16_15_symmetric_outliers</a>	% Fig. 16.15 page 755</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_16_plot_weight_functions_asymmetric.html" class="code" title="">fig_16_16_plot_weight_functions_asymmetric</a>	% Fig. 16.16 page 756</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_17_asymmetric_outliers.html" class="code" title="">fig_16_17_asymmetric_outliers</a>	% Fig. 16.17 page 756</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_18_step_break.html" class="code" title="">fig_16_18_step_break</a>	% Fig. 15.18 page 758</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_3_16_4_example_demo_profile.html" class="code" title="">fig_16_3_16_4_example_demo_profile</a>	% Fig. 16.3 page 731 and 16.4 page 732</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_9_demo_profile_reconstruction.html" class="code" title="">fig_16_9_demo_profile_reconstruction</a>	% Fig. 16.9 page 740</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_10.html" class="code" title="function [points,BB,delta_x,sigma_k,XYZ_ori]=simulate_points_dem_10(file_name,Nbin)">simulate_points_dem_10</a>	% read ply-file</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_16_precision.html" class="code" title="function [points,BB,dx,dem,bin_im,dist_t]=simulate_points_dem_16_precision(N,sigma_h,R)">simulate_points_dem_16_precision</a>	% generate a set of points for dem-precision analysis</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_6.html" class="code" title="function [points,BB,delta_x,sigma_k,out_in,dem] =simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)">simulate_points_dem_6</a>	% simulate_points_dem_6: generate test image of Uwe 1994</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/eq_15_120_theoretical_accuracy.html" class="code" title="">eq_15_120_theoretical_accuracy</a>	% eq_15_120_theoretical accuracy</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_20_demo_surface_reconstruction.html" class="code" title="">fig_16_20_demo_surface_reconstruction</a>	% Fig. 16.20 page 761</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_21_quality_surface_reconstruction.html" class="code" title="">fig_16_21_quality_surface_reconstruction</a>	% Fig. 16.21 theoretical quality  of surface reconstruction</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_22_demo_robust_surface_reconstruction.html" class="code" title="">fig_16_22_demo_robust_surface_reconstruction</a>	% Fig. 16.22 page 762</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_23_aurelo_result.html" class="code" title="">fig_16_23_aurelo_result</a>	% Fig. 16.23 page 764</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/fig_16_9b_demo_surface_reconstruction.html" class="code" title="">fig_16_9b_demo_surface_reconstruction</a>	% Fig. 16.9 bottom page 740</li><li><a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_perturb_3D_2D_point_pairs.html" class="code" title="function [X,y] = sugr_perturb_3D_2D_point_pairs(Xt,yt,sigma_X,sigma_y,fp)">sugr_perturb_3D_2D_point_pairs</a>	% Perturb sampled 3D 2D points pairs</li><li><a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>	% check estimation result, PCV Sect. 4.6.8</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% plot_init: initialize visualization</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% usage: plot_init</span>
+0004 <span class="comment">%             set Latex as default interpreter for all text props</span>
+0005 <span class="comment">%        screensize = plot_init</span>
+0006 <span class="comment">%             set Latex as default interpreter for all text props and</span>
+0007 <span class="comment">%             return screensize: 1x2 int, size of current screen [width, height]</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Susane Wenzel 09/16</span>
+0010 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0011 
+0012 <a name="_sub0" href="#_subfunctions" class="code">function varargout = plot_init</a>
+0013 
+0014 <span class="keyword">if</span> verLessThan(<span class="string">'matlab'</span>, <span class="string">'8'</span>)
+0015 <span class="keyword">else</span>
+0016 <span class="comment">%     set Latex as default interpreter for all text props</span>
+0017     set(0, <span class="string">'defaulttextinterpreter'</span>,<span class="string">'latex'</span>);
+0018     set(0, <span class="string">'defaultAxesTickLabelInterpreter'</span>,<span class="string">'latex'</span>);
+0019     set(0, <span class="string">'defaultLegendInterpreter'</span>,<span class="string">'latex'</span>);
+0020 <span class="keyword">end</span>
+0021 
+0022 <span class="keyword">if</span> nargout==1
+0023     <span class="comment">% get current screensize, for proper positioning of figures</span>
+0024     screensize = get(0,<span class="string">'ScreenSize'</span>); screensize = screensize(3:4);
+0025     varargout = {screensize};
+0026 <span class="keyword">end</span>
+0027</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

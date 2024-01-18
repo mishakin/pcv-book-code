@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_ghm_cg_2D_homography_from_point_pairs</title>
+  <meta name="keywords" content="sugr_ghm_cg_2D_homography_from_point_pairs">
+  <meta name="description" content="% determines residuals etc. for 2D homography from point pairs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Homography_2D</a> &gt; sugr_ghm_cg_2D_homography_from_point_pairs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Homography_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_ghm_cg_2D_homography_from_point_pairs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% determines residuals etc. for 2D homography from point pairs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_2D_homography_from_point_pairs(l,le,xe,C) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% determines residuals etc. for 2D homography from point pairs
+ with minimal representation
+ 
+ [lr,cg,Crrt,atr,btr] = sugr_ghm_cg_2D_homography_from_point_pairs(l,le,xe,Crro)
+
+ * l   = 6 x 1 vector, observed point pair
+ * le  = 6 x 1 vector, approximated fitted point pair
+ * xe  = 3 x 3 matrix, approximated homography
+ * Crro = 4 x 4 matrix, reduced covariance matrix of point pair
+
+ * lr  = 4 x 1 vector, reduced observation
+ * cg  = 2 x 1 vector, residual of constraint
+ * Crrt = 4 x 4 matrix, reduced covariance matrix of transformed observations
+ * atr  = 2 x 8 vector, transposed Jacobian for cg -&gt; xe
+ * btr  = 2 x 4 vector, transposed jacobian for cg -&gt; le
+
+ 0 != S^(l)(y)  H  x = -S^(l)(H x)  y = (x'  cron  S^(l)(y))  vec(H)
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ wf 03/2011</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>	% minimum Rotation matrix from vector a to vector b</li><li><a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li><li><a href="../../../General-Functions/Geometry/calc_S_reduced.html" class="code" title="function [S , R] = calc_S_reduced(x)">calc_S_reduced</a>	% Skew matrix with independent selected rows</li><li><a href="sugr_get_Jacobian_Jhr_Homography_2D.html" class="code" title="function [Jhr,Jkr,Jhk] = sugr_get_Jacobian_Jhr_Homography_2D(H)">sugr_get_Jacobian_Jhr_Homography_2D</a>	% Get Jacobian Jhr dh/dr (h = vec H) for estimating 2D Homography</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_estimation_ml_Homography_2D_from_point_pairs.html" class="code" title="function [H, sigma_0, R] = sugr_estimation_ml_Homography_2D_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_Homography_2D_from_point_pairs</a>	% ML estimate of 2D homography from point pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% determines residuals etc. for 2D homography from point pairs</span>
+0002 <span class="comment">% with minimal representation</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% [lr,cg,Crrt,atr,btr] = sugr_ghm_cg_2D_homography_from_point_pairs(l,le,xe,Crro)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% * l   = 6 x 1 vector, observed point pair</span>
+0007 <span class="comment">% * le  = 6 x 1 vector, approximated fitted point pair</span>
+0008 <span class="comment">% * xe  = 3 x 3 matrix, approximated homography</span>
+0009 <span class="comment">% * Crro = 4 x 4 matrix, reduced covariance matrix of point pair</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% * lr  = 4 x 1 vector, reduced observation</span>
+0012 <span class="comment">% * cg  = 2 x 1 vector, residual of constraint</span>
+0013 <span class="comment">% * Crrt = 4 x 4 matrix, reduced covariance matrix of transformed observations</span>
+0014 <span class="comment">% * atr  = 2 x 8 vector, transposed Jacobian for cg -&gt; xe</span>
+0015 <span class="comment">% * btr  = 2 x 4 vector, transposed jacobian for cg -&gt; le</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% 0 != S^(l)(y)  H  x = -S^(l)(H x)  y = (x'  cron  S^(l)(y))  vec(H)</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Wolfgang Förstner</span>
+0020 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% wf 03/2011</span>
+0023 
+0024 <a name="_sub0" href="#_subfunctions" class="code">function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_2D_homography_from_point_pairs(l,le,xe,C)</a>
+0025 
+0026 <span class="comment">% Jacobian for observation -&gt; reduced observation: 6 x 4 matrix</span>
+0027 Jle = [null(le(1:3)')      zeros(3,2);<span class="keyword">...</span><span class="comment"> </span>
+0028        zeros(3,2)      null(le(4:6)')] ;
+0029 
+0030 <span class="comment">% reduced observation_ 4 x 1 vector</span>
+0031 lr  = Jle' * l;
+0032 
+0033 <span class="comment">% Rotation from l to le: 6 x 6 matrix</span>
+0034 R = [<a href="../../../General-Functions/Geometry/calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>(le(1:3),l(1:3)) zeros(3);<span class="keyword">...</span>
+0035     zeros(3) <a href="../../../General-Functions/Geometry/calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>(le(4:6),l(4:6))];
+0036 
+0037 <span class="comment">% Jacobian for Cr</span>
+0038 JR = Jle' * R' * [null(le(1:3)')      zeros(3,2);<span class="keyword">...</span><span class="comment"> </span>
+0039                   zeros(3,2)      null(le(4:6)')] ;
+0040 
+0041 <span class="comment">% trasnferred covariance matrix</span>
+0042 Cr = JR * C * JR';
+0043 
+0044 <span class="comment">% determine selected constraints</span>
+0045 [Ssy, Rsy] = <a href="../../../General-Functions/Geometry/calc_S_reduced.html" class="code" title="function [S , R] = calc_S_reduced(x)">calc_S_reduced</a>(le(4:6));
+0046 
+0047 <span class="comment">% Jacobian for cg -&gt; x</span>
+0048 Jhr = <a href="sugr_get_Jacobian_Jhr_Homography_2D.html" class="code" title="function [Jhr,Jkr,Jhk] = sugr_get_Jacobian_Jhr_Homography_2D(H)">sugr_get_Jacobian_Jhr_Homography_2D</a>(xe);
+0049 atr = kron(le(1:3)', Ssy) * Jhr; <span class="comment">% 2 x 8 Matrix</span>
+0050 
+0051 <span class="comment">% Jacobain for cg -&gt; l</span>
+0052 btr = [Ssy * xe * null(le(1:3)') , <span class="keyword">...</span>
+0053       -Rsy * <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(xe * le(1:3)) * null(le(4:6)')] ; <span class="comment">% 2 x 4 matrix</span>
+0054  
+0055 <span class="comment">% residual of constraint (lr = -vr)</span>
+0056 cg = - Ssy * xe * le(1:3)  - btr * lr; 
+0057</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

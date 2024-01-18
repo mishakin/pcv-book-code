@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs</title>
+  <meta name="keywords" content="sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs">
+  <meta name="description" content="% Algebraic estimate of Projection from corresponding 3D-2D point pairs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Projection_3D_2D</a> &gt; sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Projection_3D_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Algebraic estimate of Projection from corresponding 3D-2D point pairs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function P = sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs(X,y) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Algebraic estimate of Projection from corresponding 3D-2D point pairs
+
+ assuming independent observations
+ 
+ P = sugr_estimation_algebraic_Projection_3D_2D_from_points(X,y) 
+
+ X.e   = N x 3 matrix if points 
+ y.e   = N x 2 matrix if points
+ X.Cee = N x 3 x 3 matrix of covariances for 3D points
+ y.Cee = N x 2 x 2 matrix of covariances for 2D points
+ 
+ model with constraints assuming points not at infinity
+ 0 != Rm * S(y) * P * X                Rm = [eye(2), zeros(2,1)]
+    = Rm * S'(P X) * y
+    = Rm * S(y) * (X' kron eye(3)) p
+
+ P.P = estimated projection matrix with uncertainty, 
+       using algebraic minimization, thus neglecting the accuracy
+ P.Crr = CovM of reduced parameters, derived by variance propagation
+
+ points may not be conditioned.
+
+ Wolfgang Förstner 2/2013
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_estimation_ml_Projection_3D_2D_from_point_pairs.html" class="code" title="function [P,sigma_0,R] = sugr_estimation_ml_Projection_3D_2D_from_point_pairs(X,y,xa,T,maxiter)">sugr_estimation_ml_Projection_3D_2D_from_point_pairs</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li><li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_condition_Points.html" class="code" title="function [xc,M] = sugr_condition_Points(x)">sugr_condition_Points</a>	% condition points, determine conditioning matrix</li><li><a href="sugr_Projection_3D_2D.html" class="code" title="function Point_Projection_3D_2D = sugr_Projection_3D_2D(a1,a2,a3)">sugr_Projection_3D_2D</a>	% Create pose</li><li><a href="sugr_uncondition_Projection.html" class="code" title="function P = sugr_uncondition_Projection(Pc, Ml, Mr)">sugr_uncondition_Projection</a>	% Uncondition Projection</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../12-Single-View-Geometry/Demo_Projection/demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs.html" class="code" title="">demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs</a>	% Demo estimate 3D projection from 2D point pairs, ALG 17</li><li><a href="../../../12-Single-View-Geometry/Demo_Projection/demo_estimate_Projection_3D_2D_from_point_pairs_single.html" class="code" title="">demo_estimate_Projection_3D_2D_from_point_pairs_single</a>	% Demo estimate 3D projection from 2D point pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Algebraic estimate of Projection from corresponding 3D-2D point pairs</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% assuming independent observations</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% P = sugr_estimation_algebraic_Projection_3D_2D_from_points(X,y)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% X.e   = N x 3 matrix if points</span>
+0008 <span class="comment">% y.e   = N x 2 matrix if points</span>
+0009 <span class="comment">% X.Cee = N x 3 x 3 matrix of covariances for 3D points</span>
+0010 <span class="comment">% y.Cee = N x 2 x 2 matrix of covariances for 2D points</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% model with constraints assuming points not at infinity</span>
+0013 <span class="comment">% 0 != Rm * S(y) * P * X                Rm = [eye(2), zeros(2,1)]</span>
+0014 <span class="comment">%    = Rm * S'(P X) * y</span>
+0015 <span class="comment">%    = Rm * S(y) * (X' kron eye(3)) p</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% P.P = estimated projection matrix with uncertainty,</span>
+0018 <span class="comment">%       using algebraic minimization, thus neglecting the accuracy</span>
+0019 <span class="comment">% P.Crr = CovM of reduced parameters, derived by variance propagation</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% points may not be conditioned.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% Wolfgang Förstner 2/2013</span>
+0024 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% See also sugr_estimation_ml_Projection_3D_2D_from_point_pairs</span>
+0027 
+0028 <a name="_sub0" href="#_subfunctions" class="code">function P = sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs(X,y)</a>
+0029 
+0030 <span class="comment">% number of point pairs</span>
+0031 N = size(X.e,1);
+0032 U = 12; 
+0033 
+0034 <span class="comment">% condition</span>
+0035 [Xs,MX] = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_condition_Points.html" class="code" title="function [xc,M] = sugr_condition_Points(x)">sugr_condition_Points</a>(X);
+0036 [ye,My] = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_condition_Points.html" class="code" title="function [xc,M] = sugr_condition_Points(x)">sugr_condition_Points</a>(y);
+0037 
+0038 
+0039 <span class="comment">% homogeneous coordinates</span>
+0040 X = Xs.h;
+0041 <span class="comment">% nonhomogeneous coordinates</span>
+0042 y = ye.e;
+0043 
+0044 
+0045 <span class="comment">%% estimate P algebraically</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">% build coefficient matrix</span>
+0048 A = zeros(2*N,U);
+0049  <span class="keyword">for</span> n = 1:N
+0050 <span class="comment">%     % use first two coordinates</span>
+0051     <span class="comment">% S * Kronecker 3xU -matrix</span>
+0052     SK  =  <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>([y(n,:),1]') * <span class="keyword">...</span>
+0053             [X(n,1)*eye(3), X(n,2)*eye(3) X(n,3)*eye(3) X(n,4)*eye(3)];
+0054     <span class="comment">% 2xU part of A</span>
+0055     A(2*n-1:2*n,:)  = SK(1:2,:); 
+0056  <span class="keyword">end</span>
+0057 
+0058 <span class="comment">% partition</span>
+0059 [Um,Dm,Vm] = svd(A,<span class="string">'econ'</span>);
+0060 log(abs(diag(Dm)));
+0061 <span class="comment">% find algebraically best solution</span>
+0062 h          = Vm(:,U);
+0063 <span class="comment">% determine A+ = pseudo inverse of A with last singular value = 0</span>
+0064 Di         = inv(Dm+eps*eye(U));
+0065 Di(U,U)    = 0;
+0066 A_plus     = Vm * Di * Um';
+0067 
+0068 <span class="comment">% rehape and choose unique sign</span>
+0069 Pe = reshape(h,3,4);
+0070 Pe = Pe * sign(det(Pe(1:3,1:3)));
+0071 
+0072 <span class="comment">%%</span>
+0073 <span class="comment">% determine covariance matrix Chh = A^+ Cgg A^+'</span>
+0074 
+0075 <span class="comment">% determine Cgg of residuals of constraints from</span>
+0076 <span class="comment">% Rm S(yh) P X = g                    yh = [y;1]</span>
+0077 <span class="comment">% d(Rm S(yh) P X) = d(g)</span>
+0078 <span class="comment">% Rm S(yh) P dX - Rm S(P X) dyh = dg</span>
+0079 <span class="comment">% Rm S(yh) P Jr dXr - Rm S(P X) Rm' dy = dg</span>
+0080 <span class="comment">%</span>
+0081 CXyXy = sparse(zeros(2*N,2*N));
+0082 <span class="keyword">for</span> n=1:N
+0083     <span class="comment">% VarProp for g</span>
+0084     <span class="comment">% [Ssy,Ry] = calc_S_reduced([y(n,:),1]');</span>
+0085 <span class="comment">%     S   = calc_S([y(n,:),1]');</span>
+0086     Rm  = [eye(2) zeros(2,1)];
+0087     J_X = + Rm * <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>([y(n,:),1]') * Pe * null(X(n,:));
+0088     J_y = - Rm * <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(Pe * X(n,:)') *  Rm' ;
+0089     <span class="comment">% effect of both</span>
+0090     CXyXy(2*n-1:2*n,2*n-1:2*n)  = CXyXy(2*n-1:2*n,2*n-1:2*n) <span class="keyword">...</span>
+0091         + J_y * squeeze(ye.Cee(n,:,:)) * J_y' <span class="keyword">...</span>
+0092         + J_X * squeeze(Xs.Crr(n,:,:)) * J_X';                               <span class="comment">%#ok&lt;SPRIX&gt;</span>
+0093 <span class="keyword">end</span>
+0094 Chh = A_plus * CXyXy * A_plus';
+0095 
+0096 Pc = <a href="sugr_Projection_3D_2D.html" class="code" title="function Point_Projection_3D_2D = sugr_Projection_3D_2D(a1,a2,a3)">sugr_Projection_3D_2D</a>(Pe,Chh);
+0097 
+0098 <span class="comment">% uncondition projection matrix</span>
+0099 P = <a href="sugr_uncondition_Projection.html" class="code" title="function P = sugr_uncondition_Projection(Pc, Ml, Mr)">sugr_uncondition_Projection</a>(Pc,My,MX);
+0100 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

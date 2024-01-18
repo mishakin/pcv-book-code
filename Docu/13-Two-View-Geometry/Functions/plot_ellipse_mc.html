@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_ellipse_mc</title>
+  <meta name="keywords" content="plot_ellipse_mc">
+  <meta name="description" content="plot ellipse from mean and covariance matrix">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">13-Two-View-Geometry</a> &gt; <a href="Documentation.html">Functions</a> &gt; plot_ellipse_mc.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>plot_ellipse_mc
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>plot ellipse from mean and covariance matrix</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function h = plot_ellipse_mc(mu,cov,p_typ,lw) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> plot ellipse from mean and covariance matrix
+
+ plot_ellipse_mc(mu,cov,p_typ)
+ mu = centre
+ cov = covariance matrix
+ p_typ = point type
+
+ Wolfgang Förstner 10/2010
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../13-Two-View-Geometry/Demo-F-Matrix/demo_epipolar_geometry.html" class="code" title="function demo_epipolar_geometry()">demo_epipolar_geometry</a>	% Epipolar geometry</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% plot ellipse from mean and covariance matrix</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% plot_ellipse_mc(mu,cov,p_typ)</span>
+0004 <span class="comment">% mu = centre</span>
+0005 <span class="comment">% cov = covariance matrix</span>
+0006 <span class="comment">% p_typ = point type</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Wolfgang Förstner 10/2010</span>
+0009 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0010 
+0011 
+0012 <a name="_sub0" href="#_subfunctions" class="code">function h = plot_ellipse_mc(mu,cov,p_typ,lw)</a>
+0013 
+0014 <span class="keyword">if</span> nargin &lt; 4
+0015     lw = 2;
+0016 <span class="keyword">end</span>
+0017 
+0018 e = sqrt(eigs(cov));
+0019 a = e(1);
+0020 b = e(2);
+0021 theta = atan2(2*cov(1,2),cov(1,1)-cov(2,2))/2;
+0022 
+0023 np = 100;
+0024 ang = (0:np)*2*pi/np;
+0025 R = [cos(theta) -sin(theta); sin(theta) cos(theta)];
+0026 pts = mu*ones(size(ang)) + R*[cos(ang)*a; sin(ang)*b];
+0027 
+0028 h = plot( pts(1,:), pts(2,:) , p_typ,<span class="string">'LineWidth'</span>,lw);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

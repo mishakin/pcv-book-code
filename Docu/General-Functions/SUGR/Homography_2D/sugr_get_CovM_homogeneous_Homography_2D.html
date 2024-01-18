@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_get_CovM_homogeneous_Homography_2D</title>
+  <meta name="keywords" content="sugr_get_CovM_homogeneous_Homography_2D">
+  <meta name="description" content="% Covariance matrix of homogeneous homography,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Homography_2D</a> &gt; sugr_get_CovM_homogeneous_Homography_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Homography_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_get_CovM_homogeneous_Homography_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Covariance matrix of homogeneous homography,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [Chh,Jrh] = sugr_get_CovM_homogeneous_Homography_2D(H) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Covariance matrix of homogeneous homography, 
+ wrt h = vec(H)
+
+ Chh = sugr_get_CovM_homogeneous_Homography_2D(H)
+ Jrh = Jacobian r -&gt; h
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ wf 2/2011</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_estimation_ml_Homography_2D_from_point_pairs.html" class="code" title="function [H, sigma_0, R] = sugr_estimation_ml_Homography_2D_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_Homography_2D_from_point_pairs</a>	% ML estimate of 2D homography from point pairs</li><li><a href="sugr_get_Euclidean_Homography_2D.html" class="code" title="function [He,Cee] = sugr_get_Euclidean_Homography_2D(H)">sugr_get_Euclidean_Homography_2D</a>	% Euclideanly normalized 2D homography</li><li><a href="sugr_transform_Homography_2D.html" class="code" title="function H = sugr_transform_Homography_2D(H0,Tl,Tr)">sugr_transform_Homography_2D</a>	% transform uncertain homography with crisp transformations</li><li><a href="sugr_transform_with_Homography_2D.html" class="code" title="function y = sugr_transform_with_Homography_2D(H,x)">sugr_transform_with_Homography_2D</a>	% transform uncertain elements using a projective mapping</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Covariance matrix of homogeneous homography,</span>
+0002 <span class="comment">% wrt h = vec(H)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Chh = sugr_get_CovM_homogeneous_Homography_2D(H)</span>
+0005 <span class="comment">% Jrh = Jacobian r -&gt; h</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Wolfgang Förstner</span>
+0008 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% wf 2/2011</span>
+0011 
+0012 <a name="_sub0" href="#_subfunctions" class="code">function [Chh,Jrh] = sugr_get_CovM_homogeneous_Homography_2D(H)</a>
+0013 
+0014 Ht  = H.H';      
+0015 Jrh = [Ht(1,1)*eye(3), <span class="keyword">...</span>
+0016        Ht(1,2)*eye(3), <span class="keyword">...</span>
+0017        Ht(1,3)*eye(3); <span class="keyword">...</span><span class="comment">        </span>
+0018        Ht(2,1)*eye(3), <span class="keyword">...</span>
+0019        Ht(2,2)*eye(3), <span class="keyword">...</span>
+0020        Ht(2,3)*eye(3); <span class="keyword">...</span>
+0021        Ht(3,1)*eye(3), <span class="keyword">...</span>
+0022        Ht(3,2)*eye(3), <span class="keyword">...</span>
+0023        Ht(3,3)*eye(3)] <span class="keyword">...</span>
+0024        * [eye(8); [-1,0,0,0,-1,0,0,0]]; <span class="comment">% Jacobian h -&gt; hr , 9 x 8</span>
+0025 Chh = Jrh * H.Crr * Jrh';               <span class="comment">% CovM of homogeneous vector vec H</span>
+0026</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

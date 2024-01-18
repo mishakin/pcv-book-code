@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_estimate_F_and_epipoles_algebraically</title>
+  <meta name="keywords" content="sugr_estimate_F_and_epipoles_algebraically">
+  <meta name="description" content="% Algebraic estimate F-matrix and epipoles: from n &gt; 7 points">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">F-Matrix</a> &gt; sugr_estimate_F_and_epipoles_algebraically.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\F-Matrix&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_estimate_F_and_epipoles_algebraically
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Algebraic estimate F-matrix and epipoles: from n &gt; 7 points</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [F, Cff, el, Cll, er, Crr] = sugr_estimate_F_and_epipoles_algebraically(X, Cxx) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Algebraic estimate F-matrix and epipoles: from n &gt; 7 points
+
+ [F,Cff,el,Cll,er,Crr]=sugr_estimate_F_and_epipoles_algebraically(X,Cxx)
+
+ X   = n x 4 Matrix of image points, not necessarily conditioned
+ Cxx = n x 16 matrix of vectorized covariances of Euclidean point
+       coordinates, correspoinding points may be correlated
+       Cxx(i,:)= vec ( C(x_i'x_i')  C(x_i'x_i'') )
+                      C(x_i''x_i')  C(x_i''x_i'') )
+
+ F   = 3x3 matrix
+ Cff = 9x9 Cov(vec(F))
+ el  = left epipole
+ Cll = 3x3 CovM of el
+ er  = right epipole
+ Crr = 3x3 CovM of er
+
+ Wolfgang Förstner 2/2012
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li><li><a href="../../../General-Functions/Maths/adjunctMatrix.html" class="code" title="function B = adjunctMatrix(A)">adjunctMatrix</a>	% determines adjunct matrix for a square matrix</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../13-Two-View-Geometry/Demo-F-Matrix/demo_epipolar_geometry.html" class="code" title="function demo_epipolar_geometry()">demo_epipolar_geometry</a>	% Epipolar geometry</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Algebraic estimate F-matrix and epipoles: from n &gt; 7 points</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [F,Cff,el,Cll,er,Crr]=sugr_estimate_F_and_epipoles_algebraically(X,Cxx)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% X   = n x 4 Matrix of image points, not necessarily conditioned</span>
+0006 <span class="comment">% Cxx = n x 16 matrix of vectorized covariances of Euclidean point</span>
+0007 <span class="comment">%       coordinates, correspoinding points may be correlated</span>
+0008 <span class="comment">%       Cxx(i,:)= vec ( C(x_i'x_i')  C(x_i'x_i'') )</span>
+0009 <span class="comment">%                      C(x_i''x_i')  C(x_i''x_i'') )</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% F   = 3x3 matrix</span>
+0012 <span class="comment">% Cff = 9x9 Cov(vec(F))</span>
+0013 <span class="comment">% el  = left epipole</span>
+0014 <span class="comment">% Cll = 3x3 CovM of el</span>
+0015 <span class="comment">% er  = right epipole</span>
+0016 <span class="comment">% Crr = 3x3 CovM of er</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Wolfgang Förstner 2/2012</span>
+0019 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0020 
+0021 <a name="_sub0" href="#_subfunctions" class="code">function [F, Cff, el, Cll, er, Crr] = sugr_estimate_F_and_epipoles_algebraically(X, Cxx)</a>
+0022 
+0023 <span class="comment">% Number of observations N</span>
+0024 [N, ~] = size(X);
+0025 
+0026 <span class="comment">% condition</span>
+0027 <span class="comment">% left</span>
+0028 mxl = mean(X(:, 1)); sxl = std(X(:, 1));
+0029 myl = mean(X(:, 2)); syl = std(X(:, 2));
+0030 Y(:, 1) = (X(:, 1) - mxl) / sxl;
+0031 Y(:, 2) = (X(:, 2) - myl) / syl;
+0032 Tl = [1/sxl, 0, -mxl/sxl; 0, 1/syl, -myl/syl; 0 0 1];
+0033 <span class="comment">% right</span>
+0034 mxr = mean(X(:, 3)); sxr = std(X(:, 3));
+0035 myr = mean(X(:, 4)); syr = std(X(:, 4));
+0036 Y(:, 3) = (X(:, 3) - mxr) / sxr;
+0037 Y(:, 4) = (X(:, 4) - myr) / syr;
+0038 Tr = [1/sxr, 0, -mxr/sxr; 0, 1/syr, -myr/syr; 0, 0, 1];
+0039 
+0040 
+0041 <span class="comment">% Coefficients for f=vecF</span>
+0042 A = [Y(:, 1) .* Y(:, 3), <span class="keyword">...</span>
+0043      Y(:, 2) .* Y(:, 3), <span class="keyword">...</span>
+0044      1 * Y(:, 3), <span class="keyword">...</span>
+0045      Y(:, 1) .* Y(:, 4), <span class="keyword">...</span>
+0046      Y(:, 2) .* Y(:, 4), <span class="keyword">...</span>
+0047      Y(:, 4), <span class="keyword">...</span>
+0048      Y(:, 1), <span class="keyword">...</span>
+0049      Y(:, 2), <span class="keyword">...</span>
+0050      ones(N, 1)<span class="keyword">...</span>
+0051      ];
+0052 <span class="comment">% best f, approximate</span>
+0053 [U, D, V] = svd(A);
+0054 
+0055 <span class="comment">% Pseudoinverse for Covariance matrix</span>
+0056 Dinv = D';
+0057 <span class="keyword">for</span> i = 1:8
+0058     Dinv(i, i) = 1 / D(i, i);
+0059 <span class="keyword">end</span>
+0060 Ainv = V * Dinv * U';
+0061 
+0062 <span class="comment">% approximate F</span>
+0063 Fa = reshape(V(:, 9), 3, 3);
+0064 
+0065 <span class="comment">% partition</span>
+0066 [U, D, V] = svd(Fa);
+0067 
+0068 <span class="comment">% enforce singularity</span>
+0069 D(3, 3) = 0;
+0070 
+0071 <span class="comment">% final estimate conditioned</span>
+0072 F = U * D * V';
+0073 normF = norm(F, <span class="string">'fro'</span>);
+0074 F = F/normF; <span class="comment">% normalize such that Frobenius norm is 1</span>
+0075 f = F(:);
+0076 
+0077 <span class="comment">% check</span>
+0078 <span class="comment">% diag([Y(:, 1), Y(:, 2), ones(N, 1)] * F * [Y(:, 3), Y(:, 4), ones(N, 1)]')</span>
+0079 
+0080 <span class="comment">% Covariance matrix: Ainv * Cn * Ainv' restricted to det F=0</span>
+0081 Cff = zeros(9);
+0082 var_n = zeros(N,1);
+0083 <span class="keyword">for</span> n = 1:N
+0084     <span class="comment">% n-th constraint vector</span>
+0085     xx = [[Y(n, 3:4), 1] * F',[Y(n,1:2),1]*F];
+0086     <span class="comment">% n-th covariance matrix Euclidean</span>
+0087     C = reshape(Cxx(n, :), 4, 4);
+0088     <span class="comment">% n-th covarinace matrix homogeneous</span>
+0089     Cn = [C(1:2, 1:2) zeros(2, 1) C(1:2, 3:4) zeros(2, 1); <span class="keyword">...</span>
+0090           zeros(1, 6); <span class="keyword">...</span>
+0091           C(3:4, 1:2) zeros(2, 1) C(3:4, 3:4) zeros(2, 1); <span class="keyword">...</span>
+0092           zeros(1, 6)<span class="keyword">...</span>
+0093           ];
+0094     <span class="comment">% Jacobian for x-&gt;y</span>
+0095     J = [Tl, zeros(3); zeros(3), Tr];
+0096     <span class="comment">% covariance matrix for conditioned homogeneous coordinates</span>
+0097     Cn = J * Cn * J';
+0098     <span class="comment">% variance of constraint</span>
+0099     var_n(n) = (xx * Cn * xx');
+0100     <span class="comment">% covarance matrix of vec f approximate</span>
+0101     Cff = Cff + Ainv(:, n) * Ainv(:, n)' * var_n(n);
+0102 <span class="keyword">end</span>
+0103 <span class="comment">% rankCffa = rank(Cff)</span>
+0104 
+0105 <span class="comment">% projector for enforcing det and norm constraint</span>
+0106 FA = <a href="../../../General-Functions/Maths/adjunctMatrix.html" class="code" title="function B = adjunctMatrix(A)">adjunctMatrix</a>(F)';
+0107 H = [FA(:), f];
+0108 P = eye(9) - H * inv(H'*H)*H';                                             <span class="comment">%#ok&lt;MINV&gt;</span>
+0109 <span class="comment">% covariance matrix for conditioned F</span>
+0110 Cff = P * Cff * P;
+0111 
+0112 <span class="comment">% rankCff = rank(Cff)</span>
+0113 
+0114 <span class="comment">% uncoditioned F</span>
+0115 F = Tl' * F * Tr;
+0116 
+0117 <span class="comment">% covariance matrix of unconditioned F</span>
+0118 J = kron(Tr',Tl');
+0119 Cff = J * Cff * J';
+0120 
+0121 <span class="comment">% rank(Cff);</span>
+0122 
+0123 <span class="comment">% determine epipoles and their covariances</span>
+0124 <span class="comment">% left</span>
+0125 el = cross(F(:, 1), F(:, 2));
+0126 fac = norm(el);
+0127 el = el / fac;
+0128 Jl = [-<a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(F(:, 2)), <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(F(:, 1))];
+0129 Cll = Jl * Cff(1:6, 1:6) * Jl'/fac^2;
+0130 <span class="comment">%right</span>
+0131 er = cross(F(1, :), F(2, :))';
+0132 fac = norm(er);
+0133 er = er / fac;
+0134 Jr = [-<a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(F(2, :)), <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(F(1, :))];
+0135 Crr = Jr * Cff([1, 4, 7, 2, 5, 8], [1, 4, 7, 2, 5, 8]) * Jr'/fac^2;
+0136 
+0137 <span class="comment">% check</span>
+0138 <span class="comment">%[X(:,1),X(:,2),ones(N,1)]*F*[X(:,3),X(:,4),ones(N,1)]'</span>
+0139</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

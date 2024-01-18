@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_22_demo_robust_surface_reconstruction</title>
+  <meta name="keywords" content="fig_16_22_demo_robust_surface_reconstruction">
+  <meta name="description" content="% Fig. 16.22 page 762">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="Documentation.html">Surface-Reconstruction</a> &gt; fig_16_22_demo_robust_surface_reconstruction.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Surface-Reconstruction&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_22_demo_robust_surface_reconstruction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Fig. 16.22 page 762</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 16.22 page 762
+ Robust surface reconstruction
+ Uwe Weidner's test image (ECCV, 1994)
+
+ Wolfgang Förstner 07/14
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_6.html" class="code" title="function [points,BB,delta_x,sigma_k,out_in,dem] =simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)">simulate_points_dem_6</a>	% simulate_points_dem_6: generate test image of Uwe 1994</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,out_in_0,print_type,plot_type)">smooth_dem_robust_bilinear</a>	% smooth_dem_robust_bilinear</li><li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/Graphics/plot_surface.html" class="code" title="function h = plot_surface(ds,BB,delta_x,varargin)">plot_surface</a>	% Ploting 2.5D surfaces</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 16.22 page 762</span>
+0002 <span class="comment">% Robust surface reconstruction</span>
+0003 <span class="comment">% Uwe Weidner's test image (ECCV, 1994)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Wolfgang Förstner 07/14</span>
+0006 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0007 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0008 
+0009 addpath(genpath(<span class="string">'../../General-Functions/'</span>));
+0010 addpath(<span class="string">'Functions'</span>)
+0011 <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0012 
+0013 close all
+0014 
+0015 <span class="comment">%% set parameters</span>
+0016 
+0017 init_rand = 6;             <span class="comment">% init random generator - may be changed for other example</span>
+0018 
+0019 out_C = 0;    <span class="comment">% 0 no covariance matrix as output</span>
+0020               <span class="comment">% 1 covariance matrix as output</span>
+0021 
+0022 <span class="comment">% output settings</span>
+0023 print_type = 1;
+0024 plot_type  = 1;
+0025 
+0026 <span class="comment">%% plot settings</span>
+0027 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0028 
+0029 <span class="comment">%% initialize random number generation by fixed seed</span>
+0030 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0031 
+0032 <span class="comment">%% ---------------------- LETS GO -----------------------------------------</span>
+0033 
+0034 disp(<span class="string">'-----------------------------------------------------------'</span>)
+0035 disp(<span class="string">'----- Fig. 16.22: Demo finding steps and break lines  -----'</span>)
+0036 disp(<span class="string">'-----------------------------------------------------------'</span>)
+0037 
+0038 <span class="comment">%% generate dem point cloud</span>
+0039 <span class="comment">% [points,BB,delta_x,sigma_k,out_in,dem]=...</span>
+0040 <span class="comment">%     simulate_points_dem_6(70,10,10,1,0.00);</span>
+0041 
+0042 [points,BB,delta_x,sigma_k,out_in,dem]=<span class="keyword">...</span>
+0043     <a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_6.html" class="code" title="function [points,BB,delta_x,sigma_k,out_in,dem] =simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)">simulate_points_dem_6</a>(70,10,10,1,0.00);
+0044 
+0045 <span class="comment">%% smooth dem non-robustly</span>
+0046 type_robust = 0;
+0047 display(<span class="string">'Nonrobust Smoothing =============='</span>)
+0048 ds_nonrobust = <a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,out_in_0,print_type,plot_type)">smooth_dem_robust_bilinear</a><span class="keyword">...</span>
+0049     (points,BB,delta_x,sigma_k,out_C,type_robust,out_in,<span class="keyword">...</span>
+0050     print_type,plot_type);
+0051 
+0052 <span class="comment">%% smooth dem robustly</span>
+0053 type_robust = 1;
+0054 display(<span class="string">'Robust Smoothing ================='</span>)
+0055 
+0056 [ds_robust,S,Sigma,Np,Nr,Mc,ver,A,w,w_f,W] = <a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,out_in_0,print_type,plot_type)">smooth_dem_robust_bilinear</a><span class="keyword">...</span>
+0057     (points,BB,delta_x,sigma_k,out_C,type_robust,out_in,<span class="keyword">...</span>
+0058     print_type,plot_type);
+0059    
+0060 
+0061 <span class="comment">%% plot</span>
+0062 
+0063 <span class="comment">% plot smoothed surface</span>
+0064 figure(<span class="string">'name'</span>,<span class="string">'Fig 16.22 Finding steps and break lines - smoothed dem'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0065     <span class="string">'Position'</span>,[0.335*ss(1),0.52*ss(2),0.3*ss(1),0.4*ss(2)]);
+0066 <a href="../../General-Functions/Graphics/plot_surface.html" class="code" title="function h = plot_surface(ds,BB,delta_x,varargin)">plot_surface</a>(ds_nonrobust,BB,delta_x,<span class="string">'plotfun'</span>,@mesh,<span class="string">'view'</span>,[-65,29]);
+0067 axis equal
+0068 title(<span class="string">'smoothed dem'</span>,<span class="string">'FontSize'</span>,16)
+0069 
+0070 <span class="comment">% plot residuals</span>
+0071 figure(<span class="string">'name'</span>,<span class="string">'Fig 16.22 Finding steps and break lines - residuals of smoothed dem'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0072     <span class="string">'Position'</span>,[0.335*ss(1),0.02*ss(2),0.3*ss(1),0.4*ss(2)]);
+0073 imagesc(ds_nonrobust-dem);
+0074 colormap(gray);
+0075 title(<span class="string">'residuals of smoothed dem'</span>,<span class="string">'FontSize'</span>,16)
+0076 axis equal; axis off;
+0077 
+0078 <span class="comment">% plot restored dem</span>
+0079 figure(<span class="string">'name'</span>,<span class="string">'Fig 16.22 Finding steps and break lines - restored dem'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0080     <span class="string">'Position'</span>,[0.65*ss(1),0.52*ss(2),0.3*ss(1),0.4*ss(2)]);
+0081 <a href="../../General-Functions/Graphics/plot_surface.html" class="code" title="function h = plot_surface(ds,BB,delta_x,varargin)">plot_surface</a>(ds_robust,BB,delta_x,<span class="string">'plotfun'</span>,@mesh,<span class="string">'view'</span>,[-65,29]);
+0082 axis equal
+0083 title(<span class="string">'restored dem'</span>,<span class="string">'FontSize'</span>,16)
+0084 
+0085 <span class="comment">% plot residuals</span>
+0086 figure(<span class="string">'name'</span>,<span class="string">'Fig 16.22 Finding steps and break lines - residuals of restored dem'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0087     <span class="string">'Position'</span>,[0.65*ss(1),0.02*ss(2),0.3*ss(1),0.4*ss(2)]);
+0088 imagesc(ds_robust-dem);
+0089 colormap(gray);
+0090 title(<span class="string">'residuals of restored dem'</span>,<span class="string">'FontSize'</span>,16)
+0091 axis equal; axis off;</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

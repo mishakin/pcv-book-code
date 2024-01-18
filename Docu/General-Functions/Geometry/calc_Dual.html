@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_Dual</title>
+  <meta name="keywords" content="calc_Dual">
+  <meta name="description" content="% dualizing matrix">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_Dual.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_Dual
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% dualizing matrix</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function D = calc_Dual </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% dualizing matrix
+
+ Usage:
+   D = calc_Dual
+
+   D - 6x6 dualizing matrix
+       [0 0 0 1 0 0
+        0 0 0 0 1 0
+        0 0 0 0 0 1
+        1 0 0 0 0 0
+        0 1 0 0 0 0
+        0 0 1 0 0 0]
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_Gamma.html" class="code" title="function G = calc_Gamma (L)">calc_Gamma</a>, <a href="calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>, <a href="calc_Gamma_reduced.html" class="code" title="function [Gr , Rm] = calc_Gamma_reduced(L)">calc_Gamma_reduced</a>,
+ <a href="calc_Gammadual_reduced.html" class="code" title="function [Gr , Rm] = calc_Gammadual_reduced(L)">calc_Gammadual_reduced</a>, <a href="calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a> <a href="calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../05-08-Geometry/demo_dual.html" class="code" title="">demo_dual</a>	% DEMO Duality</li><li><a href="../../05-08-Geometry/demo_single_image_geometry.html" class="code" title="">demo_single_image_geometry</a>	% DEMO single image geometry</li><li><a href="../../05-08-Geometry/demo_singularity_line_through_four_lines.html" class="code" title="">demo_singularity_line_through_four_lines</a>	% Test singularity of line through four lines</li><li><a href="../../10-Uncertain-Geometry/demo_selection_X_on_Li.html" class="code" title="">demo_selection_X_on_Li</a>	% test whether selection is necessary when using L through X constraint</li><li><a href="../../13-Two-View-Geometry/demo_check_of_signs_single_and_two_view_geometry.html" class="code" title="">demo_check_of_signs_single_and_two_view_geometry</a>	% demo: check of signs single and two view geometry</li><li><a href="../../General-Functions/SUGR/Line_3D/sugr_minimal_3D_Line.html" class="code" title="function Ls = sugr_minimal_3D_Line(L,CLL)">sugr_minimal_3D_Line</a>	% generate minimal representation for 3D homogeneous line</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% dualizing matrix</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage:</span>
+0004 <span class="comment">%   D = calc_Dual</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   D - 6x6 dualizing matrix</span>
+0007 <span class="comment">%       [0 0 0 1 0 0</span>
+0008 <span class="comment">%        0 0 0 0 1 0</span>
+0009 <span class="comment">%        0 0 0 0 0 1</span>
+0010 <span class="comment">%        1 0 0 0 0 0</span>
+0011 <span class="comment">%        0 1 0 0 0 0</span>
+0012 <span class="comment">%        0 0 1 0 0 0]</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Wolfgang Förstner</span>
+0015 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% See also calc_Gamma, calc_Gammadual, calc_Gamma_reduced,</span>
+0018 <span class="comment">% calc_Gammadual_reduced, calc_Pi calc_Pidual</span>
+0019 
+0020 <a name="_sub0" href="#_subfunctions" class="code">function D = calc_Dual</a>
+0021 
+0022 D = [zeros(3,3),eye(3); 
+0023      eye(3),zeros(3,3)
+0024     ];
+0025</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

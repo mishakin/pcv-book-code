@@ -1,0 +1,322 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_estimate_Projection_3D_2D_from_point_pairs_single</title>
+  <meta name="keywords" content="demo_estimate_Projection_3D_2D_from_point_pairs_single">
+  <meta name="description" content="% Demo estimate 3D projection from 2D point pairs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">12-Single-View-Geometry</a> &gt; <a href="Documentation.html">Demo_Projection</a> &gt; demo_estimate_Projection_3D_2D_from_point_pairs_single.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 12-Single-View-Geometry\Demo_Projection&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_estimate_Projection_3D_2D_from_point_pairs_single
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Demo estimate 3D projection from 2D point pairs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Demo estimate 3D projection from 2D point pairs
+
+ Model y = c(PX), perspective camera
+
+ uncertain homogeneous coordinates for y,
+ uncertain homogeneous coordinates for X
+
+ simulation: 3D points X around origin, no points at infinity
+
+ Wolfgang Förstner 6/2017
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 04/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Geometry/calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>	% K, R, Z, K33 from P (without covariance propagation)</li><li><a href="../../General-Functions/Geometry/calc_Rot_rod.html" class="code" title="function R = calc_Rot_rod(q)">calc_Rot_rod</a>	% Rotation matrix according to Rodriguez</li><li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li><li><a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_Projection_3D_2D.html" class="code" title="function Point_Projection_3D_2D = sugr_Projection_3D_2D(a1,a2,a3)">sugr_Projection_3D_2D</a>	% Create pose</li><li><a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs.html" class="code" title="function P = sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs(X,y)">sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs</a>	% Algebraic estimate of Projection from corresponding 3D-2D point pairs</li><li><a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_estimation_ml_Projection_3D_2D_from_point_pairs.html" class="code" title="function [P,sigma_0,R] = sugr_estimation_ml_Projection_3D_2D_from_point_pairs(X,y,xa,T,maxiter)">sugr_estimation_ml_Projection_3D_2D_from_point_pairs</a>	% ML estimate of Projection from corresponding 3D-2D point pairs</li><li><a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_generate_true_2D_point_pairs_Projection_3D_2D.html" class="code" title="function [X,y] = sugr_generate_true_2D_point_pairs_Projection_3D_2D(P,N,dX,dY,dZ,br)">sugr_generate_true_2D_point_pairs_Projection_3D_2D</a>	% Generate N point pairs for given Projection P</li><li><a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_perturb_3D_2D_point_pairs.html" class="code" title="function [X,y] = sugr_perturb_3D_2D_point_pairs(Xt,yt,sigma_X,sigma_y,fp)">sugr_perturb_3D_2D_point_pairs</a>	% Perturb sampled 3D 2D points pairs</li><li><a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>	% check estimation result, PCV Sect. 4.6.8</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li><li><a href="../../General-Functions/monitor_samples.html" class="code" title="function monitor_samples(i,N_samples)">monitor_samples</a>	% monitor_samples(i,N)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Demo estimate 3D projection from 2D point pairs</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Model y = c(PX), perspective camera</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% uncertain homogeneous coordinates for y,</span>
+0006 <span class="comment">% uncertain homogeneous coordinates for X</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% simulation: 3D points X around origin, no points at infinity</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Wolfgang Förstner 6/2017</span>
+0011 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% last changes: Susanne Wenzel 04/18</span>
+0014 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0015 
+0016 clc
+0017 close all
+0018 clearvars
+0019 
+0020 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0021 
+0022 <span class="keyword">global</span> plot_option
+0023 <span class="keyword">global</span> print_option
+0024 <span class="keyword">global</span> print_option_estimation
+0025 
+0026 <a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0027 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0028 
+0029 disp(<span class="string">'============================================================'</span>)
+0030 disp(<span class="string">' Demo estimation of projection matrix, perspective model    '</span>)
+0031 disp(<span class="string">'         with uncertain image and scene points              '</span>)
+0032 disp(<span class="string">'             (generalizing PCV Alg. 17)                     '</span>)
+0033 disp(<span class="string">'------------------------------------------------------------'</span>)
+0034 
+0035 <span class="comment">%% control parameters</span>
+0036 <span class="comment">% for testing the implementation</span>
+0037 <span class="comment">%N_samples     = 1000;</span>
+0038 N_samples     = 50;
+0039 <span class="comment">%N_samples     = 1;</span>
+0040 disp(strcat(<span class="string">'Number of samples                   : '</span> , num2str(N_samples)));
+0041 <span class="comment">% number of points</span>
+0042 N              = 50;
+0043 <span class="comment">%N               = 15;</span>
+0044 <span class="comment">%N             = 7;</span>
+0045 disp(strcat(<span class="string">'Number of points                    : '</span> , num2str(N)));
+0046 
+0047 c = 500;
+0048 disp(strcat(<span class="string">'Principal distance                  : '</span> , num2str(c)));
+0049 
+0050 <span class="comment">% std. dev.</span>
+0051 sigma_X       =  0.0001;                  <span class="comment">% std. dev. in m</span>
+0052 sigma_y       = c/10000;                  <span class="comment">% std. dev. in pixels</span>
+0053 disp(strcat(<span class="string">'Std. dev. of scene points           : '</span> , num2str(sigma_X)));
+0054 disp(strcat(<span class="string">'Std. dev. of image points [pixel]   : '</span> , num2str(sigma_y)));
+0055 
+0056 <span class="comment">% random number intialization</span>
+0057  init_rand      = 12;                  <span class="comment">% random seed</span>
+0058 <span class="comment">%init_rand      =  21378330;             % random seed</span>
+0059 
+0060 <span class="comment">% Significance level for tests</span>
+0061 S   = 0.999;
+0062 Slo = (1-S)/2;
+0063 Sup = 1- Slo;
+0064 
+0065 <span class="comment">% Threshold for iteration</span>
+0066 T        = 10^(-10);
+0067 maxiter  = 20;
+0068 factor_p = 100;                  <span class="comment">% for plot</span>
+0069 
+0070 <span class="comment">%% random number intialization</span>
+0071 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0072 
+0073 <span class="comment">%% Generate points in box</span>
+0074 b_random      = 1;                        <span class="comment">% random points in [-1,+1]^2</span>
+0075 
+0076 <span class="keyword">if</span> b_random == 1
+0077     dX            = 1;
+0078     dY            = 1;
+0079     dZ            = 0.5;
+0080     Z0            = 3.0;
+0081     Z_tilde   = [dX/2;dY/2;Z0];
+0082 <span class="keyword">else</span>
+0083     dX=0;dY=0;dZ=0;
+0084     Z_tilde   = [0;0;3];
+0085 <span class="keyword">end</span>
+0086 
+0087 <span class="comment">% set R and K</span>
+0088 R_tilde       = <a href="../../General-Functions/Geometry/calc_Rot_rod.html" class="code" title="function R = calc_Rot_rod(q)">calc_Rot_rod</a>([1,2,3]);
+0089 K_tilde       = diag([c,c,1]);
+0090 
+0091 <span class="comment">% true projection</span>
+0092 P_tilde         = <a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_Projection_3D_2D.html" class="code" title="function Point_Projection_3D_2D = sugr_Projection_3D_2D(a1,a2,a3)">sugr_Projection_3D_2D</a>(K_tilde,R_tilde,Z_tilde);
+0093 
+0094 disp(<span class="string">'true_Projection'</span>);
+0095 disp(num2str(P_tilde.P));
+0096 disp(<span class="string">' '</span>)
+0097 
+0098 true_p          = P_tilde.P(:);
+0099 
+0100 print_option_estimation = 1;
+0101 <span class="keyword">if</span> N_samples &gt; 1
+0102     print_option_estimation = 0;
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="comment">% generally do not plot samples</span>
+0106 plot_optinon = 2;
+0107 print_option = 2;
+0108 <span class="comment">% except for one sample</span>
+0109 <span class="keyword">if</span> N_samples &gt; 1
+0110     plot_option = 0;
+0111     print_option = 0;
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">%% calculate samples</span>
+0115 
+0116 <span class="comment">% generate true points, common to all samples</span>
+0117 [Xt,yt] = <a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_generate_true_2D_point_pairs_Projection_3D_2D.html" class="code" title="function [X,y] = sugr_generate_true_2D_point_pairs_Projection_3D_2D(P,N,dX,dY,dZ,br)">sugr_generate_true_2D_point_pairs_Projection_3D_2D</a><span class="keyword">...</span>
+0118     (P_tilde.P,N,dX,dY,dZ,b_random);
+0119 
+0120 X_coord  = Xt.e;
+0121 xs_coord = yt.e;
+0122 
+0123 <span class="comment">% set arrays for evaluation</span>
+0124 est_P_samples_a_r  = zeros(N_samples,11);
+0125 est_P_samples_ml_r = zeros(N_samples,11);
+0126 est_s0q_samples_ml = zeros(N_samples,1);
+0127 est_bias_a_r       = zeros(N_samples,1);
+0128 est_bias_ml_r      = zeros(N_samples,1);
+0129 mean_rel_s         = zeros(N_samples,1);
+0130 
+0131 start = cputime;
+0132 <span class="keyword">for</span> i = 1:N_samples
+0133     <span class="comment">% monitor samples</span>
+0134     <a href="../../General-Functions/monitor_samples.html" class="code" title="function monitor_samples(i,N_samples)">monitor_samples</a>(i,N_samples);
+0135     
+0136     <span class="keyword">if</span> i==1
+0137         plot_option = 2;                                                   
+0138     <span class="keyword">end</span>
+0139     <span class="comment">% perturb point pairs</span>
+0140     [X,y] = <a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_perturb_3D_2D_point_pairs.html" class="code" title="function [X,y] = sugr_perturb_3D_2D_point_pairs(Xt,yt,sigma_X,sigma_y,fp)">sugr_perturb_3D_2D_point_pairs</a>(Xt,yt,sigma_X,sigma_y,factor_p);
+0141     set(gcf,<span class="string">'Position'</span>,[20,ss(2)/2-100,ss(1)/2,ss(2)/2]);
+0142     
+0143     X_coord  = X.e;
+0144     xs_coord = y.e;
+0145     plot_option = 0;
+0146     
+0147     
+0148     <span class="comment">%% Estimate point algebraically</span>
+0149     est_P_a = <a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs.html" class="code" title="function P = sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs(X,y)">sugr_estimation_algebraic_Projection_3D_2D_from_point_pairs</a>(X,y);
+0150     P_est_algebraically = est_P_a.P;
+0151     P_true = P_tilde.P;
+0152     
+0153     <span class="comment">%% Estimate point maximum likelihood</span>
+0154     [est_P_ml,sigma_0,~] = <span class="keyword">...</span>
+0155         <a href="../../General-Functions/SUGR/Projection_3D_2D/sugr_estimation_ml_Projection_3D_2D_from_point_pairs.html" class="code" title="function [P,sigma_0,R] = sugr_estimation_ml_Projection_3D_2D_from_point_pairs(X,y,xa,T,maxiter)">sugr_estimation_ml_Projection_3D_2D_from_point_pairs</a><span class="keyword">...</span>
+0156         (X,y,P_tilde.P,T,maxiter);
+0157     
+0158     <span class="comment">% store sigma_0^2</span>
+0159     est_s0q_samples_ml(i) = sigma_0^2;
+0160     est_P_ml.P;
+0161     P_tilde.P;
+0162     
+0163     eigv                = abs(eig(est_P_ml.Crr));
+0164     condition_number    = max(eigv)/min(eigv);
+0165     mean_rel_std        = sqrt(trace(inv(est_P_ml.Crr)*est_P_a.Crr)/11);    
+0166     mean_rel_s(i)       = mean_rel_std;
+0167     
+0168     [Ke,Re,Ze] = <a href="../../General-Functions/Geometry/calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>(est_P_ml.P,1);
+0169     [K,R,Z]    = <a href="../../General-Functions/Geometry/calc_KRZ_from_P.html" class="code" title="function [K,R,Z,K33] = calc_KRZ_from_P(P,sc)">calc_KRZ_from_P</a>(P_tilde.P,1);
+0170     
+0171     <span class="keyword">if</span> print_option &gt; 0
+0172         disp([<span class="string">'K_Diff = '</span>,inv(K)*Ke-eye(3)])                                
+0173         disp([<span class="string">'R_Diff = '</span>,inv(R)*Re-eye(3)])    
+0174         disp([<span class="string">'Z_Diff = '</span>,Z-Ze]) 
+0175     <span class="keyword">end</span>
+0176     
+0177     <span class="comment">% collect estimated parameters</span>
+0178     est_P_samples_a_r(i,:)  = null(true_p')'*est_P_a.P(:);
+0179     est_P_samples_ml_r(i,:) = null(true_p')'*est_P_ml.P(:);
+0180     est_bias_a_r(i)  = <span class="keyword">...</span>
+0181         est_P_samples_a_r(i,:)*inv(est_P_a.Crr)*est_P_samples_a_r(i,:)';
+0182     est_bias_ml_r(i) = <span class="keyword">...</span>
+0183         est_P_samples_ml_r(i,:)*inv(est_P_ml.Crr)*est_P_samples_ml_r(i,:)';
+0184     
+0185 <span class="keyword">end</span>
+0186 disp([<span class="string">'CPU time for '</span>, num2str(N_samples),<span class="string">' samples              : '</span>,num2str(cputime-start)]);
+0187 
+0188 <span class="comment">%% Check of estimation</span>
+0189 
+0190 <span class="keyword">if</span> N_samples &gt; 12
+0191     <span class="comment">% --------------------------------------------------------------------</span>
+0192     disp(<span class="string">'Check estimation        '</span>)
+0193     disp(<span class="string">'------------------------'</span>)
+0194     
+0195     R = 2*N-11;
+0196     
+0197     <span class="comment">% Algebraic</span>
+0198     <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(R,zeros(11,1),est_P_a.Crr,<span class="keyword">...</span>
+0199         ones(N_samples,1),est_P_samples_a_r,S,<span class="string">' ALG'</span>)
+0200     
+0201     <span class="comment">% Maximum likelihood</span>
+0202     <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(R,zeros(11,1),est_P_ml.Crr,<span class="keyword">...</span>
+0203         est_s0q_samples_ml,est_P_samples_ml_r,S,<span class="string">' ML'</span>);
+0204     set(gcf,<span class="string">'Position'</span>,[ss(1)/3,20,ss(1)/3,ss(2)/3]);
+0205     
+0206     <span class="comment">% show additional information</span>
+0207     figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[ss(1)/2,ss(2)/2-100,ss(1)/2,ss(2)/2]);
+0208     
+0209     <span class="comment">% relative accuracy: lambda(empALG/theorML)</span>
+0210     <span class="comment">% algebraic estimation</span>
+0211     mean_p_a_r = mean(est_P_samples_a_r);
+0212     covm_p_a_r = cov(est_P_samples_a_r);
+0213     CovM_a_theor_r = est_P_a.Crr;
+0214     
+0215     <span class="comment">% ml-estimation</span>
+0216     mean_p_ml_r = mean(est_P_samples_ml_r);
+0217     covm_p_ml_r = cov(est_P_samples_ml_r);
+0218     CovM_ml_theor_r = est_P_ml.Crr;
+0219     <span class="comment">%</span>
+0220     
+0221     disp([<span class="string">'Mean rel. std.dev [sqrt(trace(C_a/C_ml)/11)] : '</span>,<span class="keyword">...</span>
+0222         num2str(mean(mean_rel_s))]);
+0223     
+0224     <span class="comment">% plots</span>
+0225     N_bin = ceil(sqrt(N_samples));
+0226     
+0227     subplot(2,2,1)
+0228     hold on
+0229     hist(est_s0q_samples_ml,N_bin)
+0230     [a,r] = hist(est_s0q_samples_ml,N_bin);
+0231     range = abs(r(N_bin)-r(1))*N_bin/(N_bin-1);     <span class="comment">% range of histogram</span>
+0232     <span class="comment">% expected number of samples</span>
+0233     plot(r,N_bin*range*fpdf(r,2*N-11,100000),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,4);
+0234     title(<span class="string">'estimated variance factor'</span>)
+0235     
+0236     subplot(2,2,2)
+0237     hist(mean_rel_s,ceil(sqrt(N_samples)))
+0238     title(<span class="string">'mean relative std ALG/ML of P'</span>)
+0239     
+0240     subplot(2,2,3)
+0241     hold on
+0242     N_bin = ceil(sqrt(N_samples));
+0243     [aa,r] = hist(est_bias_a_r,N_bin);
+0244     hist(est_bias_a_r,N_bin)
+0245     range = abs(r(N_bin)-r(1))*N_bin/(N_bin-1);     <span class="comment">% range of histogram</span>
+0246     <span class="comment">% expected number of samples</span>
+0247     plot(r,N_bin*range*chi2pdf(r,11),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,4);
+0248     title(<span class="string">'Mahalanobis d. of $P_{\mbox{ALG}}$'</span>)
+0249     
+0250     subplot(2,2,4)
+0251     hold on
+0252     N_bin = ceil(sqrt(N_samples));
+0253     [aml,r] = hist(est_bias_ml_r,N_bin);
+0254     hist(est_bias_ml_r,N_bin)
+0255     range = abs(r(N_bin)-r(1))*N_bin/(N_bin-1);     <span class="comment">% range of histogram</span>
+0256     <span class="comment">% expected number of samples</span>
+0257     plot(r,N_bin*range*chi2pdf(r,11),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,4);
+0258     title(<span class="string">'Mahalanobis d. of $P_{\mbox{ML}}$'</span>)  
+0259 
+0260     
+0261 <span class="keyword">end</span>
+0262</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

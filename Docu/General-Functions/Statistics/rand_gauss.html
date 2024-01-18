@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rand_gauss</title>
+  <meta name="keywords" content="rand_gauss">
+  <meta name="description" content="% random numbers following a multivariate Gaussian  with">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Statistics</a> &gt; rand_gauss.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Statistics&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>rand_gauss
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% random numbers following a multivariate Gaussian  with</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function ret = rand_gauss(mu, C, n) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% random numbers following a multivariate Gaussian  with
+ mean vector mu and covariance matrix C, considering correlations and
+ potential singularities in C
+
+ ret = rand_gauss(mu, C, n)
+ 
+ mu  = double dx1, mean vector of dimension d
+ C   = double dxd, covariance matrix
+ n   = int, number of samples to generate
+ ret = double dxn, n samples of Gaussian(Mu,C)
+
+ author: Richard Steffen</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../02-Probability/fig_2_11_demo_scatter_histogram.html" class="code" title="">fig_2_11_demo_scatter_histogram</a>	% Fig. 2.11 page 56</li><li><a href="../../02-Probability/fig_2_9_simulate_hom_profiles_gaussian.html" class="code" title="">fig_2_9_simulate_hom_profiles_gaussian</a>	% Fig. 2.9 page 51 and Fig 16.11 page 742</li><li><a href="../../04-Estimation/GHM/Demo-GHM/demo_GHM_2D_line.html" class="code" title="">demo_GHM_2D_line</a>	% Demo nonlinear GHM without constraints</li><li><a href="../../10-Uncertain-Geometry/Functions/generate_points_on_plane.html" class="code" title="function X = generate_points_on_plane(N,A,sigma,r,RL,rPCV)">generate_points_on_plane</a>	% generate_points_on_plane(r,A);</li><li><a href="../../10-Uncertain-Geometry/demo_selection_X_on_Li.html" class="code" title="">demo_selection_X_on_Li</a>	% test whether selection is necessary when using L through X constraint</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_11_simulate_inhom_profiles_gaussian.html" class="code" title="">fig_16_11_simulate_inhom_profiles_gaussian</a>	% Fig. 2.9 page 51 and Fig 16.11 page 742</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% random numbers following a multivariate Gaussian  with</span>
+0002 <span class="comment">% mean vector mu and covariance matrix C, considering correlations and</span>
+0003 <span class="comment">% potential singularities in C</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% ret = rand_gauss(mu, C, n)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% mu  = double dx1, mean vector of dimension d</span>
+0008 <span class="comment">% C   = double dxd, covariance matrix</span>
+0009 <span class="comment">% n   = int, number of samples to generate</span>
+0010 <span class="comment">% ret = double dxn, n samples of Gaussian(Mu,C)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% author: Richard Steffen</span>
+0013 
+0014 <a name="_sub0" href="#_subfunctions" class="code">function ret = rand_gauss(mu, C, n)</a>
+0015     
+0016 <span class="comment">% Zerlegung in eigenvectoren und Eigenwerte</span>
+0017 [R,S] = eig(full(C));   
+0018 <span class="comment">% Eigenvektoren skalieren mit Eigenwerten</span>
+0019 A = R .* repmat(sqrt(abs(diag(S)))',length(S),1);
+0020 ret = repmat(mu,1,n) + A*randn(length(mu),n);
+0021</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of test_smooth_dem_robust_bilinear</title>
+  <meta name="keywords" content="test_smooth_dem_robust_bilinear">
+  <meta name="description" content="% test dem smoothing">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">16-Surfacereconstruction</a> &gt; <a href="index.html">Functions</a> &gt; test_smooth_dem_robust_bilinear.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>test_smooth_dem_robust_bilinear
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% test dem smoothing</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% test dem smoothing</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="interpolate_bilinear.html" class="code" title="function z=interpolate_bilinear(S,x,y,dx,BB,sigma_h);">interpolate_bilinear</a>	% interpolate_bilinear</li><li><a href="simulate_points_dem_0.html" class="code" title="function [points,BB,dx,sigma_k,sigma_h,dem]=simulate_points_dem_0">simulate_points_dem_0</a>	% generate a set of points for dem-interpolation</li><li><a href="simulate_points_dem_0_flat.html" class="code" title="function [points,BB,dx,sigma_k,sigma_s,dem,out_in]=simulate_points_dem_0">simulate_points_dem_0_flat</a>	% generate a set of points for dem-interpolation</li><li><a href="simulate_points_dem_10.html" class="code" title="function [points,BB,delta_x,sigma_k,XYZ_ori]=simulate_points_dem_10(file_name,Nbin)">simulate_points_dem_10</a>	% read ply-file</li><li><a href="simulate_points_dem_15_flat.html" class="code" title="function [points,BB,dx,sigma_k,sigma_s,out_in,dem]=simulate_points_dem_15(d,n)">simulate_points_dem_15_flat</a>	% generate a set of points for dem-interpolation</li><li><a href="simulate_points_dem_6.html" class="code" title="function [points,BB,delta_x,sigma_k,sigma,out_in,dem] =simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)">simulate_points_dem_6</a>	% simulate_points_dem_6: generate test image of Uwe 1994</li><li><a href="smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type)">smooth_dem_robust_bilinear</a>	% smooth_dem_robust_bilinear</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% test dem smoothing</span>
+0002 
+0003 clear all
+0004 close all
+0005 <span class="comment">% type_data: type of generated data</span>
+0006 <span class="comment">% 0     a set of given points</span>
+0007 <span class="comment">% 1     a roof parallel to the grid</span>
+0008 <span class="comment">% 2     a roof skew to the grid</span>
+0009 <span class="comment">% 3     a roof skew to the grid + a flat roof, points can be thinned out</span>
+0010 <span class="comment">% 4     same as 3, but with points not sitting on a grid</span>
+0011 <span class="comment">% 5     read an image</span>
+0012 <span class="comment">% 6     Uwe's test image</span>
+0013 <span class="comment">% 7     cake</span>
+0014 <span class="comment">% 8     1/4 cake</span>
+0015 <span class="comment">% 9     constant height with outliers</span>
+0016 <span class="comment">% 10    read point cloud</span>
+0017 <span class="comment">% 11    flat</span>
+0018 <span class="comment">% 12    cone</span>
+0019 <span class="comment">% 13    cake</span>
+0020 <span class="comment">% 14    flat with outliers</span>
+0021 <span class="comment">% 15    flat 4x4 points</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% wf 7/2014</span>
+0024 
+0025 init_rand = 6;
+0026 type_data = 0;
+0027 type_robust = 0
+0028 <span class="comment">%             0 not robust</span>
+0029 <span class="comment">%             1 only dem</span>
+0030 <span class="comment">%             2 only points</span>
+0031 <span class="comment">%             3 both</span>
+0032 
+0033 out_C = 0;
+0034 out_print = 0;
+0035 print_type = 0;
+0036 plot_type  = 0;
+0037 Tol =0.15;
+0038 
+0039 <span class="keyword">if</span> init_rand==0
+0040     init_rand=round(rand( sum(100*clock)))
+0041     r=rand(3,1);
+0042 <span class="keyword">end</span>;
+0043 rand(<span class="string">'state'</span>,init_rand);
+0044 randn(<span class="string">'state'</span>,init_rand);
+0045 
+0046 
+0047 <span class="comment">%% generate dem point cloud</span>
+0048 <span class="keyword">switch</span> type_data
+0049     <span class="keyword">case</span> 0
+0050         [points,BB,delta_x,sigma_k,sigma_h,dem]=<a href="simulate_points_dem_0.html" class="code" title="function [points,BB,dx,sigma_k,sigma_h,dem]=simulate_points_dem_0">simulate_points_dem_0</a>
+0051         out_in =ones(size(points),1);
+0052     <span class="keyword">case</span> 1
+0053         [points,BB,delta_x,sigma_k,dem]=simulate_points_dem_1;
+0054     <span class="keyword">case</span> 2
+0055         [points,BB,delta_x,sigma_k,dem]=simulate_points_dem_2;       
+0056     <span class="keyword">case</span> 3
+0057         [points,BB,delta_x,sigma_k,dem]=simulate_points_dem_3;
+0058     <span class="keyword">case</span> 4
+0059         [points,BB,delta_x,sigma_k,dem]=simulate_points_dem_4;
+0060     <span class="keyword">case</span> 5
+0061         im_name = <span class="string">'IMG_2092_4.JPG'</span>; 
+0062         im_name = <span class="string">'IMG_2726-2.JPG'</span>;  
+0063         im_name = <span class="string">'IMG_8004-4.JPG'</span>;   
+0064         <span class="comment">% im_name = 'IMG_2425-2.JPG';  % Figur Paris</span>
+0065         <span class="comment">%im_name = 'IMG_5977-4.JPG'; % Zebra</span>
+0066         <span class="comment">%im_name = 'IMG_7452-4.JPG'; % Katze</span>
+0067         im_name = <span class="string">'IMG_8942-4.JPG'</span>; <span class="comment">% Fassade Prag</span>
+0068         [points,BB,delta_x,sigma_k,sigma_h,dem]=simulate_points_dem_5(im_name);
+0069      <span class="keyword">case</span> 6
+0070         [points,BB,delta_x,sigma_k,sigma_s,sigma_h,out_in,dem]=<a href="simulate_points_dem_6.html" class="code" title="function [points,BB,delta_x,sigma_k,sigma,out_in,dem] =simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)">simulate_points_dem_6</a>(70,10,10,1,0.05);
+0071         [points,BB,delta_x,sigma_k,sigma_s,sigma_h,out_in,dem]=<a href="simulate_points_dem_6.html" class="code" title="function [points,BB,delta_x,sigma_k,sigma,out_in,dem] =simulate_points_dem_6(N,g_min,delta_g,sigma,outlier_percentage)">simulate_points_dem_6</a>(70,10,10,0.5,0.05);
+0072     <span class="keyword">case</span> 7
+0073         [points,BB,delta_x,sigma_k,dem]=simulate_points_dem_7(30,15,15,1);
+0074         dem0=dem;
+0075      <span class="keyword">case</span> 8
+0076         [points,BB,delta_x,sigma_k,dem]=simulate_points_dem_8(10,15,15,1);
+0077         dem0=dem;
+0078      <span class="keyword">case</span> 9
+0079          sigma=0.001;
+0080         [points,BB,delta_x,sigma_k,dem,out_in,dz]=simulate_points_dem_9(2000,0.15,sigma);
+0081         dem0=dem;
+0082      <span class="keyword">case</span> 10
+0083         [points,BB,delta_x,sigma_k,XYZo]=<span class="keyword">...</span>
+0084             <a href="simulate_points_dem_10.html" class="code" title="function [points,BB,delta_x,sigma_k,XYZ_ori]=simulate_points_dem_10(file_name,Nbin)">simulate_points_dem_10</a>(<span class="string">'fa2_aurelo_result_pyra0_ausgeschnitten-3.ply'</span>,40);
+0085         
+0086     <span class="keyword">case</span> 11
+0087         [points,BB,delta_x,sigma_k,sigma_s,dem]=<a href="simulate_points_dem_0_flat.html" class="code" title="function [points,BB,dx,sigma_k,sigma_s,dem,out_in]=simulate_points_dem_0">simulate_points_dem_0_flat</a>
+0088     <span class="keyword">case</span> 12
+0089         [points,BB,delta_x,sigma_k,sigma_s,dem]=simulate_points_dem_cone
+0090     <span class="keyword">case</span> 13
+0091         [points,BB,delta_x,sigma_k,sigma_s,dem]=simulate_points_dem_steps(60,4,5)
+0092     <span class="keyword">case</span> 14
+0093          sigma=0.001;
+0094         [points,BB,delta_x,sigma_k,dem,out_in,dem]=simulate_points_dem_14(2000,0.15,sigma);
+0095         dem0=dem;
+0096     
+0097     <span class="keyword">case</span> 15
+0098         d=8;
+0099         n=4;
+0100         [points,BB,delta_x,sigma_k,sigma_s,out_in,dem]=<a href="simulate_points_dem_15_flat.html" class="code" title="function [points,BB,dx,sigma_k,sigma_s,out_in,dem]=simulate_points_dem_15(d,n)">simulate_points_dem_15_flat</a>(d,n)        
+0101         out_C = 1;
+0102 <span class="keyword">end</span>
+0103 
+0104 Np = size(points,1);
+0105 
+0106 
+0107 <span class="comment">%% interpolate</span>
+0108 
+0109 starttime = cputime
+0110 [ds,S,Sigma,Np,Nr,Mc,ver,A,w,w_f,W] =<span class="keyword">...</span>
+0111     <a href="smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type)">smooth_dem_robust_bilinear</a><span class="keyword">...</span>
+0112     (points,BB,delta_x,sigma_k,out_C,type_robust,type_data,<span class="keyword">...</span>
+0113     out_in,print_type,plot_type)
+0114 complete_time_for_solution=cputime-starttime
+0115     
+0116 <span class="comment">% figure</span>
+0117 <span class="comment">%        sc = max(ds(:))-min(ds(:));</span>
+0118 <span class="comment">%        imshow((ds-min(ds(:)))/sc*0.95);</span>
+0119 <span class="comment">%</span>
+0120 <span class="comment">% if out_C &gt; 0</span>
+0121 <span class="comment">%     figure</span>
+0122 <span class="comment">%     f=max(S(:));</span>
+0123 <span class="comment">%     mesh(sqrt(S/f*min(Nr,Mc)/3)*10)</span>
+0124 <span class="comment">%     hold on</span>
+0125 <span class="comment">%     title('standard deviations')</span>
+0126 <span class="comment">%     if type_data ~= 5</span>
+0127 <span class="comment">%         axis equal</span>
+0128 <span class="comment">%     end</span>
+0129 <span class="comment">% end</span>
+0130 <span class="comment">%%</span>
+0131 figure
+0132 hold on
+0133 X=([0:Nr-1]'*ones(1,Mc))*delta_x+BB(1);
+0134 Y=(ones(Nr,1)*[0:Mc-1])*delta_x+BB(2);
+0135 
+0136 <span class="keyword">if</span> type_data ~= 5
+0137    colormap(gray)
+0138     shade = [-1 0; 0 1]/sqrt(2);
+0139     shade = -[ 0 -1; 1 0]/sqrt(2);
+0140     col=conv2(ds,shade,<span class="string">'same'</span>);
+0141     <span class="comment">%col=(1+col./sqrt(1+col.^2))/2;</span>
+0142     colo=min(1, max(0,tanh(100*(col-0)/(max(col(:))-min(col(:))))));
+0143     surf(X,Y,ds,colo,<span class="string">'FaceLighting'</span>,<span class="string">'gouraud'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>)
+0144     alpha(0.3);
+0145     shading interp 
+0146     <span class="comment">%mesh(X,Y,ds);</span>
+0147     
+0148     plot3(points(:,1),points(:,2),points(:,3),<span class="string">'.r'</span>,<span class="string">'MarkerSize'</span>,15)
+0149     view=[-20,30]
+0150 <span class="keyword">else</span>
+0151     figure <span class="comment">%subplot(1,3,3)</span>
+0152     <span class="comment">%imagesc([dem,ds])</span>
+0153     imshow([dem,ds])
+0154     colormap(gray)
+0155 <span class="keyword">end</span>
+0156 
+0157 title(<span class="string">'fitted dem with given points'</span>)
+0158        
+0159 <span class="keyword">if</span> type_data ~= 5
+0160     axis equal
+0161 <span class="keyword">end</span>
+0162 <span class="comment">%%</span>
+0163 figure
+0164 <span class="keyword">if</span> type_data == 0
+0165     subplot(1,2,1)
+0166 
+0167     hold on
+0168     surf(X,Y,ds); <span class="comment">%,'EdgeColor',[0,0,0])% ,129*ones(size(S))</span>
+0169     colormap(gray)
+0170 
+0171     title(<span class="string">'fitted dem - min gradient'</span>)
+0172     alpha(0.3)
+0173     col=zeros(Np,2);
+0174     <span class="keyword">for</span> n=1:Np
+0175         plot3(points(n,1),points(n,2),points(n,3),<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15)
+0176     <span class="keyword">end</span>
+0177     view([-29,65])
+0178     xlim([BB(1),BB(3)])
+0179     ylim([BB(2),BB(4)])
+0180     zlim([0,10])
+0181     axis equal
+0182 
+0183     subplot(1,2,2)
+0184     hold on
+0185     surf(X,Y,sqrt(S)*sigma_h,<span class="string">'EdgeColor'</span>,[0,0,0])
+0186     colormap(cool);
+0187     title(<span class="string">'fitted dem - sigmas'</span>)
+0188     col=zeros(Np,2);
+0189     alpha(0.3)
+0190     <span class="keyword">for</span> n=1:Np
+0191         z=<a href="interpolate_bilinear.html" class="code" title="function z=interpolate_bilinear(S,x,y,dx,BB,sigma_h);">interpolate_bilinear</a>(S,points(n,1),points(n,2),delta_x,BB,sigma_h);
+0192         plot3(points(n,1),points(n,2),z,<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,15)
+0193     <span class="keyword">end</span>
+0194     plot3(0,0,0,<span class="string">'.k'</span>)
+0195     view([-29,65])
+0196     xlim([BB(1),BB(3)])
+0197     ylim([BB(2),BB(4)])
+0198     zlim([-1,7])
+0199     axis equal
+0200 
+0201 <span class="keyword">end</span>
+0202 
+0203 <span class="comment">%%</span>
+0204 
+0205 figure
+0206 
+0207 mesh(ds,<span class="string">'EdgeColor'</span>,[0,0,0])
+0208 axis equal
+0209         VIEW([-33,63])
+0210         zlim([-30,70])
+0211 grid off
+0212 <span class="comment">%%</span>
+0213 <span class="comment">% figure</span>
+0214 <span class="comment">% hold on</span>
+0215 <span class="comment">% mesh_edge_color(ds)</span>
+0216 <span class="comment">% view([-68,57])</span>
+0217 <span class="comment">% axis equal</span>
+0218 
+0219 <span class="comment">%plot_edges_dem(Np, Nr, Mc, points, out_in, w, w_f, Tol);</span>
+0220 <span class="comment">% for p=1:Np</span>
+0221 <span class="comment">%     if out_in(p)</span>
+0222 <span class="comment">%         [p,points(p,1),points(p,2),w(p),w_f(p),abs(dz(p))/(3*sigma)];</span>
+0223 <span class="comment">%     end</span>
+0224 <span class="comment">% end</span>
+0225 
+0226 
+0227 figure
+0228 hold on
+0229 mesh(S);
+0230 title(<span class="string">'Heigh \sigma_z'</span>)
+0231 view([-33,63])
+0232 sigma_centre=S(1+(n-1)*d,1+(n-1)*d)
+0233 <span class="keyword">return</span> 
+0234 <span class="comment">%%</span>
+0235 <span class="keyword">if</span> type_data ~= 5 
+0236         axis equal
+0237 <span class="keyword">end</span>
+0238 figure
+0239 imagesc(ds-dem)
+0240 colormap(gray)
+0241 
+0242 figure
+0243 mesh(ds-dem)
+0244 colormap(gray)
+0245 
+0246 full(inv(W)*A);
+0247 
+0248 figure
+0249 mesh(ds)
+0250 colormap(gray);
+0251 axis equal
+0252 
+0253 number_of_outliers = sum(out_in)
+0254 
+0255 
+0256 <span class="keyword">return</span>
+0257 <span class="comment">%%</span>
+0258 <span class="keyword">if</span> type_data == 1
+0259     Icc = Np;                    <span class="comment">% first index for column curvatures</span>
+0260     Irr = Np + (Nr-2)*Mc;        <span class="comment">% first index for row curvature</span>
+0261     Irc = Np + (Nr-2)*Mc + Nr*(Mc-2);    <span class="comment">% first index for torsion</span>
+0262     <span class="comment">% plot residuals</span>
+0263     figure
+0264     <span class="comment">% heights</span>
+0265     subplot(1,4,1)
+0266     res=zeros(Nr,Mc);
+0267     vg = reshape(ver(1:Np),Nr-2,Mc-2);
+0268     <span class="keyword">for</span> i=1:Nr-2
+0269         <span class="keyword">for</span> j=1:Mc-2
+0270             res(i+1,j+1)=vg(i,j);
+0271         <span class="keyword">end</span>
+0272     <span class="keyword">end</span>
+0273     mesh(-res(:)');
+0274     title(<span class="string">'residuals - heights'</span>)
+0275     
+0276     <span class="comment">% curvatures cc</span>
+0277     subplot(1,4,2)
+0278     res=zeros(Nr,Mc);
+0279     vg = reshape(ver(Icc+1:Irr),Nr-2,Mc);
+0280     <span class="keyword">for</span> i=1:Nr-2
+0281         <span class="keyword">for</span> j=1:Mc
+0282             res(i+1,j)=vg(i,j);
+0283         <span class="keyword">end</span>
+0284     <span class="keyword">end</span>
+0285     mesh(-res'*sqrt(sigma_k));
+0286     title(<span class="string">'residuals - curvatures cc'</span>)
+0287     
+0288     <span class="comment">% curvatures rr</span>
+0289     
+0290     subplot(1,4,3)
+0291     res=zeros(Nr,Mc);
+0292     vg = reshape(ver(Irr+1:Irc),Nr,Mc-2);
+0293     <span class="keyword">for</span> i=1:Nr
+0294         <span class="keyword">for</span> j=1:Mc-2
+0295             res(i,j+1)=vg(i,j);
+0296         <span class="keyword">end</span>
+0297     <span class="keyword">end</span>
+0298     mesh(-res'*sqrt(sigma_k));
+0299     title(<span class="string">'residuals - curvatures rr'</span>)
+0300     
+0301     <span class="comment">% torsion rc</span>
+0302     
+0303     subplot(1,4,4)
+0304     res=zeros(Nr,Mc);
+0305     vg = reshape(ver(Irc+1:end),Nr-1,Mc-1);
+0306     <span class="keyword">for</span> i=1:Nr-1
+0307         <span class="keyword">for</span> j=1:Mc-1
+0308             res(i,j)=vg(i,j);
+0309         <span class="keyword">end</span>
+0310     <span class="keyword">end</span>
+0311     mesh(-res'*sqrt(sigma_k));
+0312     title(<span class="string">'residuals - torsion rc'</span>)
+0313 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

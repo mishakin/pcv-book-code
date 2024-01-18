@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_23_aurelo_result</title>
+  <meta name="keywords" content="fig_16_23_aurelo_result">
+  <meta name="description" content="% Fig. 16.23 page 764">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">16-Surfacereconstruction</a> &gt; fig_16_23_aurelo_result.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_23_aurelo_result
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Fig. 16.23 page 764</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 16.23 page 764
+ Reconstruction of the surface of a facade - dem from bundle adjustment result
+ 
+ Wolfgang Förstner 07/14
+ last changes: Wolfgang Förstner 10/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../16-Surfacereconstruction/Functions/simulate_points_dem_10.html" class="code" title="function [points,BB,delta_x,sigma_k,XYZ_ori]=simulate_points_dem_10(file_name,Nbin)">simulate_points_dem_10</a>	% read ply-file</li><li><a href="../16-Surfacereconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type)">smooth_dem_robust_bilinear</a>	% smooth_dem_robust_bilinear</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 16.23 page 764</span>
+0002 <span class="comment">% Reconstruction of the surface of a facade - dem from bundle adjustment result</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner 07/14</span>
+0005 <span class="comment">% last changes: Wolfgang Förstner 10/16</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0007 
+0008 
+0009 close all
+0010 clear all
+0011 
+0012 addpath(genpath(<span class="string">'../General_Functions/'</span>));
+0013 addpath(<span class="string">'Functions'</span>)
+0014 addpath(<span class="string">'Data'</span>)
+0015 
+0016 
+0017 <span class="comment">%% set parameters</span>
+0018 
+0019 init_rand = 6;             <span class="comment">% init random generator - may be changed for other example</span>
+0020 type_data = 10;            <span class="comment">% @todo: kann weg?</span>
+0021 
+0022 <span class="comment">% resolution (number of surface grid elements at longer side)</span>
+0023 resolution = 40;       <span class="comment">% five times faster</span>
+0024 <span class="comment">%resolution = 90;       % as in figure</span>
+0025 
+0026 <span class="comment">% estimation</span>
+0027 type_robust = 2;           <span class="comment">% 0 not robust / 1 only dem / 2 only points / 3 both</span>
+0028 out_C = 0;                 <span class="comment">% 0 no covariance matrix as output / 1 covariance matrix as output</span>
+0029 
+0030 <span class="comment">% output settings</span>
+0031 print_type = 0;
+0032 plot_type  = 0;
+0033 
+0034 <span class="comment">%% plot settings</span>
+0035 ss = plot_init;
+0036 
+0037 <span class="comment">%% initialize random number generation by fixed seed</span>
+0038 init_rand_seed(init_rand);
+0039 
+0040 <span class="comment">%% ---------------------- LETS GO -----------------------------------------</span>
+0041 
+0042 display(<span class="string">'----- Fig. 16.23: Reconstruction of the surface of a facade - dem from bundle adjustment result -----'</span>)
+0043 
+0044 <span class="comment">%% generate dem point cloud</span>
+0045 [points,BB,delta_x,sigma_k,tmp] = <span class="keyword">...</span>
+0046     <a href="../16-Surfacereconstruction/Functions/simulate_points_dem_10.html" class="code" title="function [points,BB,delta_x,sigma_k,XYZ_ori]=simulate_points_dem_10(file_name,Nbin)">simulate_points_dem_10</a>(<span class="string">'fa2_aurelo_result_pyra0_ausgeschnitten-1.ply'</span>,resolution);
+0047 
+0048 <span class="comment">%% interpolate</span>
+0049 starttime = cputime;
+0050 out_in = zeros(size(points,1),1);
+0051 [ds,S,Sigma,Np,Nr,Mc,ver,A,w,w_f,W] = <a href="../16-Surfacereconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type)">smooth_dem_robust_bilinear</a><span class="keyword">...</span>
+0052     (points,BB,delta_x,sigma_k,out_C,type_robust,type_data,out_in,print_type,plot_type);
+0053 display([<span class="string">'      complete time for solution: '</span>,num2str(cputime-starttime)])
+0054 
+0055 <span class="comment">%% plot</span>
+0056 
+0057 figure(<span class="string">'name'</span>,<span class="string">'Fig 16.23 dem from bundle adjustment result'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0058     <span class="string">'Position'</span>,[0.5*ss(1),0.3*ss(2),0.4*ss(1),0.5*ss(2)]);
+0059 plot_surface(ds,BB,delta_x,<span class="string">'plotfun'</span>,@mesh,<span class="string">'view'</span>,[-70,30]);
+0060 axis equal;axis off;
+0061 title(<span class="string">'fitted dem - min curvature^2'</span>,<span class="string">'FontSize'</span>,16)
+0062 
+0063</pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

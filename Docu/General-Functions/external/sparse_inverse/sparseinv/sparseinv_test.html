@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sparseinv_test</title>
+  <meta name="keywords" content="sparseinv_test">
+  <meta name="description" content="SPARSEINV_TEST tests the sparseinv function.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../Documentation.html">Home</a> &gt;  <a href="../../../Documentation.html">General-Functions</a> &gt; <a href="../../Documentation.html">external</a> &gt; <a href="#">sparse_inverse</a> &gt; <a href="Documentation.html">sparseinv</a> &gt; sparseinv_test.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../Documentation.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\external\sparse_inverse\sparseinv&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>sparseinv_test
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>SPARSEINV_TEST tests the sparseinv function.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function sparseinv_test (extensive) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SPARSEINV_TEST tests the sparseinv function.
+
+ Example
+   sparseinv_test ;        % basic test
+   sparseinv_test (1) ;    % extensive test (requires UFget)
+
+ See also <a href="sparseinv.html" class="code" title="function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)">sparseinv</a>, <a href="sparseinv_install.html" class="code" title="function sparseinv_install">sparseinv_install</a>, UFget.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="sparseinv.html" class="code" title="function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)">sparseinv</a>	SPARSEINV computes the sparse inverse subset of a real sparse square matrix A.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function sparseinv_test (extensive)</a>
+0002 <span class="comment">%SPARSEINV_TEST tests the sparseinv function.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Example</span>
+0005 <span class="comment">%   sparseinv_test ;        % basic test</span>
+0006 <span class="comment">%   sparseinv_test (1) ;    % extensive test (requires UFget)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% See also sparseinv, sparseinv_install, UFget.</span>
+0009 
+0010 <span class="comment">% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com</span>
+0011 
+0012 <span class="keyword">if</span> (nargin &lt; 1)
+0013     extensive = 0 ;
+0014 <span class="keyword">end</span>
+0015 
+0016 load west0479 ;
+0017 A = west0479 ;
+0018 
+0019 <span class="keyword">for</span> k = 1:2
+0020 
+0021     [Z, Zpattern, L, D, U, P, Q, stats] = <a href="sparseinv.html" class="code" title="function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)">sparseinv</a> (A) ;
+0022 
+0023     n = size (A,1) ;
+0024     I = speye (n) ;
+0025 
+0026     S = inv (A) ;
+0027     Snorm = norm (S, 1) ;
+0028     e1 = norm (Zpattern.*(Z-S), 1) / Snorm ;
+0029     e2 = norm ((L+I)*D*(U+I) - P*A*Q, 1) / norm (A,1) ;
+0030     c = condest (A) ;
+0031 
+0032     fprintf (<span class="string">'west0479: errors %g %g condest %g : '</span>, e1, e2, c) ;
+0033     <span class="keyword">if</span> (e1 &gt; 1e-10 || e2 &gt; 1e-10)
+0034         error (<span class="string">'west0479 test failed'</span>) ;
+0035     <span class="keyword">end</span>
+0036     fprintf (<span class="string">'ok\n'</span>) ;
+0037     disp (stats) ;
+0038 
+0039     <span class="comment">% create a symmetric positive definite matrix to test with</span>
+0040     <span class="keyword">if</span> (k == 1)
+0041         A = A+A' + 1e6*I ;
+0042     <span class="keyword">end</span>
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="comment">% check error-handling</span>
+0046 fprintf (<span class="string">'testing error handling (errors below are expected)\n'</span>) ;
+0047 ok = 1 ;
+0048 A = ones (2) ;
+0049 <span class="keyword">try</span>
+0050     Z1 = <a href="sparseinv.html" class="code" title="function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)">sparseinv</a> (A) ;                                                    <span class="comment">%#ok</span>
+0051     ok = 0 ;
+0052 <span class="keyword">catch</span> me
+0053     fprintf (<span class="string">'    expected error: %s\n'</span>, me.message) ;
+0054 <span class="keyword">end</span>
+0055 A = sparse (ones (3,2)) ;
+0056 <span class="keyword">try</span>
+0057     Z2 = <a href="sparseinv.html" class="code" title="function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)">sparseinv</a> (A) ;                                                    <span class="comment">%#ok</span>
+0058     ok = 0 ;
+0059 <span class="keyword">catch</span> me
+0060     fprintf (<span class="string">'    expected error: %s\n'</span>, me.message) ;
+0061 <span class="keyword">end</span>
+0062 A = sparse (ones (3)) ;
+0063 <span class="keyword">try</span>
+0064     Z3 = <a href="sparseinv.html" class="code" title="function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)">sparseinv</a> (A) ;                                                    <span class="comment">%#ok</span>
+0065     ok = 0 ;
+0066 <span class="keyword">catch</span> me
+0067     fprintf (<span class="string">'    expected error: %s\n'</span>, me.message) ;
+0068 <span class="keyword">end</span>
+0069 A = 1i * sparse (ones (3)) ;
+0070 <span class="keyword">try</span>
+0071     Z4 = <a href="sparseinv.html" class="code" title="function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)">sparseinv</a> (A) ;                                                    <span class="comment">%#ok</span>
+0072     ok = 0 ;
+0073 <span class="keyword">catch</span> me
+0074     fprintf (<span class="string">'    expected error: %s\n'</span>, me.message) ;
+0075 <span class="keyword">end</span>
+0076 
+0077 <span class="keyword">if</span> (~ok)
+0078     error (<span class="string">'error-handling tests failed'</span>) ;
+0079 <span class="keyword">end</span>
+0080 
+0081 <span class="comment">% now try with lots of matrices from the UF Sparse Matrix Collection</span>
+0082 <span class="keyword">if</span> (extensive &amp;&amp; exist (<span class="string">'UFget'</span>, <span class="string">'file'</span>) == 2)
+0083 
+0084     fprintf (<span class="string">'Now doing extensive tests with UF Sparse Matrix Collection:\n'</span>) ;
+0085     dofigures = (exist (<span class="string">'cspy'</span>, <span class="string">'file'</span>) == 2) ;
+0086     <span class="keyword">if</span> (dofigures)
+0087         clf ;
+0088     <span class="keyword">end</span>
+0089 
+0090     index = UFget ;
+0091     f = find ((index.nrows == index.ncols) &amp; (index.isReal == 1)) ;
+0092     [ignore,i] = sort (index.nrows (f)) ;   <span class="comment">%#ok</span>
+0093     f = f (i) ;
+0094     nmat = length (f) ;
+0095 
+0096     s = warning (<span class="string">'off'</span>, <span class="string">'MATLAB:nearlySingularMatrix'</span>) ;
+0097 
+0098     <span class="keyword">for</span> k = 1:nmat
+0099         id = f (k) ;
+0100         Prob = UFget (id, index) ;
+0101         A = Prob.A ;
+0102         n = size (A,1) ;
+0103         I = speye (n) ;
+0104         fprintf (<span class="string">'id: %4d  n: %4d : %-30s'</span>, id, n, Prob.name) ;
+0105 
+0106         Z = [ ] ; 
+0107         <span class="keyword">try</span>
+0108             [Z, Zpattern, L, D, U, P, Q] = <a href="sparseinv.html" class="code" title="function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)">sparseinv</a> (A) ;
+0109         <span class="keyword">catch</span> me
+0110             fprintf (<span class="string">'%s'</span>, me.message) ;
+0111         <span class="keyword">end</span>
+0112 
+0113         <span class="keyword">if</span> (~isempty (Z))
+0114             e = norm ((L+I) * D * (U+I) - P*A*Q, 1) / norm (A,1) ;
+0115             fprintf (<span class="string">'errs:  %12.3e '</span>, e) ;
+0116             <span class="keyword">if</span> (e &gt; 1e-10)
+0117                 error (<span class="string">'error in factorization too high'</span>) ;
+0118             <span class="keyword">end</span>
+0119             S = inv (A) ;           <span class="comment">% normally S has MANY nonzero entries</span>
+0120             Snorm = norm (S,1) ;
+0121             E = abs (Zpattern .* (Z-S)) / Snorm ;
+0122             e = norm (E, 1) ;
+0123             c = condest (A) ;
+0124             fprintf (<span class="string">' %12.3e  condest: %12.2e'</span>, e, c) ;
+0125             <span class="keyword">if</span> (e/c  &gt; 1e-8)
+0126                 error (<span class="string">'error in sparseinv too high'</span>) ;
+0127             <span class="keyword">end</span>
+0128             fprintf (<span class="string">' ok'</span>) ;
+0129 
+0130             <span class="keyword">if</span> (dofigures)
+0131                 subplot (2,2,1) ; cspy (A) ;
+0132                 title (Prob.name, <span class="string">'Interpreter'</span>, <span class="string">'none'</span>) ;
+0133                 subplot (2,2,2) ; cspy (P*A*Q) ;  title (<span class="string">'P*A*Q'</span>) ;
+0134                 subplot (2,2,3) ; cspy (Z) ;      title (<span class="string">'sparse inverse'</span>) ;
+0135                 subplot (2,2,4) ; cspy (S) ;      title (<span class="string">'inverse'</span>) ;
+0136                 drawnow
+0137             <span class="keyword">end</span>
+0138 
+0139         <span class="keyword">end</span>
+0140         fprintf (<span class="string">'\n'</span>) ;
+0141         <span class="keyword">if</span> (n &gt;= 300)
+0142             <span class="keyword">break</span> ;
+0143         <span class="keyword">end</span>
+0144     <span class="keyword">end</span>
+0145 
+0146     warning (s) ;       <span class="comment">% restore warning status</span>
+0147 <span class="keyword">end</span>
+0148 
+0149 fprintf (<span class="string">'All sparseinv tests passed.\n'</span>) ;</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

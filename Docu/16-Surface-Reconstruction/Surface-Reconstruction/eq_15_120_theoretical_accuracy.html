@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of eq_15_120_theoretical_accuracy</title>
+  <meta name="keywords" content="eq_15_120_theoretical_accuracy">
+  <meta name="description" content="% eq_15_120_theoretical accuracy">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="Documentation.html">Surface-Reconstruction</a> &gt; eq_15_120_theoretical_accuracy.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Surface-Reconstruction&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>eq_15_120_theoretical_accuracy
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% eq_15_120_theoretical accuracy</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% eq_15_120_theoretical accuracy
+
+ determines precision as a function of grid spacing
+ plots grid and precision (10 levels)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_15_flat.html" class="code" title="function [points,BB,dx,sigma_k,sigma_s,out_in,dem]=simulate_points_dem_15(d,n)">simulate_points_dem_15_flat</a>	% generate a set of points for dem-interpolation</li><li><a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,out_in_0,print_type,plot_type)">smooth_dem_robust_bilinear</a>	% smooth_dem_robust_bilinear</li><li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% eq_15_120_theoretical accuracy</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% determines precision as a function of grid spacing</span>
+0004 <span class="comment">% plots grid and precision (10 levels)</span>
+0005 
+0006 <span class="comment">% clear all</span>
+0007 clearvars
+0008 close all
+0009 <span class="comment">% type_data: type of generated data</span>
+0010 <span class="comment">% 15     4x4 Grid</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% wf 7/2014</span>
+0013 
+0014 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0015 addpath(<span class="string">'Functions'</span>)
+0016 addpath(<span class="string">'Data'</span>)
+0017 <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0018 
+0019 disp(<span class="string">'--- analyse theoretical precision ---'</span>)
+0020 
+0021 init_rand = 6;
+0022 type_robust = 0
+0023 <span class="comment">%             0 not robust</span>
+0024 <span class="comment">%             1 only dem</span>
+0025 <span class="comment">%             2 only points</span>
+0026 <span class="comment">%             3 both</span>
+0027 
+0028 out_C = 1;
+0029 out_print = 0;
+0030 Tol =0.15;
+0031 
+0032 print_type = 0;
+0033 plot_type  = 0;
+0034 
+0035 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0036 
+0037 <span class="comment">%% generate dem point cloud</span>
+0038 sigma_z=zeros(10,1);
+0039 n=4
+0040 d_max=10;
+0041 <span class="keyword">for</span> d=1:d_max
+0042     [points,BB,delta_x,sigma_k,sigma_s,out_in,dem]=<a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/simulate_points_dem_15_flat.html" class="code" title="function [points,BB,dx,sigma_k,sigma_s,out_in,dem]=simulate_points_dem_15(d,n)">simulate_points_dem_15_flat</a>(d,n);
+0043 
+0044     Np = size(points,1);
+0045 
+0046 
+0047     <span class="comment">% smooth non-robust</span>
+0048 
+0049     type_robust=0;
+0050 
+0051     starttime = cputime
+0052     [ds,S,Sigma,Np,Nr,Mc,ver,A,w,w_f,W] =<span class="keyword">...</span>
+0053         <a href="../../16-Surface-Reconstruction/Surface-Reconstruction/Functions/smooth_dem_robust_bilinear.html" class="code" title="function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,weights_f,W] =smooth_dem_robust_bilinear(points,BB,delta_x,sigma_k,out_C,type_robust,out_in_0,print_type,plot_type)">smooth_dem_robust_bilinear</a><span class="keyword">...</span>
+0054         (points,BB,delta_x,sigma_k,out_C,type_robust,out_in,<span class="keyword">...</span>
+0055         print_type,plot_type);
+0056     complete_time_for_solution=cputime-starttime
+0057 
+0058     figure
+0059     hold on
+0060     mesh(S);
+0061     title(strcat(<span class="string">'Height = \sigma_z, d='</span>,num2str(2*d)))
+0062     view([-33,63])
+0063     sigma_centre=sqrt(S(2+(n-1)*d,2+(n-1)*d));
+0064     sigma_z(d)=sigma_centre;
+0065 <span class="keyword">end</span>
+0066 
+0067 std_z=sigma_z'
+0068 
+0069 figure
+0070 hold on
+0071 d_range=1:d_max;
+0072 plot(2*(1:d_max),sigma_z(1:d_max),<span class="string">'ob'</span>,<span class="string">'MarkerSize'</span>,12)
+0073 B=regress(sigma_z(d_range).^2,[ones(length(d_range),1),(2*d_range)'.^2])
+0074 plot(2*(1:d_max),sqrt(B(1)+B(2)*(2*(1:d_max))'.^2),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,2)
+0075 title(strcat(<span class="string">'\sigma_z ='</span>,num2str(B(1)),<span class="string">' + '</span>,num2str(B(2)),<span class="string">'d, (d &gt; 1)'</span>))</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

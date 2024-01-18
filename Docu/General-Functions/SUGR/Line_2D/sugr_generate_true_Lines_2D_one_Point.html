@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_generate_true_Lines_2D_one_Point</title>
+  <meta name="keywords" content="sugr_generate_true_Lines_2D_one_Point">
+  <meta name="description" content="sugr_generate_true_2d_lines_one_point: generates image lines through one point">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Line_2D</a> &gt; sugr_generate_true_Lines_2D_one_Point.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Line_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_generate_true_Lines_2D_one_Point
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sugr_generate_true_2d_lines_one_point: generates image lines through one point</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function lines = sugr_generate_true_Lines_2D_one_Point(x0,d,N,lengthq,resolution) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> sugr_generate_true_2d_lines_one_point: generates image lines through one point
+
+ lines = sugr_generate_true_2d_lines_one_point(x0,d,N,lengthq,resolution)
+
+ * x0 true intersection point, homogeneous vector, direction from projection centre
+ * d = image size d*[-1,1] x  d*[-1,1] ---- assuming c=1
+ * N  = total number of lines to be generated
+ * lengthq [pel] = average length of lines in pixels
+
+ *     lines have length lengthq*f, log(f) in [-1,3],
+ *     thus f in[1/e, e^3] appr. [0.3,25]
+
+ * resolution [pel] = number of pixels (square image)
+ 
+ lines = N x 4 array with [u0,v0,phi_0,lengthl]    
+
+ Wolfgang Förstner 2/2011
+ wfoerstn@uni-bonn.de
+ 
+ see also <a href="sugr_Line_2D.html" class="code" title="function Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)">sugr_Line_2D</a>, <a href="sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_estimate_Point_2D_from_Lines.html" class="code" title="">demo_estimate_Point_2D_from_Lines</a>	% demo_estimate_Point_2D_from_Lines</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% sugr_generate_true_2d_lines_one_point: generates image lines through one point</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% lines = sugr_generate_true_2d_lines_one_point(x0,d,N,lengthq,resolution)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * x0 true intersection point, homogeneous vector, direction from projection centre</span>
+0006 <span class="comment">% * d = image size d*[-1,1] x  d*[-1,1] ---- assuming c=1</span>
+0007 <span class="comment">% * N  = total number of lines to be generated</span>
+0008 <span class="comment">% * lengthq [pel] = average length of lines in pixels</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% *     lines have length lengthq*f, log(f) in [-1,3],</span>
+0011 <span class="comment">% *     thus f in[1/e, e^3] appr. [0.3,25]</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% * resolution [pel] = number of pixels (square image)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% lines = N x 4 array with [u0,v0,phi_0,lengthl]</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Wolfgang Förstner 2/2011</span>
+0018 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% see also sugr_Line_2D, sugr_perturb_Lines_2D</span>
+0021 
+0022 <a name="_sub0" href="#_subfunctions" class="code">function lines = sugr_generate_true_Lines_2D_one_Point(x0,d,N,lengthq,resolution)</a>
+0023 
+0024 
+0025 <span class="comment">%% Initiate</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% determine given point</span>
+0028 
+0029 c=1; <span class="comment">% nur zum Test auf Sensitivität gegen Änderungen von c</span>
+0030 
+0031 van_1 = x0/norm(x0);
+0032 van_1(3) = van_1(3)*c;
+0033 
+0034 <span class="comment">%% prepare generation of lines</span>
+0035 
+0036 lines        = zeros(N,4);
+0037 
+0038 ii = 0;
+0039 
+0040 <span class="comment">% Delta_x=d/resolution;</span>
+0041 
+0042 maxl = 0;
+0043 minl = 10000;
+0044 
+0045 <span class="comment">%% generate N lines</span>
+0046 <span class="keyword">for</span> n = 1:N
+0047     <span class="comment">% generate line to point van_1</span>
+0048 
+0049     <span class="comment">% Generate true data</span>
+0050     
+0051     <span class="comment">% centre, randomly distributed in image</span>
+0052     z0     = (rand(1)*2-1+1i*(rand(1)*2-1))*d;
+0053 
+0054     <span class="comment">% true line</span>
+0055     e_line = cross([real(z0),imag(z0),1],van_1);
+0056     <span class="keyword">if</span> rand(1) &lt; 0.5 e_line=-e_line; <span class="keyword">end</span>;
+0057 
+0058     <span class="comment">% true direction of line</span>
+0059     phi_0 = atan2(e_line(2),e_line(1))+pi/2;
+0060 
+0061     <span class="comment">% length</span>
+0062     log_f=(rand(1)*4-1)/2;
+0063     f=exp(log_f);
+0064     lengthl= lengthq*f;
+0065     minl=min(minl,lengthl);
+0066     maxl=max(maxl,lengthl);
+0067     ii=ii+1;
+0068     lines(ii,:)=[real(z0),imag(z0),phi_0,lengthl];
+0069 <span class="keyword">end</span>;
+0070 
+0071 <span class="comment">% minlength_maxlength_of_segments=[minl,maxl];</span>
+0072 disp([<span class="string">'Minimum and maximum length of segments : ['</span>, num2str(minl),<span class="string">','</span>,num2str(maxl),<span class="string">']'</span>]);
+0073 
+0074 
+0075             
+0076   
+0077 
+0078 
+0079 
+0080</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

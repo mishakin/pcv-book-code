@@ -1,0 +1,283 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of smooth_dem_robust_bilinear_flat</title>
+  <meta name="keywords" content="smooth_dem_robust_bilinear_flat">
+  <meta name="description" content="% smooth_dem_robust_bilinear, sparse data on grid, flatness">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">16-Surfacereconstruction</a> &gt; <a href="index.html">Functions</a> &gt; smooth_dem_robust_bilinear_flat.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>smooth_dem_robust_bilinear_flat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% smooth_dem_robust_bilinear, sparse data on grid, flatness</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,W] =smooth_dem_robust_bilinear_flat(points,BB,delta_x,sigma_s,out_C,type_robust,type_data,out_in,print_type,plot_type); </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% smooth_dem_robust_bilinear, sparse data on grid, flatness
+
+ 
+ function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,W] = ...
+    smooth_dem_robust_bilinear_flat...
+    (points,BB,delta_x,sigma_k,out_C,out_print,type_robust,type_data)
+
+ points  = Nx4-matrix of (x,y,h,sigma) values, 
+ BB      = [xmin,ymin,xmax,ymax] boundin,g box of square grid
+ delta_x = grid size, squared 
+           xmax, ymax will be adapted, not decreased
+           points not incide BB will be discarded
+ sigms_s = std. dev. of slope of surface, referring to delta_x
+ out_C   = 0 no covariance matrix as output, (default if U&gt;1600)
+           1 covariance matrix as output
+ out_print = 0 no output
+             1 little output
+             2 much output
+ type_robust = 0,1,2,3 (00,01,10,11) for points and dem
+
+ dem_smoothe = Nr x Mc matrix of smoothed heigths
+ S           = corresponding standard deviations, if required
+ Sigma       = full covariance matrix. if required
+ Np          = number of points
+ Nr, Mc      = number of grid points in x- and y-direction
+ v           = residuals (Np + (Nr-2)*Mc + Nr*(Mc-2)  for
+               points
+               first derivatives c
+               first derivatives r
+ A           = design matrix (sparse) 
+ weights     = weight-factors after robust estimation (0 or 1)
+ W           = weight of observations including both, uncertainty and robust factor 
+
+ grid is matrix Nr x Mc and stored column wise
+
+ wf 10/2014</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="estimate_dem_robust_flat.html" class="code" title="function [A,weights,dx,v,W]=estimate_dem_robust_flat(N,U,Np,Nr,Mc,poi,xa,weights,sigma_s,iter,type_robust,L1,out_in,print_type,plot_type);">estimate_dem_robust_flat</a>	% robustly estimate correction to dem, flatness</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../16-Surfacereconstruction/fig_16_9b_demo_surface_reconstruction.html" class="code" title="">fig_16_9b_demo_surface_reconstruction</a>	% Fig. 16.9 bottom page 740</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% smooth_dem_robust_bilinear, sparse data on grid, flatness</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,W] = ...</span>
+0005 <span class="comment">%    smooth_dem_robust_bilinear_flat...</span>
+0006 <span class="comment">%    (points,BB,delta_x,sigma_k,out_C,out_print,type_robust,type_data)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% points  = Nx4-matrix of (x,y,h,sigma) values,</span>
+0009 <span class="comment">% BB      = [xmin,ymin,xmax,ymax] boundin,g box of square grid</span>
+0010 <span class="comment">% delta_x = grid size, squared</span>
+0011 <span class="comment">%           xmax, ymax will be adapted, not decreased</span>
+0012 <span class="comment">%           points not incide BB will be discarded</span>
+0013 <span class="comment">% sigms_s = std. dev. of slope of surface, referring to delta_x</span>
+0014 <span class="comment">% out_C   = 0 no covariance matrix as output, (default if U&gt;1600)</span>
+0015 <span class="comment">%           1 covariance matrix as output</span>
+0016 <span class="comment">% out_print = 0 no output</span>
+0017 <span class="comment">%             1 little output</span>
+0018 <span class="comment">%             2 much output</span>
+0019 <span class="comment">% type_robust = 0,1,2,3 (00,01,10,11) for points and dem</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% dem_smoothe = Nr x Mc matrix of smoothed heigths</span>
+0022 <span class="comment">% S           = corresponding standard deviations, if required</span>
+0023 <span class="comment">% Sigma       = full covariance matrix. if required</span>
+0024 <span class="comment">% Np          = number of points</span>
+0025 <span class="comment">% Nr, Mc      = number of grid points in x- and y-direction</span>
+0026 <span class="comment">% v           = residuals (Np + (Nr-2)*Mc + Nr*(Mc-2)  for</span>
+0027 <span class="comment">%               points</span>
+0028 <span class="comment">%               first derivatives c</span>
+0029 <span class="comment">%               first derivatives r</span>
+0030 <span class="comment">% A           = design matrix (sparse)</span>
+0031 <span class="comment">% weights     = weight-factors after robust estimation (0 or 1)</span>
+0032 <span class="comment">% W           = weight of observations including both, uncertainty and robust factor</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% grid is matrix Nr x Mc and stored column wise</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">% wf 10/2014</span>
+0037 <span class="comment">%</span>
+0038 
+0039 <a name="_sub0" href="#_subfunctions" class="code">function [dem_smoothed,S,Sigma,Np,Nr,Mc,v,A,weights,W] = </a><span class="keyword">...</span>
+0040     smooth_dem_robust_bilinear_flat<span class="keyword">...</span>
+0041     (points,BB,delta_x,sigma_s,out_C,type_robust,type_data,<span class="keyword">...</span>
+0042     out_in,print_type,plot_type);
+0043 
+0044 <span class="comment">% number of points, preliminary</span>
+0045 [Npp,dim] = size(points);
+0046 
+0047 <span class="keyword">if</span> print_type &gt; 0
+0048     number_of_points_given = Npp
+0049 <span class="keyword">end</span>
+0050 
+0051 
+0052 xmin = BB(1);
+0053 ymin = BB(2);
+0054 xmax = BB(3);
+0055 ymax = BB(4);
+0056 Nr =ceil((xmax-xmin)/delta_x)+1;
+0057 Mc =ceil((ymax-ymin)/delta_x)+1;
+0058 
+0059 
+0060 Np = 0;
+0061 <span class="keyword">for</span> p=1:Npp
+0062     <span class="keyword">if</span> points(p,1) &gt;= xmin &amp;&amp; <span class="keyword">...</span>
+0063             points(p,1) &lt; xmax &amp;&amp; <span class="keyword">...</span>
+0064             points(p,2) &gt;= ymin &amp;&amp; <span class="keyword">...</span>
+0065             points(p,2) &lt; ymax
+0066         Np=Np+1;
+0067         poi(Np,:) = [(points(p,1)-xmin)/delta_x,(points(p,2)-ymin)/delta_x,points(p,3:4)];
+0068     <span class="keyword">end</span>
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="keyword">if</span> print_type &gt; 1
+0072     number_of_points_in_BB = Np
+0073 <span class="keyword">end</span>
+0074 
+0075 
+0076 <span class="comment">% number of unknowns and observations incl. prior</span>
+0077 
+0078 U = Nr*Mc;
+0079 N = Np + (Nr-1)*Mc + Nr*(Mc-1);
+0080 <span class="keyword">if</span> print_type &gt; 0
+0081     number_of_unknowns = U
+0082 <span class="keyword">end</span>
+0083 
+0084 <span class="comment">% do not give covariance matrix for U&gt;1600.</span>
+0085 <span class="keyword">if</span> U &gt; 1600
+0086     out_C = 0;
+0087 <span class="keyword">end</span>
+0088 <span class="keyword">if</span> print_type &gt; 0
+0089     tic
+0090 <span class="keyword">end</span>
+0091 <span class="comment">%% estimate iteratively</span>
+0092 
+0093 iter_switch=3;
+0094 <span class="keyword">if</span> type_robust == 0
+0095     N_iter = 1;
+0096     first = 1;
+0097 <span class="keyword">else</span>
+0098     N_iter=6;
+0099     first=1;
+0100 <span class="keyword">end</span>
+0101 xa = zeros(U,1);
+0102 weights  = ones(N,1);
+0103 sigma_s0=sigma_s;
+0104 <span class="keyword">for</span> iter = 1:N_iter
+0105     <span class="keyword">if</span> print_type &gt; 0
+0106         display(<span class="string">'Aufruf von estimate_dem_robust_flat'</span>)
+0107         start_ex=[iter,type_robust]
+0108     <span class="keyword">end</span>
+0109     L1=0;
+0110     <span class="keyword">if</span> type_robust &gt;0 &amp;&amp; iter &lt;= iter_switch
+0111         L1=1;
+0112         sigma_s=sigma_s0*4;
+0113     <span class="keyword">else</span>
+0114         L1=0;
+0115         sigma_s=sigma_s0;
+0116     <span class="keyword">end</span>
+0117     sigma_s=sigma_s0*1.4^(N_iter-iter);
+0118     [A,weights,dx,v,W]=<a href="estimate_dem_robust_flat.html" class="code" title="function [A,weights,dx,v,W]=estimate_dem_robust_flat(N,U,Np,Nr,Mc,poi,xa,weights,sigma_s,iter,type_robust,L1,out_in,print_type,plot_type);">estimate_dem_robust_flat</a><span class="keyword">...</span>
+0119         (N,U,Np,Nr,Mc,poi,xa,weights,sigma_s,iter,type_robust,L1,<span class="keyword">...</span>
+0120         out_in,print_type,plot_type);
+0121     first=0;
+0122     xa = xa + dx;
+0123 
+0124     <span class="keyword">if</span> print_type &gt; 0
+0125         iter_dx = [iter,norm(dx)]
+0126     <span class="keyword">end</span>
+0127     <span class="comment">%%</span>
+0128     <span class="keyword">if</span>  plot_type &gt; 0
+0129         <span class="keyword">if</span> iter == 1
+0130             figure(20)
+0131             hold on
+0132             X=([4*Nr:4*Nr+Nr-1]'*ones(1,Mc))*delta_x+BB(1);
+0133             Y=(ones(Nr,1)*[0:Mc-1])*delta_x+BB(2);
+0134 
+0135             <span class="keyword">if</span> type_data ~=5 &amp;&amp; type_robust &gt; 0
+0136                 colormap(gray)
+0137                 surf(X,Y,reshape(xa,Nr,Mc));
+0138                 alpha(0.3);
+0139                 <span class="comment">%mesh(ds);</span>
+0140 
+0141                 plot3(points(:,1)+4*Nr*delta_x,points(:,2),points(:,3),<span class="string">'.r'</span>,<span class="string">'MarkerSize'</span>,20);
+0142 
+0143             <span class="keyword">else</span>
+0144                 subplot(1,3,2)
+0145                 <span class="comment">%imagesc(reshape(xa,Nr,Mc));</span>
+0146                 imshow(reshape(xa,Nr,Mc));
+0147                 colormap(gray)
+0148                 view(0,90)
+0149                 title(<span class="string">'1.iteration'</span>)
+0150             <span class="keyword">end</span>
+0151             title(strcat(<span class="string">'iteration='</span>,num2str(iter),<span class="string">' fitted dem'</span>))
+0152 
+0153             axis equal
+0154         <span class="keyword">else</span>
+0155             figure
+0156             hold on
+0157             X=([0:Nr-1]'*ones(1,Mc))*delta_x+BB(1);
+0158             Y=(ones(Nr,1)*[0:Mc-1])*delta_x+BB(2);
+0159             colormap(gray)
+0160             surf(X,Y,reshape(xa,Nr,Mc));
+0161             alpha(0.3);
+0162             <span class="comment">%mesh(ds);</span>
+0163             plot3(points(:,1),points(:,2),points(:,3),<span class="string">'.r'</span>,<span class="string">'MarkerSize'</span>,20);
+0164 
+0165             title(strcat(<span class="string">'iteration='</span>,num2str(iter),<span class="string">' fitted dem'</span>))
+0166 
+0167             <span class="keyword">if</span> type_data ~= 5
+0168                 axis equal
+0169             <span class="keyword">end</span>
+0170         <span class="keyword">end</span>
+0171     <span class="keyword">end</span>
+0172 
+0173 <span class="keyword">end</span>
+0174 <span class="comment">% if type_robust &gt; 0</span>
+0175 <span class="comment">%     %final estimate</span>
+0176 <span class="comment">%     weights = 0.9999*ceil(weights-0.5)+0.0001;</span>
+0177 <span class="comment">%     weights_final = weights(1:20)'</span>
+0178 <span class="comment">%     xa=zeros(length(xa),1);</span>
+0179 <span class="comment">%     [A,weights,dx,v]=estimate_dem_robust_flat(N,U,Np,Nr,Mc,poi,xa,weights,sigma_s,1,out_print,0);</span>
+0180 <span class="comment">%     xa = xa + dx;</span>
+0181 <span class="comment">%     iter_dx = [iter+1,norm(dx)]</span>
+0182 <span class="comment">% end</span>
+0183 
+0184 dem_smoothed = reshape(xa,Nr,Mc);
+0185 
+0186 <span class="comment">%% determine covariance matrix</span>
+0187 Sigma=0;
+0188 S = 0;
+0189 <span class="keyword">if</span> print_type &gt; 0
+0190     tic
+0191 <span class="keyword">end</span>
+0192 <span class="keyword">if</span> out_C &gt; 0
+0193     Sigma = full(inv(A'*A));
+0194     S     = full(reshape(diag(Sigma),Nr,Mc));
+0195 <span class="keyword">end</span>
+0196 <span class="keyword">if</span> print_type &gt; 0
+0197     time_for_inverse=toc
+0198 <span class="keyword">end</span>
+0199 
+0200 
+0201 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

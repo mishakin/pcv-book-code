@@ -1,0 +1,753 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ply_read</title>
+  <meta name="keywords" content="ply_read">
+  <meta name="description" content="*****************************************************************************80">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="../Documentation.html">Surface-Reconstruction</a> &gt; <a href="Documentation.html">Functions</a> &gt; ply_read.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Surface-Reconstruction\Functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>ply_read
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>*****************************************************************************80</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [ Elements, varargout ] = ply_read ( Path, Str ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">*****************************************************************************80
+
+% PLY_READ reads a PLY 3D data file.
+
+   [DATA,COMMENTS] = PLY_READ(FILENAME) reads a version 1.0 PLY file
+   FILENAME and returns a structure DATA.  The fields in this structure
+   are defined by the PLY header; each element type is a field and each
+   element property is a subfield.  If the file contains any comments,
+   they are returned in a cell string array COMMENTS.
+
+   [TRI,PTS] = PLY_READ(FILENAME,'tri') or
+   [TRI,PTS,DATA,COMMENTS] = PLY_READ(FILENAME,'tri') converts vertex
+   and face data into triangular connectivity and vertex arrays.  The
+   mesh can then be displayed using the TRISURF command.
+
+   Note: This function is slow for large mesh files (+50K faces),
+   especially when reading data with list type properties.
+
+   Example:
+   [Tri,Pts] = PLY_READ('cow.ply','tri');
+   trisurf(Tri,Pts(:,1),Pts(:,2),Pts(:,3));
+   colormap(gray); axis equal;
+
+  Discussion:
+
+    The original version of this program had a mistake that meant it
+    did not properly triangulate files whose faces were not already triangular.
+    This has been corrected (JVB, 25 February 2007).
+
+  Licensing:
+
+    This code is distributed under the GNU LGPL license.
+
+  Modified:
+
+    25 February 2007
+
+  Author:
+
+    Pascal Getreuer 2004
+
+  Parameters:
+
+  Local Parameters:
+
+    COMMENTS, any comments from the file.
+
+    ELEMENTCOUNT, the number of each type of element in file.
+
+    ELEMENTS, the element data.
+
+    PROPERTYTYPES, the element property types.
+
+    SIZEOF, size in bytes of each type.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="simulate_points_dem_10.html" class="code" title="function [points,BB,delta_x,sigma_k,XYZ_ori]=simulate_points_dem_10(file_name,Nbin)">simulate_points_dem_10</a>	% read ply-file</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ Elements, varargout ] = ply_read ( Path, Str )</a>
+0002 
+0003 <span class="comment">%*****************************************************************************80</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%% PLY_READ reads a PLY 3D data file.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [DATA,COMMENTS] = PLY_READ(FILENAME) reads a version 1.0 PLY file</span>
+0008 <span class="comment">%   FILENAME and returns a structure DATA.  The fields in this structure</span>
+0009 <span class="comment">%   are defined by the PLY header; each element type is a field and each</span>
+0010 <span class="comment">%   element property is a subfield.  If the file contains any comments,</span>
+0011 <span class="comment">%   they are returned in a cell string array COMMENTS.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   [TRI,PTS] = PLY_READ(FILENAME,'tri') or</span>
+0014 <span class="comment">%   [TRI,PTS,DATA,COMMENTS] = PLY_READ(FILENAME,'tri') converts vertex</span>
+0015 <span class="comment">%   and face data into triangular connectivity and vertex arrays.  The</span>
+0016 <span class="comment">%   mesh can then be displayed using the TRISURF command.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   Note: This function is slow for large mesh files (+50K faces),</span>
+0019 <span class="comment">%   especially when reading data with list type properties.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   Example:</span>
+0022 <span class="comment">%   [Tri,Pts] = PLY_READ('cow.ply','tri');</span>
+0023 <span class="comment">%   trisurf(Tri,Pts(:,1),Pts(:,2),Pts(:,3));</span>
+0024 <span class="comment">%   colormap(gray); axis equal;</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%  Discussion:</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%    The original version of this program had a mistake that meant it</span>
+0029 <span class="comment">%    did not properly triangulate files whose faces were not already triangular.</span>
+0030 <span class="comment">%    This has been corrected (JVB, 25 February 2007).</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%  Licensing:</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%    This code is distributed under the GNU LGPL license.</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%  Modified:</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%    25 February 2007</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%  Author:</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%    Pascal Getreuer 2004</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%  Parameters:</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%  Local Parameters:</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%    COMMENTS, any comments from the file.</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%    ELEMENTCOUNT, the number of each type of element in file.</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">%    ELEMENTS, the element data.</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%    PROPERTYTYPES, the element property types.</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%    SIZEOF, size in bytes of each type.</span>
+0057 <span class="comment">%</span>
+0058 
+0059 <span class="comment">%</span>
+0060 <span class="comment">%  Open the input file in &quot;read text&quot; mode.</span>
+0061 <span class="comment">%</span>
+0062   [ fid, Msg ] = fopen ( Path, <span class="string">'rt'</span> );
+0063 
+0064   <span class="keyword">if</span> ( fid == -1 )
+0065     error ( Msg );
+0066   <span class="keyword">end</span>
+0067 
+0068   Buf = fscanf ( fid, <span class="string">'%s'</span>, 1 );
+0069 
+0070   <span class="keyword">if</span> ( ~strcmp ( Buf, <span class="string">'ply'</span> ) )
+0071     fclose ( fid );
+0072     error(<span class="string">'Not a PLY file.'</span>);
+0073   <span class="keyword">end</span>
+0074 <span class="comment">%</span>
+0075 <span class="comment">%  Read the header.</span>
+0076 <span class="comment">%</span>
+0077   Position = ftell(fid);
+0078   Format = <span class="string">''</span>;
+0079   NumComments = 0;
+0080   Comments = {};
+0081   NumElements = 0;
+0082   NumProperties = 0;
+0083   Elements = [];
+0084   ElementCount = [];
+0085   PropertyTypes = [];
+0086   ElementNames = {};  <span class="comment">% list of element names in the order they are stored in the file</span>
+0087   PropertyNames = [];  <span class="comment">% structure of lists of property names</span>
+0088 
+0089   <span class="keyword">while</span> ( 1 )
+0090 <span class="comment">%</span>
+0091 <span class="comment">%  Read a line from the file.</span>
+0092 <span class="comment">%</span>
+0093     Buf = fgetl ( fid );
+0094     BufRem = Buf;
+0095     Token = {};
+0096     Count = 0;
+0097 <span class="comment">%</span>
+0098 <span class="comment">%  Split the line into tokens.</span>
+0099 <span class="comment">%</span>
+0100     <span class="keyword">while</span> ( ~isempty(BufRem) )
+0101 
+0102       [ tmp, BufRem ] = strtok(BufRem);
+0103 <span class="comment">%</span>
+0104 <span class="comment">%  Count the tokens.</span>
+0105 <span class="comment">%</span>
+0106       <span class="keyword">if</span> ( ~isempty ( tmp ) )
+0107         Count = Count + 1;
+0108         Token{Count} = tmp;
+0109       <span class="keyword">end</span>
+0110 
+0111     <span class="keyword">end</span>
+0112 <span class="comment">%</span>
+0113 <span class="comment">%  Parse the line.</span>
+0114 <span class="comment">%</span>
+0115     <span class="keyword">if</span> ( Count )
+0116 
+0117       <span class="keyword">switch</span> lower ( Token{1} )
+0118 <span class="comment">%</span>
+0119 <span class="comment">%  Read the data format.</span>
+0120 <span class="comment">%</span>
+0121       <span class="keyword">case</span> <span class="string">'format'</span>
+0122 
+0123         <span class="keyword">if</span> ( 2 &lt;= Count )
+0124 
+0125           Format = lower ( Token{2} );
+0126 
+0127           <span class="keyword">if</span> ( Count == 3 &amp; ~strcmp ( Token{3}, <span class="string">'1.0'</span> ) )
+0128             fclose ( fid );
+0129             error(<span class="string">'Only PLY format version 1.0 supported.'</span>);
+0130           <span class="keyword">end</span>
+0131         <span class="keyword">end</span>
+0132 <span class="comment">%</span>
+0133 <span class="comment">%  Read a comment.</span>
+0134 <span class="comment">%</span>
+0135       <span class="keyword">case</span> <span class="string">'comment'</span>
+0136 
+0137         NumComments = NumComments + 1;
+0138         Comments{NumComments} = <span class="string">''</span>;
+0139         <span class="keyword">for</span> i = 2 : Count
+0140           Comments{NumComments} = [Comments{NumComments},Token{i},<span class="string">' '</span>];
+0141         <span class="keyword">end</span>
+0142 <span class="comment">%</span>
+0143 <span class="comment">%  Read an element name.</span>
+0144 <span class="comment">%</span>
+0145       <span class="keyword">case</span> <span class="string">'element'</span>
+0146 
+0147         <span class="keyword">if</span> ( 3 &lt;= Count )
+0148 
+0149           <span class="keyword">if</span> ( isfield(Elements,Token{2}) )
+0150             fclose ( fid );
+0151             error([<span class="string">'Duplicate element name, '''</span>,Token{2},<span class="string">'''.'</span>]);
+0152           <span class="keyword">end</span>
+0153 
+0154           NumElements = NumElements + 1;
+0155           NumProperties = 0;
+0156           Elements = setfield(Elements,Token{2},[]);
+0157           PropertyTypes = setfield(PropertyTypes,Token{2},[]);
+0158           ElementNames{NumElements} = Token{2};
+0159           PropertyNames = setfield(PropertyNames,Token{2},{});
+0160           CurElement = Token{2};
+0161           ElementCount(NumElements) = str2double(Token{3});
+0162 
+0163           <span class="keyword">if</span> ( isnan(ElementCount(NumElements)) )
+0164             fclose ( fid );
+0165             error([<span class="string">'Bad element definition: '</span>,Buf]);
+0166           <span class="keyword">end</span>
+0167 
+0168         <span class="keyword">else</span>
+0169 
+0170           error([<span class="string">'Bad element definition: '</span>,Buf]);
+0171 
+0172         <span class="keyword">end</span>
+0173 <span class="comment">%</span>
+0174 <span class="comment">%  Read an element property.</span>
+0175 <span class="comment">%</span>
+0176       <span class="keyword">case</span> <span class="string">'property'</span>
+0177 
+0178         <span class="keyword">if</span> ( ~isempty(CurElement) &amp; Count &gt;= 3 )
+0179 
+0180           NumProperties = NumProperties + 1;
+0181           eval([<span class="string">'tmp=isfield(Elements.'</span>,CurElement,<span class="string">',Token{Count});'</span>],<span class="keyword">...</span>
+0182             <span class="string">'fclose(fid);error([''Error reading property: '',Buf])'</span>);
+0183 
+0184           <span class="keyword">if</span> ( tmp )
+0185             error([<span class="string">'Duplicate property name, '''</span>,CurElement,<span class="string">'.'</span>,Token{2},<span class="string">'''.'</span>]);
+0186           <span class="keyword">end</span>
+0187 <span class="comment">%</span>
+0188 <span class="comment">%  Add property subfield to Elements.</span>
+0189 <span class="comment">%</span>
+0190           eval([<span class="string">'Elements.'</span>,CurElement,<span class="string">'.'</span>,Token{Count},<span class="string">'=[];'</span>], <span class="keyword">...</span>
+0191             <span class="string">'fclose(fid);error([''Error reading property: '',Buf])'</span>);
+0192 <span class="comment">%</span>
+0193 <span class="comment">%  Add property subfield to PropertyTypes and save type.</span>
+0194 <span class="comment">%</span>
+0195           eval([<span class="string">'PropertyTypes.'</span>,CurElement,<span class="string">'.'</span>,Token{Count},<span class="string">'={Token{2:Count-1}};'</span>], <span class="keyword">...</span>
+0196             <span class="string">'fclose(fid);error([''Error reading property: '',Buf])'</span>);
+0197 <span class="comment">%</span>
+0198 <span class="comment">%  Record property name order.</span>
+0199 <span class="comment">%</span>
+0200           eval([<span class="string">'PropertyNames.'</span>,CurElement,<span class="string">'{NumProperties}=Token{Count};'</span>], <span class="keyword">...</span>
+0201             <span class="string">'fclose(fid);error([''Error reading property: '',Buf])'</span>);
+0202 
+0203          <span class="keyword">else</span>
+0204 
+0205            fclose ( fid );
+0206 
+0207            <span class="keyword">if</span> ( isempty(CurElement) )
+0208              error([<span class="string">'Property definition without element definition: '</span>,Buf]);
+0209            <span class="keyword">else</span>
+0210              error([<span class="string">'Bad property definition: '</span>,Buf]);
+0211            <span class="keyword">end</span>
+0212 
+0213          <span class="keyword">end</span>
+0214 <span class="comment">%</span>
+0215 <span class="comment">%  End of header.</span>
+0216 <span class="comment">%</span>
+0217         <span class="keyword">case</span> <span class="string">'end_header'</span>
+0218           <span class="keyword">break</span>;
+0219 
+0220       <span class="keyword">end</span>
+0221     <span class="keyword">end</span>
+0222   <span class="keyword">end</span>
+0223 <span class="comment">%</span>
+0224 <span class="comment">%  Set reading for specified data format.</span>
+0225 <span class="comment">%</span>
+0226   <span class="keyword">if</span> ( isempty ( Format ) )
+0227     warning(<span class="string">'Data format unspecified, assuming ASCII.'</span>);
+0228     Format = <span class="string">'ascii'</span>;
+0229   <span class="keyword">end</span>
+0230 
+0231   <span class="keyword">switch</span> Format
+0232 
+0233     <span class="keyword">case</span> <span class="string">'ascii'</span>
+0234       Format = 0;
+0235     <span class="keyword">case</span> <span class="string">'binary_little_endian'</span>
+0236       Format = 1;
+0237     <span class="keyword">case</span> <span class="string">'binary_big_endian'</span>
+0238       Format = 2;
+0239     <span class="keyword">otherwise</span>
+0240       fclose ( fid );
+0241       error([<span class="string">'Data format '''</span>,Format,<span class="string">''' not supported.'</span>]);
+0242 
+0243   <span class="keyword">end</span>
+0244 <span class="comment">%</span>
+0245 <span class="comment">%  Read the rest of the file as ASCII data...</span>
+0246 <span class="comment">%</span>
+0247   <span class="keyword">if</span> ( ~Format )
+0248     Buf = fscanf ( fid, <span class="string">'%f'</span> );
+0249     BufOff = 1;
+0250   <span class="keyword">else</span>
+0251 <span class="comment">%</span>
+0252 <span class="comment">%  ...or, close the file, and reopen in &quot;read binary&quot; mode.</span>
+0253 <span class="comment">%</span>
+0254     fclose ( fid );
+0255 <span class="comment">%</span>
+0256 <span class="comment">%  Reopen the binary file as LITTLE_ENDIAN or BIG_ENDIAN.</span>
+0257 <span class="comment">%</span>
+0258     <span class="keyword">if</span> ( Format == 1 )
+0259       fid = fopen ( Path, <span class="string">'r'</span>, <span class="string">'ieee-le.l64'</span> );
+0260     <span class="keyword">else</span>
+0261       fid = fopen ( Path, <span class="string">'r'</span>, <span class="string">'ieee-be.l64'</span> );
+0262     <span class="keyword">end</span>
+0263 <span class="comment">%</span>
+0264 <span class="comment">%  Find the end of the header again.</span>
+0265 <span class="comment">%  Using ftell on the old handle doesn't give the correct position.</span>
+0266 <span class="comment">%</span>
+0267     BufSize = 8192;
+0268     Buf = [ blanks(10), char(fread(fid,BufSize,<span class="string">'uchar'</span>)') ];
+0269     i = [];
+0270     tmp = -11;
+0271 
+0272     <span class="keyword">while</span> ( isempty(i) )
+0273 
+0274       i = findstr(Buf,[<span class="string">'end_header'</span>,13,10]);   <span class="comment">% look for end_header + CR/LF</span>
+0275       i = [i,findstr(Buf,[<span class="string">'end_header'</span>,10])];  <span class="comment">% look for end_header + LF</span>
+0276 
+0277       <span class="keyword">if</span> ( isempty(i) )
+0278         tmp = tmp + BufSize;
+0279         Buf = [Buf(BufSize+1:BufSize+10),char(fread(fid,BufSize,<span class="string">'uchar'</span>)')];
+0280       <span class="keyword">end</span>
+0281 
+0282     <span class="keyword">end</span>
+0283 <span class="comment">%</span>
+0284 <span class="comment">%  seek to just after the line feed</span>
+0285 <span class="comment">%</span>
+0286     fseek ( fid, i + tmp + 11 + (Buf(i + 10) == 13), -1 );
+0287 
+0288   <span class="keyword">end</span>
+0289 <span class="comment">%</span>
+0290 <span class="comment">%  Read element data.</span>
+0291 <span class="comment">%</span>
+0292 <span class="comment">%  PLY and MATLAB data types (for fread)</span>
+0293 <span class="comment">%</span>
+0294   PlyTypeNames = {<span class="string">'char'</span>,<span class="string">'uchar'</span>,<span class="string">'short'</span>,<span class="string">'ushort'</span>,<span class="string">'int'</span>,<span class="string">'uint'</span>,<span class="string">'float'</span>,<span class="string">'double'</span>, <span class="keyword">...</span>
+0295     <span class="string">'char8'</span>,<span class="string">'uchar8'</span>,<span class="string">'short16'</span>,<span class="string">'ushort16'</span>,<span class="string">'int32'</span>,<span class="string">'uint32'</span>,<span class="string">'float32'</span>,<span class="string">'double64'</span>};
+0296 
+0297   MatlabTypeNames = {<span class="string">'schar'</span>,<span class="string">'uchar'</span>,<span class="string">'int16'</span>,<span class="string">'uint16'</span>,<span class="string">'int32'</span>,<span class="string">'uint32'</span>,<span class="string">'single'</span>,<span class="string">'double'</span>};
+0298 
+0299   SizeOf = [1,1,2,2,4,4,4,8];
+0300 
+0301   <span class="keyword">for</span> i = 1 : NumElements
+0302 <span class="comment">%</span>
+0303 <span class="comment">%  get current element property information</span>
+0304 <span class="comment">%</span>
+0305     eval([<span class="string">'CurPropertyNames=PropertyNames.'</span>,ElementNames{i},<span class="string">';'</span>]);
+0306     eval([<span class="string">'CurPropertyTypes=PropertyTypes.'</span>,ElementNames{i},<span class="string">';'</span>]);
+0307     NumProperties = size(CurPropertyNames,2);
+0308 
+0309 <span class="comment">%   fprintf('Reading %s...\n',ElementNames{i});</span>
+0310 <span class="comment">%</span>
+0311 <span class="comment">%  Read ASCII data.</span>
+0312 <span class="comment">%</span>
+0313     <span class="keyword">if</span> ( ~Format )
+0314 
+0315       <span class="keyword">for</span> j = 1 : NumProperties
+0316 
+0317         Token = getfield(CurPropertyTypes,CurPropertyNames{j});
+0318 
+0319         <span class="keyword">if</span> ( strcmpi(Token{1},<span class="string">'list'</span>) )
+0320           Type(j) = 1;
+0321         <span class="keyword">else</span>
+0322           Type(j) = 0;
+0323         <span class="keyword">end</span>
+0324 
+0325       <span class="keyword">end</span>
+0326 <span class="comment">%</span>
+0327 <span class="comment">%  Parse the buffer.</span>
+0328 <span class="comment">%</span>
+0329       <span class="keyword">if</span> ( ~any(Type) )
+0330 
+0331          <span class="comment">% no list types</span>
+0332 
+0333         Data = reshape ( <span class="keyword">...</span>
+0334           Buf(BufOff:BufOff+ElementCount(i)*NumProperties-1), <span class="keyword">...</span>
+0335           NumProperties, ElementCount(i) )';
+0336 
+0337         BufOff = BufOff + ElementCount(i) * NumProperties;
+0338 
+0339       <span class="keyword">else</span>
+0340 
+0341         ListData = cell(NumProperties,1);
+0342 
+0343         <span class="keyword">for</span> k = 1 : NumProperties
+0344           ListData{k} = cell(ElementCount(i),1);
+0345         <span class="keyword">end</span>
+0346 <span class="comment">%</span>
+0347 <span class="comment">% list type</span>
+0348 <span class="comment">%</span>
+0349         <span class="keyword">for</span> j = 1 : ElementCount(i)
+0350           <span class="keyword">for</span> k = 1 : NumProperties
+0351 
+0352             <span class="keyword">if</span> ( ~Type(k) )
+0353               Data(j,k) = Buf(BufOff);
+0354               BufOff = BufOff + 1;
+0355             <span class="keyword">else</span>
+0356               tmp = Buf(BufOff);
+0357               ListData{k}{j} = Buf(BufOff+(1:tmp))';
+0358               BufOff = BufOff + tmp + 1;
+0359             <span class="keyword">end</span>
+0360 
+0361           <span class="keyword">end</span>
+0362         <span class="keyword">end</span>
+0363 
+0364       <span class="keyword">end</span>
+0365 <span class="comment">%</span>
+0366 <span class="comment">%  Read binary data.</span>
+0367 <span class="comment">%</span>
+0368     <span class="keyword">else</span>
+0369 <span class="comment">% translate PLY data type names to MATLAB data type names</span>
+0370       ListFlag = 0;  <span class="comment">% = 1 if there is a list type</span>
+0371       SameFlag = 1;     <span class="comment">% = 1 if all types are the same</span>
+0372 
+0373       <span class="keyword">for</span> j = 1 : NumProperties
+0374 
+0375         Token = getfield(CurPropertyTypes,CurPropertyNames{j});
+0376 <span class="comment">%</span>
+0377 <span class="comment">%  Non-list type.</span>
+0378 <span class="comment">%</span>
+0379         <span class="keyword">if</span> ( ~strcmp(Token{1},<span class="string">'list'</span> ) )
+0380 
+0381           tmp = rem(strmatch(Token{1},PlyTypeNames,<span class="string">'exact'</span>)-1,8)+1;
+0382 
+0383           <span class="keyword">if</span> ( ~isempty(tmp) )
+0384 
+0385             TypeSize(j) = SizeOf(tmp);
+0386             Type{j} = MatlabTypeNames{tmp};
+0387             TypeSize2(j) = 0;
+0388             Type2{j} = <span class="string">''</span>;
+0389 
+0390             SameFlag = SameFlag &amp; strcmp(Type{1},Type{j});
+0391 
+0392           <span class="keyword">else</span>
+0393 
+0394             fclose(fid);
+0395             error([<span class="string">'Unknown property data type, '''</span>,Token{1},<span class="string">''', in '</span>, <span class="keyword">...</span>
+0396               ElementNames{i},<span class="string">'.'</span>,CurPropertyNames{j},<span class="string">'.'</span>]);
+0397 
+0398           <span class="keyword">end</span>
+0399 
+0400         <span class="keyword">else</span>           <span class="comment">% list type</span>
+0401 
+0402           <span class="keyword">if</span> ( length(Token) == 3 )
+0403 
+0404             ListFlag = 1;
+0405             SameFlag = 0;
+0406             tmp = rem(strmatch(Token{2},PlyTypeNames,<span class="string">'exact'</span>)-1,8)+1;
+0407             tmp2 = rem(strmatch(Token{3},PlyTypeNames,<span class="string">'exact'</span>)-1,8)+1;
+0408 
+0409             <span class="keyword">if</span> ( ~isempty(tmp) &amp; ~isempty(tmp2) )
+0410               TypeSize(j) = SizeOf(tmp);
+0411               Type{j} = MatlabTypeNames{tmp};
+0412               TypeSize2(j) = SizeOf(tmp2);
+0413               Type2{j} = MatlabTypeNames{tmp2};
+0414             <span class="keyword">else</span>
+0415               fclose(fid);
+0416               error([<span class="string">'Unknown property data type, ''list '</span>,Token{2},<span class="string">' '</span>,Token{3},<span class="string">''', in '</span>, <span class="keyword">...</span>
+0417                 ElementNames{i},<span class="string">'.'</span>,CurPropertyNames{j},<span class="string">'.'</span>]);
+0418             <span class="keyword">end</span>
+0419 
+0420           <span class="keyword">else</span>
+0421 
+0422             fclose(fid);
+0423             error([<span class="string">'Invalid list syntax in '</span>,ElementNames{i},<span class="string">'.'</span>,CurPropertyNames{j},<span class="string">'.'</span>]);
+0424 
+0425           <span class="keyword">end</span>
+0426 
+0427         <span class="keyword">end</span>
+0428 
+0429       <span class="keyword">end</span>
+0430 
+0431 <span class="comment">% read file</span>
+0432 
+0433       <span class="keyword">if</span> ( ~ListFlag )
+0434 <span class="comment">%</span>
+0435 <span class="comment">%  No list types, all the same type (fast)</span>
+0436 <span class="comment">%</span>
+0437         <span class="keyword">if</span> ( SameFlag )
+0438 
+0439           Data = fread(fid,[NumProperties,ElementCount(i)],Type{1})';
+0440 <span class="comment">%</span>
+0441 <span class="comment">%  No list types, mixed type.</span>
+0442 <span class="comment">%</span>
+0443         <span class="keyword">else</span>
+0444 
+0445           Data = zeros(ElementCount(i),NumProperties);
+0446 
+0447           <span class="keyword">for</span> j = 1 : ElementCount(i)
+0448             <span class="keyword">for</span> k = 1 : NumProperties
+0449               Data(j,k) = fread(fid,1,Type{k});
+0450             <span class="keyword">end</span>
+0451           <span class="keyword">end</span>
+0452 
+0453         <span class="keyword">end</span>
+0454 
+0455       <span class="keyword">else</span>
+0456 
+0457         ListData = cell(NumProperties,1);
+0458 
+0459         <span class="keyword">for</span> k = 1 : NumProperties
+0460           ListData{k} = cell(ElementCount(i),1);
+0461         <span class="keyword">end</span>
+0462 
+0463         <span class="keyword">if</span> ( NumProperties == 1 )
+0464 
+0465           BufSize = 512;
+0466           SkipNum = 4;
+0467           j = 0;
+0468 <span class="comment">%</span>
+0469 <span class="comment">%  List type, one property (fast if lists are usually the same length)</span>
+0470 <span class="comment">%</span>
+0471           <span class="keyword">while</span> ( j &lt; ElementCount(i) )
+0472 
+0473             BufSize = min(ElementCount(i)-j,BufSize);
+0474             Position = ftell(fid);
+0475 <span class="comment">%</span>
+0476 <span class="comment">%  Read in BufSize count values, assuming all counts = SkipNum</span>
+0477 <span class="comment">%</span>
+0478             [Buf,BufSize] = fread(fid,BufSize,Type{1},SkipNum*TypeSize2(1));
+0479             Miss = find(Buf ~= SkipNum);     <span class="comment">% find first count that is not SkipNum</span>
+0480             fseek(fid,Position + TypeSize(1),-1);   <span class="comment">% seek back to after first count</span>
+0481 
+0482             <span class="keyword">if</span> ( isempty(Miss) )
+0483 <span class="comment">% all counts are SkipNum</span>
+0484               Buf = fread(fid,[SkipNum,BufSize],[int2str(SkipNum),<span class="string">'*'</span>,Type2{1}],TypeSize(1))';
+0485               fseek(fid,-TypeSize(1),0);     <span class="comment">% undo last skip</span>
+0486 
+0487               <span class="keyword">for</span> k = 1:BufSize
+0488                 ListData{1}{j+k} = Buf(k,:);
+0489               <span class="keyword">end</span>
+0490 
+0491               j = j + BufSize;
+0492               BufSize = floor(1.5*BufSize);
+0493 
+0494             <span class="keyword">else</span>
+0495 <span class="comment">%</span>
+0496 <span class="comment">%  Some counts are SkipNum.</span>
+0497 <span class="comment">%</span>
+0498               <span class="keyword">if</span> ( 1 &lt; Miss(1) )
+0499 
+0500                 Buf2 = fread(fid,[SkipNum,Miss(1)-1],[int2str(SkipNum),<span class="string">'*'</span>,Type2{1}],TypeSize(1))';
+0501 
+0502                 <span class="keyword">for</span> k = 1:Miss(1)-1
+0503                   ListData{1}{j+k} = Buf2(k,:);
+0504                 <span class="keyword">end</span>
+0505 
+0506                 j = j + k;
+0507 
+0508               <span class="keyword">end</span>
+0509 <span class="comment">%</span>
+0510 <span class="comment">%  Read in the list with the missed count.</span>
+0511 <span class="comment">%</span>
+0512               SkipNum = Buf(Miss(1));
+0513               j = j + 1;
+0514               ListData{1}{j} = fread(fid,[1,SkipNum],Type2{1});
+0515               BufSize = ceil(0.6*BufSize);
+0516 
+0517             <span class="keyword">end</span>
+0518           <span class="keyword">end</span>
+0519 
+0520         <span class="keyword">else</span>
+0521 <span class="comment">%</span>
+0522 <span class="comment">%  List type(s), multiple properties (slow)</span>
+0523 <span class="comment">%</span>
+0524           Data = zeros(ElementCount(i),NumProperties);
+0525 
+0526           <span class="keyword">for</span> j = 1:ElementCount(i)
+0527             <span class="keyword">for</span> k = 1:NumProperties
+0528 
+0529               <span class="keyword">if</span> ( isempty(Type2{k}) )
+0530                 Data(j,k) = fread(fid,1,Type{k});
+0531               <span class="keyword">else</span>
+0532                 tmp = fread(fid,1,Type{k});
+0533                 ListData{k}{j} = fread(fid,[1,tmp],Type2{k});
+0534               <span class="keyword">end</span>
+0535 
+0536             <span class="keyword">end</span>
+0537           <span class="keyword">end</span>
+0538         <span class="keyword">end</span>
+0539       <span class="keyword">end</span>
+0540     <span class="keyword">end</span>
+0541 <span class="comment">%</span>
+0542 <span class="comment">%  Put data into Elements structure</span>
+0543 <span class="comment">%</span>
+0544     <span class="keyword">for</span> k = 1 : NumProperties
+0545 
+0546       <span class="keyword">if</span> ( ( ~Format &amp;&amp; ~Type(k) ) || (Format &amp;&amp; isempty(Type2{k})) )
+0547         eval([<span class="string">'Elements.'</span>,ElementNames{i},<span class="string">'.'</span>,CurPropertyNames{k},<span class="string">'=Data(:,k);'</span>]);
+0548       <span class="keyword">else</span>
+0549         eval([<span class="string">'Elements.'</span>,ElementNames{i},<span class="string">'.'</span>,CurPropertyNames{k},<span class="string">'=ListData{k};'</span>]);
+0550       <span class="keyword">end</span>
+0551 
+0552     <span class="keyword">end</span>
+0553 
+0554   <span class="keyword">end</span>
+0555 
+0556   clear Data
+0557   clear ListData;
+0558 
+0559   fclose ( fid );
+0560 <span class="comment">%</span>
+0561 <span class="comment">%  Output the data as a triangular mesh pair.</span>
+0562 <span class="comment">%</span>
+0563   <span class="keyword">if</span> ( ( nargin &gt; 1 &amp;&amp; strcmpi(Str,<span class="string">'Tri'</span>) ) || nargout &gt; 2 )
+0564 <span class="comment">%</span>
+0565 <span class="comment">%  Find vertex element field</span>
+0566 <span class="comment">%</span>
+0567     Name = {<span class="string">'vertex'</span>,<span class="string">'Vertex'</span>,<span class="string">'point'</span>,<span class="string">'Point'</span>,<span class="string">'pts'</span>,<span class="string">'Pts'</span>};
+0568     Names = [];
+0569 
+0570     <span class="keyword">for</span> i = 1 : length(Name)
+0571 
+0572       <span class="keyword">if</span> ( any ( strcmp ( ElementNames, Name{i} ) ) )
+0573         Names = getfield(PropertyNames,Name{i});
+0574         Name = Name{i};
+0575         <span class="keyword">break</span>;
+0576       <span class="keyword">end</span>
+0577 
+0578     <span class="keyword">end</span>
+0579 
+0580     <span class="keyword">if</span> ( any(strcmp(Names,<span class="string">'x'</span>)) &amp; any(strcmp(Names,<span class="string">'y'</span>)) &amp; any(strcmp(Names,<span class="string">'z'</span>)) )
+0581       eval([<span class="string">'varargout{1}=[Elements.'</span>,Name,<span class="string">'.x,Elements.'</span>,Name,<span class="string">'.y,Elements.'</span>,Name,<span class="string">'.z];'</span>]);
+0582     <span class="keyword">else</span>
+0583       varargout{1} = zeros(1,3);
+0584     <span class="keyword">end</span>
+0585     varargout{1} = varargout{1}';
+0586 
+0587     varargout{2} = Elements;
+0588     varargout{3} = Comments;
+0589     Elements = [];
+0590 <span class="comment">%</span>
+0591 <span class="comment">% Find face element field</span>
+0592 <span class="comment">%</span>
+0593     Name = {<span class="string">'face'</span>,<span class="string">'Face'</span>,<span class="string">'poly'</span>,<span class="string">'Poly'</span>,<span class="string">'tri'</span>,<span class="string">'Tri'</span>};
+0594     Names = [];
+0595 
+0596     <span class="keyword">for</span> i = 1 : length(Name)
+0597       <span class="keyword">if</span> ( any(strcmp(ElementNames,Name{i})) )
+0598         Names = getfield(PropertyNames,Name{i});
+0599         Name = Name{i};
+0600         <span class="keyword">break</span>;
+0601       <span class="keyword">end</span>
+0602     <span class="keyword">end</span>
+0603 
+0604     <span class="keyword">if</span> ( ~isempty(Names) )
+0605       <span class="comment">% find vertex indices property subfield</span>
+0606       PropertyName = {<span class="string">'vertex_indices'</span>,<span class="string">'vertex_indexes'</span>,<span class="string">'vertex_index'</span>,<span class="string">'indices'</span>,<span class="string">'indexes'</span>};
+0607 
+0608       <span class="keyword">for</span> i = 1 : length(PropertyName)
+0609         <span class="keyword">if</span> ( any(strcmp(Names,PropertyName{i})) )
+0610           PropertyName = PropertyName{i};
+0611           <span class="keyword">break</span>;
+0612         <span class="keyword">end</span>
+0613       <span class="keyword">end</span>
+0614 <span class="comment">%</span>
+0615 <span class="comment">%  Convert face index list to triangular connectivity.</span>
+0616 <span class="comment">%</span>
+0617       <span class="keyword">if</span> ( ~iscell(PropertyName) )
+0618 
+0619         eval([<span class="string">'FaceIndices=varargout{2}.'</span>,Name,<span class="string">'.'</span>,PropertyName,<span class="string">';'</span>]);
+0620         N = length(FaceIndices);
+0621         Elements = zeros(3,N*2);
+0622         Extra = 0;
+0623 
+0624         <span class="keyword">for</span> k = 1 : N
+0625 
+0626           Elements(1:3,k) = FaceIndices{k}(1:3)';
+0627 <span class="comment">%</span>
+0628 <span class="comment">%  The original code had an error in the following loop.</span>
+0629 <span class="comment">%</span>
+0630           <span class="keyword">for</span> j = 4 : length(FaceIndices{k})
+0631             Extra = Extra + 1;
+0632             Elements(1,N + Extra) = FaceIndices{k}(1);
+0633             Elements(2,N + Extra) = FaceIndices{k}(j-1);
+0634             Elements(3,N + Extra) = FaceIndices{k}(j);
+0635           <span class="keyword">end</span>
+0636 
+0637         <span class="keyword">end</span>
+0638 <span class="comment">%</span>
+0639 <span class="comment">%  Add 1 to each vertex value; PLY vertices are zero based.</span>
+0640 <span class="comment">%</span>
+0641         Elements = Elements(:,1:N+Extra) + 1;
+0642 
+0643       <span class="keyword">end</span>
+0644     <span class="keyword">end</span>
+0645 
+0646   <span class="keyword">else</span>
+0647 
+0648     varargout{1} = Comments;
+0649 
+0650   <span class="keyword">end</span>
+0651 
+0652   <span class="keyword">return</span>
+0653 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

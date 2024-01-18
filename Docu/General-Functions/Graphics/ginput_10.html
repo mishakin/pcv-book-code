@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ginput_10</title>
+  <meta name="keywords" content="ginput_10">
+  <meta name="description" content="GINPUT Graphical input from mouse.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Graphics</a> &gt; ginput_10.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Graphics&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>ginput_10
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>GINPUT Graphical input from mouse.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [out1,out2,out3] = ginput(arg1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">GINPUT Graphical input from mouse.
+   [X,Y] = GINPUT(N) gets N points from the current axes and returns 
+   the X- and Y-coordinates in length N vectors X and Y.  The cursor
+   can be positioned using a mouse.  Data points are entered by pressing 
+   a mouse button or any key on the keyboard except carriage return, 
+   which terminates the input before N points are entered.
+
+   [X,Y] = GINPUT gathers an unlimited number of points until the
+   return key is pressed.
+ 
+   [X,Y,BUTTON] = GINPUT(N) returns a third result, BUTTON, that 
+   contains a vector of integers specifying which mouse button was
+   used (1,2,3 from left) or ASCII numbers if a key on the keyboard
+   was used.
+
+   Examples:
+       [x,y] = ginput;
+
+       [x,y] = ginput(5);
+
+       [x, y, button] = ginput(1);
+
+   See also GTEXT, WAITFORBUTTONPRESS.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../13-Two-View-Geometry/Functions/measure_Point.html" class="code" title="function [x] = measure_Point(f, I, N, cs)">measure_Point</a>	This function enables the user to measure points in an image</li><li><a href="../../13-Two-View-Geometry/Functions/measure_homologeous_Points.html" class="code" title="function [x1, x2] = measure_homologeous_Points(f1, f2, I1, I2, N, cs)">measure_homologeous_Points</a>	This function enables the user to measure homologous points in two</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function key = wfbp</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [out1,out2,out3] = ginput(arg1)</a>
+0002 <span class="comment">%GINPUT Graphical input from mouse.</span>
+0003 <span class="comment">%   [X,Y] = GINPUT(N) gets N points from the current axes and returns</span>
+0004 <span class="comment">%   the X- and Y-coordinates in length N vectors X and Y.  The cursor</span>
+0005 <span class="comment">%   can be positioned using a mouse.  Data points are entered by pressing</span>
+0006 <span class="comment">%   a mouse button or any key on the keyboard except carriage return,</span>
+0007 <span class="comment">%   which terminates the input before N points are entered.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   [X,Y] = GINPUT gathers an unlimited number of points until the</span>
+0010 <span class="comment">%   return key is pressed.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   [X,Y,BUTTON] = GINPUT(N) returns a third result, BUTTON, that</span>
+0013 <span class="comment">%   contains a vector of integers specifying which mouse button was</span>
+0014 <span class="comment">%   used (1,2,3 from left) or ASCII numbers if a key on the keyboard</span>
+0015 <span class="comment">%   was used.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   Examples:</span>
+0018 <span class="comment">%       [x,y] = ginput;</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%       [x,y] = ginput(5);</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%       [x, y, button] = ginput(1);</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   See also GTEXT, WAITFORBUTTONPRESS.</span>
+0025 
+0026 <span class="comment">%   Copyright 1984-2008 The MathWorks, Inc.</span>
+0027 <span class="comment">%   $Revision: 5.32.4.13 $  $Date: 2008/10/08 17:20:44 $</span>
+0028 
+0029 out1 = []; out2 = []; out3 = []; y = [];
+0030 c = computer;
+0031 <span class="keyword">if</span> ~strcmp(c(1:2),<span class="string">'PC'</span>) 
+0032    tp = get(0,<span class="string">'TerminalProtocol'</span>);
+0033 <span class="keyword">else</span>
+0034    tp = <span class="string">'micro'</span>;
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="keyword">if</span> ~strcmp(tp,<span class="string">'none'</span>) &amp;&amp; ~strcmp(tp,<span class="string">'x'</span>) &amp;&amp; ~strcmp(tp,<span class="string">'micro'</span>),
+0038    <span class="keyword">if</span> nargout == 1,
+0039       <span class="keyword">if</span> nargin == 1,
+0040          out1 = trmginput(arg1);
+0041       <span class="keyword">else</span>
+0042          out1 = trmginput;
+0043       <span class="keyword">end</span>
+0044    <span class="keyword">elseif</span> nargout == 2 || nargout == 0,
+0045       <span class="keyword">if</span> nargin == 1,
+0046          [out1,out2] = trmginput(arg1);
+0047       <span class="keyword">else</span>
+0048          [out1,out2] = trmginput;
+0049       <span class="keyword">end</span>
+0050       <span class="keyword">if</span>  nargout == 0
+0051          out1 = [ out1 out2 ];
+0052       <span class="keyword">end</span>
+0053    <span class="keyword">elseif</span> nargout == 3,
+0054       <span class="keyword">if</span> nargin == 1,
+0055          [out1,out2,out3] = trmginput(arg1);
+0056       <span class="keyword">else</span>
+0057          [out1,out2,out3] = trmginput;
+0058       <span class="keyword">end</span>
+0059    <span class="keyword">end</span>
+0060 <span class="keyword">else</span>
+0061    
+0062    fig = gcf;
+0063    figure(gcf);
+0064    
+0065    <span class="keyword">if</span> nargin == 0
+0066       how_many = -1;
+0067       b = [];
+0068    <span class="keyword">else</span>
+0069       how_many = arg1;
+0070       b = [];
+0071       <span class="keyword">if</span>  ischar(how_many) <span class="keyword">...</span>
+0072             || size(how_many,1) ~= 1 || size(how_many,2) ~= 1 <span class="keyword">...</span>
+0073             || ~(fix(how_many) == how_many) <span class="keyword">...</span>
+0074             || how_many &lt; 0
+0075          error(<span class="string">'MATLAB:ginput:NeedPositiveInt'</span>, <span class="string">'Requires a positive integer.'</span>)
+0076       <span class="keyword">end</span>
+0077       <span class="keyword">if</span> how_many == 0
+0078          ptr_fig = 0;
+0079          <span class="keyword">while</span>(ptr_fig ~= fig)
+0080             ptr_fig = get(0,<span class="string">'PointerWindow'</span>);
+0081          <span class="keyword">end</span>
+0082          scrn_pt = get(0,<span class="string">'PointerLocation'</span>);
+0083          loc = get(fig,<span class="string">'Position'</span>);
+0084          pt = [scrn_pt(1) - loc(1), scrn_pt(2) - loc(2)];
+0085          out1 = pt(1); y = pt(2);
+0086       <span class="keyword">elseif</span> how_many &lt; 0
+0087          error(<span class="string">'MATLAB:ginput:InvalidArgument'</span>, <span class="string">'Argument must be a positive integer.'</span>)
+0088       <span class="keyword">end</span>
+0089    <span class="keyword">end</span>
+0090    
+0091    <span class="comment">% Suspend figure functions</span>
+0092    state = uisuspend(fig);
+0093    
+0094    toolbar = findobj(allchild(fig),<span class="string">'flat'</span>,<span class="string">'Type'</span>,<span class="string">'uitoolbar'</span>);
+0095    <span class="keyword">if</span> ~isempty(toolbar)
+0096         ptButtons = [uigettool(toolbar,<span class="string">'Plottools.PlottoolsOff'</span>), <span class="keyword">...</span>
+0097                      uigettool(toolbar,<span class="string">'Plottools.PlottoolsOn'</span>)];
+0098         ptState = get (ptButtons,<span class="string">'Enable'</span>);
+0099         set (ptButtons,<span class="string">'Enable'</span>,<span class="string">'off'</span>);
+0100    <span class="keyword">end</span>
+0101 
+0102    set(fig,<span class="string">'pointer'</span>,<span class="string">'fullcrosshair'</span>);
+0103    fig_units = get(fig,<span class="string">'units'</span>);
+0104    char = 0;
+0105 
+0106    <span class="comment">% We need to pump the event queue on unix</span>
+0107    <span class="comment">% before calling WAITFORBUTTONPRESS</span>
+0108    drawnow
+0109    
+0110    <span class="keyword">while</span> how_many ~= 0
+0111       <span class="comment">% Use no-side effect WAITFORBUTTONPRESS</span>
+0112       waserr = 0;
+0113       <span class="keyword">try</span>
+0114     keydown = <a href="#_sub1" class="code" title="subfunction key = wfbp">wfbp</a>;
+0115       <span class="keyword">catch</span>
+0116     waserr = 1;
+0117       <span class="keyword">end</span>
+0118       <span class="keyword">if</span>(waserr == 1)
+0119          <span class="keyword">if</span>(ishghandle(fig))
+0120             set(fig,<span class="string">'units'</span>,fig_units);
+0121         uirestore(state);
+0122             error(<span class="string">'MATLAB:ginput:Interrupted'</span>, <span class="string">'Interrupted'</span>);
+0123          <span class="keyword">else</span>
+0124             error(<span class="string">'MATLAB:ginput:FigureDeletionPause'</span>, <span class="string">'Interrupted by figure deletion'</span>);
+0125          <span class="keyword">end</span>
+0126       <span class="keyword">end</span>
+0127         <span class="comment">% g467403 - ginput failed to discern clicks/keypresses on the figure it was</span>
+0128         <span class="comment">% registered to operate on and any other open figures whose handle</span>
+0129         <span class="comment">% visibility were set to off</span>
+0130         figchildren = allchild(0);
+0131         <span class="keyword">if</span> ~isempty(figchildren)
+0132             ptr_fig = figchildren(1);
+0133         <span class="keyword">else</span>
+0134             error(<span class="string">'MATLAB:ginput:FigureUnavailable'</span>,<span class="string">'No figure available to process a mouse/key event'</span>); 
+0135         <span class="keyword">end</span>
+0136 <span class="comment">%         old code -&gt; ptr_fig = get(0,'CurrentFigure'); Fails when the</span>
+0137 <span class="comment">%         clicked figure has handlevisibility set to callback</span>
+0138       <span class="keyword">if</span>(ptr_fig == fig)
+0139          <span class="keyword">if</span> keydown
+0140             char = get(fig, <span class="string">'CurrentCharacter'</span>);
+0141             button = abs(get(fig, <span class="string">'CurrentCharacter'</span>));
+0142             scrn_pt = get(0, <span class="string">'PointerLocation'</span>);
+0143             set(fig,<span class="string">'units'</span>,<span class="string">'pixels'</span>)
+0144             loc = get(fig, <span class="string">'Position'</span>);
+0145             <span class="comment">% We need to compensate for an off-by-one error:</span>
+0146             pt = [scrn_pt(1) - loc(1) + 1, scrn_pt(2) - loc(2) + 1];
+0147             set(fig,<span class="string">'CurrentPoint'</span>,pt);
+0148          <span class="keyword">else</span>
+0149             button = get(fig, <span class="string">'SelectionType'</span>);
+0150             <span class="keyword">if</span> strcmp(button,<span class="string">'open'</span>) 
+0151                button = 1;
+0152             <span class="keyword">elseif</span> strcmp(button,<span class="string">'normal'</span>) 
+0153                button = 1;
+0154             <span class="keyword">elseif</span> strcmp(button,<span class="string">'extend'</span>)
+0155                button = 2;
+0156             <span class="keyword">elseif</span> strcmp(button,<span class="string">'alt'</span>) 
+0157                button = 3;
+0158             <span class="keyword">else</span>
+0159                error(<span class="string">'MATLAB:ginput:InvalidSelection'</span>, <span class="string">'Invalid mouse selection.'</span>)
+0160             <span class="keyword">end</span>
+0161          <span class="keyword">end</span>
+0162          pt = get(gca, <span class="string">'CurrentPoint'</span>);
+0163          
+0164          how_many = how_many - 1;
+0165          
+0166          <span class="keyword">if</span>(char == 13) <span class="comment">% &amp; how_many ~= 0)</span>
+0167             <span class="comment">% if the return key was pressed, char will == 13,</span>
+0168             <span class="comment">% and that's our signal to break out of here whether</span>
+0169             <span class="comment">% or not we have collected all the requested data</span>
+0170             <span class="comment">% points.</span>
+0171             <span class="comment">% If this was an early breakout, don't include</span>
+0172             <span class="comment">% the &lt;Return&gt; key info in the return arrays.</span>
+0173             <span class="comment">% We will no longer count it if it's the last input.</span>
+0174             <span class="keyword">break</span>;
+0175          <span class="keyword">end</span>
+0176          
+0177          out1 = [out1;pt(1,1)];
+0178          y = [y;pt(1,2)];
+0179          b = [b;button];
+0180       <span class="keyword">end</span>
+0181    <span class="keyword">end</span>
+0182    
+0183    uirestore(state);
+0184    <span class="keyword">if</span> ~isempty(toolbar) &amp;&amp; ~isempty(ptButtons)
+0185         set (ptButtons(1),<span class="string">'Enable'</span>,ptState{1});
+0186         set (ptButtons(2),<span class="string">'Enable'</span>,ptState{2});
+0187    <span class="keyword">end</span>
+0188    set(fig,<span class="string">'units'</span>,fig_units);
+0189    
+0190    <span class="keyword">if</span> nargout &gt; 1
+0191       out2 = y;
+0192       <span class="keyword">if</span> nargout &gt; 2
+0193          out3 = b;
+0194       <span class="keyword">end</span>
+0195    <span class="keyword">else</span>
+0196       out1 = [out1 y];
+0197    <span class="keyword">end</span>
+0198    
+0199 <span class="keyword">end</span>
+0200 
+0201 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0202 <a name="_sub1" href="#_subfunctions" class="code">function key = wfbp</a>
+0203 <span class="comment">%WFBP   Replacement for WAITFORBUTTONPRESS that has no side effects.</span>
+0204 
+0205 fig = gcf;
+0206 current_char = [];
+0207 
+0208 <span class="comment">% Now wait for that buttonpress, and check for error conditions</span>
+0209 waserr = 0;
+0210 <span class="keyword">try</span>
+0211   h=findall(fig,<span class="string">'type'</span>,<span class="string">'uimenu'</span>,<span class="string">'accel'</span>,<span class="string">'C'</span>);   <span class="comment">% Disabling ^C for edit menu so the only ^C is for</span>
+0212   set(h,<span class="string">'accel'</span>,<span class="string">''</span>);                            <span class="comment">% interrupting the function.</span>
+0213   keydown = waitforbuttonpress;
+0214   current_char = double(get(fig,<span class="string">'CurrentCharacter'</span>)); <span class="comment">% Capturing the character.</span>
+0215   <span class="keyword">if</span>~isempty(current_char) &amp;&amp; (keydown == 1)           <span class="comment">% If the character was generated by the</span>
+0216       <span class="keyword">if</span>(current_char == 3)                       <span class="comment">% current keypress AND is ^C, set 'waserr'to 1</span>
+0217           waserr = 1;                             <span class="comment">% so that it errors out.</span>
+0218       <span class="keyword">end</span>
+0219   <span class="keyword">end</span>
+0220   
+0221   set(h,<span class="string">'accel'</span>,<span class="string">'C'</span>);                                 <span class="comment">% Set back the accelerator for edit menu.</span>
+0222 <span class="keyword">catch</span>
+0223   waserr = 1;
+0224 <span class="keyword">end</span>
+0225 drawnow;
+0226 <span class="keyword">if</span>(waserr == 1)
+0227    set(h,<span class="string">'accel'</span>,<span class="string">'C'</span>);                                <span class="comment">% Set back the accelerator if it errored out.</span>
+0228    error(<span class="string">'MATLAB:ginput:Interrupted'</span>, <span class="string">'Interrupted'</span>);
+0229 <span class="keyword">end</span>
+0230 
+0231 <span class="keyword">if</span> nargout&gt;0, key = keydown; <span class="keyword">end</span>
+0232 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

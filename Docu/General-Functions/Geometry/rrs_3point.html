@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rrs_3point</title>
+  <meta name="keywords" content="rrs_3point">
+  <meta name="description" content="RRS_3POINT Direct solution for the spatial resection from three points">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; rrs_3point.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>rrs_3point
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>RRS_3POINT Direct solution for the spatial resection from three points</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [R,Z] = rrs_3point(X, m) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">
+ RRS_3POINT Direct solution for the spatial resection from three points
+
+ [R,Z] = rrs_3point(X, m)
+
+ Input:
+  X        - 3x3-matrix, rows are scene point coordinates
+  m        - 3x3-matrix, rows are directons in the camera system
+
+ Output:
+  R      - Mx3x3-Matrix, M solution for the rotation from the scene into
+                         the camera system
+  Z      - Mx3-Vektor, M solutions for the projection centre 
+           We have m_i ~ R_j (X_i - Z_j)
+
+
+ Autor: Christian Beder
+
+ sides of scene triangle and angles between camera rays</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%</span>
+0002 <span class="comment">% RRS_3POINT Direct solution for the spatial resection from three points</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% [R,Z] = rrs_3point(X, m)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  X        - 3x3-matrix, rows are scene point coordinates</span>
+0008 <span class="comment">%  m        - 3x3-matrix, rows are directons in the camera system</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Output:</span>
+0011 <span class="comment">%  R      - Mx3x3-Matrix, M solution for the rotation from the scene into</span>
+0012 <span class="comment">%                         the camera system</span>
+0013 <span class="comment">%  Z      - Mx3-Vektor, M solutions for the projection centre</span>
+0014 <span class="comment">%           We have m_i ~ R_j (X_i - Z_j)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Autor: Christian Beder</span>
+0018 <span class="comment">%</span>
+0019 <a name="_sub0" href="#_subfunctions" class="code">function [R,Z] = rrs_3point(X, m)</a>
+0020 <span class="comment">% sides of scene triangle and angles between camera rays</span>
+0021 a = norm(X(3,:) - X(2,:));
+0022 alpha = acos(m(3,:) * m(2,:)');
+0023 b = norm(X(1,:) - X(3,:));
+0024 beta = acos(m(1,:) * m(3,:)');
+0025 c = norm(X(2,:) - X(1,:));
+0026 gamma = acos(m(2,:) * m(1,:)');
+0027 <span class="comment">% coefficients</span>
+0028 A4 = ((a^2 - c^2) / b^2 - 1)^2 - 4*c^2/b^2 * cos(alpha)^2;
+0029 A3 = 4*((a^2-c^2)/b^2*(1-(a^2-c^2)/b^2)*cos(beta) - <span class="keyword">...</span>
+0030         (1-(a^2+c^2)/b^2)*cos(alpha)*cos(gamma) + <span class="keyword">...</span>
+0031         2*c^2/b^2*cos(alpha)^2*cos(beta));
+0032 A2 = 2*(((a^2-c^2)/b^2)^2 - 1 + 2*((a^2-c^2)/b^2)^2*cos(beta)^2 + <span class="keyword">...</span>
+0033         2*(b^2-c^2)/b^2*cos(alpha)^2 - <span class="keyword">...</span>
+0034         4*(a^2+c^2)/b^2*cos(alpha)*cos(beta)*cos(gamma) + <span class="keyword">...</span>
+0035         2*(b^2-a^2)/b^2*cos(gamma)^2);
+0036 A1 = 4*(-(a^2-c^2)/b^2*(1+(a^2-c^2)/b^2)*cos(beta) + <span class="keyword">...</span>
+0037         2*a^2/b^2*cos(gamma)^2*cos(beta) - <span class="keyword">...</span>
+0038         (1-(a^2+c^2)/b^2)*cos(alpha)*cos(gamma));
+0039 A0 = (1+(a^2-c^2)/b^2)^2 - 4*a^2/b^2*cos(gamma)^2;
+0040 <span class="comment">% roots of polynomial</span>
+0041 v = roots ([A4, A3, A2, A1, A0]);
+0042 solutions=0;
+0043 <span class="comment">% select real roots</span>
+0044 <span class="keyword">for</span> i=1:length(v)
+0045     <span class="keyword">if</span> isreal(v(i)) &amp;&amp; (v(i) &gt; 0)
+0046         solutions=solutions+1;
+0047         s(solutions,1) = sqrt(b^2 / (1+v(i)^2-2*v(i)*cos(beta)));
+0048         s(solutions,3) = v(i)*s(solutions,1);
+0049         xxx = s(solutions,3)*cos(alpha);
+0050         yyy = sqrt(s(solutions,3)^2*cos(alpha)^2+a^2-s(solutions,3)^2);
+0051         s(solutions,2) = xxx + yyy;
+0052         <span class="keyword">if</span> (xxx &gt; yyy)
+0053             solutions = solutions+1;
+0054             s(solutions,[1,3]) = s(solutions-1,[1,3]);
+0055             s(solutions,2) = xxx - yyy;
+0056         <span class="keyword">end</span>;
+0057     <span class="keyword">end</span>;
+0058 <span class="keyword">end</span>;
+0059 <span class="comment">% initiate absolute orientation</span>
+0060 R = zeros(solutions, 3,3);
+0061 Z = zeros(solutions, 3);
+0062 b_o = X(3,:)' - X(1,:)';
+0063 c_o = X(2,:)' - X(1,:)';
+0064 R_o = [b_o / norm(b_o), cross(b_o,c_o)/norm(cross(b_o,c_o)), <span class="keyword">...</span>
+0065         cross(b_o, cross(b_o, c_o)) / norm(cross(b_o, cross(b_o, c_o)))];
+0066 <span class="comment">% for each solution determine R and Z</span>
+0067 <span class="keyword">for</span> i=1:solutions
+0068     <span class="keyword">for</span> j=1:3
+0069         Xk(j,:) = s(i,j) * m(j,:);
+0070     <span class="keyword">end</span>;
+0071     b_k = Xk(3,:)' - Xk(1,:)';
+0072     c_k = Xk(2,:)' - Xk(1,:)';
+0073     R_k = [b_k / norm(b_k), cross(b_k,c_k)/norm(cross(b_k,c_k)), <span class="keyword">...</span>
+0074         cross(b_k, cross(b_k, c_k)) / norm(cross(b_k, cross(b_k, c_k)))];
+0075     RR = R_k*R_o';
+0076     R(i,:,:) = RR;
+0077     Z(i,:) = (X(1,:)' - RR'*Xk(1,:)')';
+0078 <span class="keyword">end</span>;</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

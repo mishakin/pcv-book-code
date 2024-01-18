@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_direct_plane_fit</title>
+  <meta name="keywords" content="demo_direct_plane_fit">
+  <meta name="description" content="% demo plane fitting direct method">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">10-Uncertain-Geometry</a> &gt; <a href="Documentation.html">Demo-Plane</a> &gt; demo_direct_plane_fit.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 10-Uncertain-Geometry\Demo-Plane&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_direct_plane_fit
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% demo plane fitting direct method</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% demo plane fitting direct method
+
+ generate points in [-1,+1]x[-0.5,+0.5] in arbitry plane
+ add noise
+
+ estimate plane parameters of centroid representation algebraically
+
+ check estimation
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 06/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>	% Cayley rotation matrix</li><li><a href="../../General-Functions/SUGR/Plane/sugr_direct_fit_plane_centroid_form_to_points.html" class="code" title="function [Xo, Q, var_q, var_phi, var_psi, est_sigma_0_2] = sugr_direct_fit_plane_centroid_form_to_points(X, CovX)">sugr_direct_fit_plane_centroid_form_to_points</a>	% Fits a plane in centroid form to a set of 3D points</li><li><a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>	% check estimation result, PCV Sect. 4.6.8</li><li><a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% demo plane fitting direct method</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% generate points in [-1,+1]x[-0.5,+0.5] in arbitry plane</span>
+0004 <span class="comment">% add noise</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% estimate plane parameters of centroid representation algebraically</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% check estimation</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Wolfgang Förstner</span>
+0011 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% last changes: Susanne Wenzel 06/18</span>
+0014 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0015 
+0016 <span class="comment">% clear all</span>
+0017 close all
+0018 clearvars
+0019 
+0020 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0021 
+0022 disp(<span class="string">'--------------------------------------------'</span>)
+0023 disp(<span class="string">'Check direct estimation of plane from points'</span>)
+0024 disp(<span class="string">'--------------------------------------------'</span>)
+0025 
+0026 <span class="comment">% number of samples N_samples</span>
+0027 N_samples = 10000;
+0028 disp([<span class="string">'Number of samples                      : '</span>, num2str(N_samples)])
+0029 
+0030 <span class="comment">% standard deviation of points</span>
+0031 sigma_x = 1e-3;
+0032 disp([<span class="string">'MInimal standard deviation of points   : '</span>, num2str(sigma_x)])
+0033 
+0034 <span class="comment">% density</span>
+0035 pointSpacing = 0.1;
+0036 disp([<span class="string">'Point spacing in [-1,+1]x[-0.5,+0.5]   : '</span>, num2str(pointSpacing)])
+0037 numPoints = length(-1:pointSpacing:1)*length(-0.5:pointSpacing:0.5);
+0038 disp([<span class="string">'Number of points                       : '</span>, num2str(numPoints)])
+0039 
+0040 <span class="comment">%% random seed</span>
+0041 <span class="comment">%init_rand      = 1;</span>
+0042 init_rand      = 0;
+0043 <a href="../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0044 
+0045 <span class="comment">%% additional control variables</span>
+0046 
+0047 <span class="comment">% Parameterize an initial plane (z=1 plane) == true plane</span>
+0048 iniPlane = [0, 0, 1, -1]'; <span class="comment">% z=1 plane</span>
+0049 
+0050 <span class="comment">% uncertainty</span>
+0051 <span class="comment">% random variances between 0.0001 and 0.001</span>
+0052 
+0053 SIGMA = sigma_x * randi(10, [1, numPoints]);
+0054 <span class="comment">%SIGMA = sigma_x * randInt(10, [1, numPoints]);</span>
+0055 w     = 1./SIGMA.^2;
+0056 
+0057 <span class="comment">% alpha for checks</span>
+0058 alpha = 0.001;
+0059 
+0060 <span class="comment">%% generate regularly spaced points on the initial plane == true points</span>
+0061 [m1, m2] = meshgrid(-1:pointSpacing:1, -0.5:pointSpacing:0.5);
+0062 numPoints = numel(m1(:));
+0063 iniPoints = [m1(:), m2(:), ones(numPoints,1)]'; <span class="comment">% points of z=1 plane</span>
+0064 
+0065 <span class="comment">%% make up a random transformation == true transformation</span>
+0066 randRot = pi/4 * (rand(1,3) - 0.5); <span class="comment">% random rotation within [-90 90] degrees</span>
+0067 randR = <a href="../../General-Functions/Geometry/calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>([randRot(1), randRot(2), randRot(3)]);
+0068 randT = 20 * (rand(3,1) - 0.5); <span class="comment">% random translation within range [-10 10]</span>
+0069 
+0070 <span class="comment">%% transform initial Plane == true plane</span>
+0071 plane_nd = [randR, randT; 0 0 0 1]' * iniPlane; 
+0072 plane_nd = plane_nd * sign(-plane_nd(4)); <span class="comment">% d is always positive</span>
+0073 
+0074 <span class="comment">%% Sample data and store results</span>
+0075 Omega_s     = zeros(1,N_samples);
+0076 d_prime_s   = zeros(1,N_samples);
+0077 normal_XY_s = zeros(2,N_samples);
+0078 var_q_s     = zeros(1,N_samples);
+0079 var_phi_s   = zeros(1,N_samples);
+0080 var_psi_s   = zeros(1,N_samples);
+0081 d_primes_s  = zeros(1,N_samples);
+0082 
+0083 start = cputime;
+0084 <span class="keyword">for</span> n_samples = 1:N_samples
+0085     <span class="comment">%transform points on the initial plane and add noise</span>
+0086     points = randR'*(iniPoints - repmat(randT, 1, numPoints)) + <span class="keyword">...</span>
+0087         repmat(SIGMA, 3, 1) .* randn(3, numPoints);
+0088     
+0089     <span class="comment">% fit a plane using direct method</span>
+0090     [Xo, Q, var_q, var_phi, var_psi, est_sigma_0_2] = <span class="keyword">...</span>
+0091         <a href="../../General-Functions/SUGR/Plane/sugr_direct_fit_plane_centroid_form_to_points.html" class="code" title="function [Xo, Q, var_q, var_phi, var_psi, est_sigma_0_2] = sugr_direct_fit_plane_centroid_form_to_points(X, CovX)">sugr_direct_fit_plane_centroid_form_to_points</a>(points, SIGMA.^2);
+0092     
+0093     Omega_s(n_samples)       = est_sigma_0_2 * (numPoints-3);
+0094     d_primes_s(n_samples)    = -plane_nd(4) - plane_nd(1:3)' * Xo;
+0095     normal_XY_s(:,n_samples) = Q(:,1:2)' * plane_nd(1:3);
+0096     var_q_s(n_samples)       = var_q;
+0097     var_phi_s(n_samples)     = var_phi;
+0098     var_psi_s(n_samples)     = var_psi;
+0099     
+0100 <span class="keyword">end</span>
+0101 disp([<span class="string">'CPU time for '</span>, num2str(N_samples),<span class="string">' samples             : '</span>,num2str(cputime-start)]);
+0102 <span class="comment">%% check</span>
+0103 Red  = numPoints-3;
+0104 
+0105 <span class="comment">%% Check estimation</span>
+0106 
+0107 <span class="comment">% collect parameters</span>
+0108 est_par      = [d_primes_s;normal_XY_s];
+0109 <span class="comment">% collect variances</span>
+0110 CovM_true    = diag([var_q,var_phi,var_psi]);
+0111 <span class="comment">%</span>
+0112 <a href="../../General-Functions/Statistics/check_estimation_result.html" class="code" title="function f = check_estimation_result(R, x_true, C0, s0q_sample, x_sample, S, text)">check_estimation_result</a>(Red,zeros(3,1),CovM_true,Omega_s/Red,est_par',1-alpha,<span class="string">' algebraic plane fit'</span>);
+0113 
+0114 
+0115 
+0116 
+0117 
+0118</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

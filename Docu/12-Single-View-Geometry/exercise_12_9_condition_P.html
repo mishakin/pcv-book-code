@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of exercise_12_9_condition_P</title>
+  <meta name="keywords" content="exercise_12_9_condition_P">
+  <meta name="description" content="% exercise 12.9 conditioning">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../Documentation.html">Home</a> &gt;  <a href="Documentation.html">12-Single-View-Geometry</a> &gt; exercise_12_9_condition_P.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../Documentation.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 12-Single-View-Geometry&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>exercise_12_9_condition_P
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% exercise 12.9 conditioning</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% exercise 12.9 conditioning
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 04/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% exercise 12.9 conditioning</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Wolfgang Förstner</span>
+0004 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% last changes: Susanne Wenzel 04/18</span>
+0007 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0008 
+0009 clc
+0010 close all
+0011 clearvars
+0012 
+0013 disp(<span class="string">'-------------------------------------------------------------'</span>)
+0014 disp(<span class="string">'Result of exercise 12.9 on conditioning the projection matrix'</span>)
+0015 disp(<span class="string">'-------------------------------------------------------------'</span>)
+0016 
+0017 <span class="comment">% given projection matrix</span>
+0018 P = [0.0012682807017 -0.0006478859649   0.0003109824561  -0.1611793859649
+0019      0.0008165263157  0.0010670263157   0.0001048421052  -2.1127144736842 
+0020      0.0000002017543  0.0000000350877   0.0000004561403  -0.0008359649122];
+0021 
+0022 <span class="comment">% transformation matrix for conditioning image coordinates</span>
+0023 disp(<span class="string">'Transformation matrix for conditioning image coordinates'</span>)
+0024 Tx = [1 0 -1500;0 1 -1000;0 0 1500]                                        <span class="comment">%#ok&lt;*NOPTS&gt;</span>
+0025 
+0026 <span class="comment">% transformation matrix for conditioning object coordinates</span>
+0027 disp(<span class="string">'Transformation matrix for conditioning object coordinates'</span>)
+0028 TX = [1 0 0 -500; 0 1 0 -1500;0 0 1 -150; 0 0 0 100]
+0029 
+0030 <span class="comment">% conditioned projection matrix</span>
+0031 disp(<span class="string">'Conditioned projection matrix'</span>)
+0032 Pb = (Tx)*P*inv(TX)                                                        <span class="comment">%#ok&lt;MINV&gt;</span>
+0033 
+0034 <span class="comment">% condition number of given projection matrix</span>
+0035 disp(<span class="string">'Condition number of given projection matrix'</span>)
+0036 condition_P = cond(P)
+0037 
+0038 <span class="comment">% condition number of conditioned projection matrix</span>
+0039 disp(<span class="string">'Condition number of conditioned projection matrix'</span>)
+0040 condition_Pb = cond(Pb)
+0041 
+0042 disp(<span class="string">'The routine ''cond'' determines the condition number'</span>)
+0043 disp(<span class="string">'of a rectangular matrix from its singular values:'</span>)
+0044 singular_values = svd(Pb)
+0045 condition_number = max(singular_values)/min(singular_values)</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

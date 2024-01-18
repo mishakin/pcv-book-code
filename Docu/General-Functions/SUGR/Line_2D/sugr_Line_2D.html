@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_Line_2D</title>
+  <meta name="keywords" content="sugr_Line_2D">
+  <meta name="description" content="% create homogeneous 2D line">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Line_2D</a> &gt; sugr_Line_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Line_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_Line_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% create homogeneous 2D line</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% create homogeneous 2D line
+
+ Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)
+
+ input cases
+ (1) le             Hessian parameters [phi,d], CovM = 0
+ (1) lh             homogeneous coordinate vector, CovM = 0
+ (2) phi, d         Hessian parameters, CovM = 0
+ (2) le,Cee         Euclidean coordinate vector
+ (2) lh,Chh         homogeneous coordinate vector
+ (3) a,b,c          homogeneous coordinates, CovM == 0
+ (3) phi,d,Cee      Euclidean coordinates
+ (4) u,v,w,Chh      homogeneous coordinates
+ (5) x,y,phi,sp,sq  centroid form
+
+ Line_2D = structure
+ *           .h    = spherically normalized homogeneous coordinates
+ *           .Crr  = reduced covariance matrix of l.h
+ *           .Jr   = nullspace of .h'
+ *           .type = 2
+
+ Wolfgang Förstner 1/2011
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_Line_2D_hom2Hes.html" class="code" title="function [e,Cee] = sugr_Line_2D_hom2Hes(ul)">sugr_Line_2D_hom2Hes</a>, <a href="sugr_Line_2D_hom2cen.html" class="code" title="function [x0,p,sp,sq] = sugr_Line_2D_hom2cen(l)">sugr_Line_2D_hom2cen</a>,
+ <a href="sugr_Line_2D_Hes2hom.html" class="code" title="function [h,Chh] = sugr_Line_2D_Hes2hom(e,Cee)">sugr_Line_2D_Hes2hom</a>, <a href="sugr_Line_2D_Hes2cen.html" class="code" title="function [x0,p,sp,sq]= sugr_Line_2D_Hes2cen(e,Cee)">sugr_Line_2D_Hes2cen</a>, <a href="sugr_Line_2D_cen2hom.html" class="code" title="function [h,Chh] = sugr_Line_2D_cen2hom(x0,p,sp,sq)">sugr_Line_2D_cen2hom</a>,
+ <a href="sugr_get_Euclidean_Line_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Line_2D(l)">sugr_get_Euclidean_Line_2D</a>, <a href="sugr_get_centroid_Line_2D.html" class="code" title="function [x0,p,sp,sq] = sugr_get_centroid_Line_2D(l)">sugr_get_centroid_Line_2D</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>	% generate minimal representation for homogeneous vector</li><li><a href="sugr_Line_2D_Hes2hom.html" class="code" title="function [h,Chh] = sugr_Line_2D_Hes2hom(e,Cee)">sugr_Line_2D_Hes2hom</a>	% Uncertain homogenous line parameters from uncertain Hessian (Euclidean) line parameters</li><li><a href="sugr_Line_2D_cen2hom.html" class="code" title="function [h,Chh] = sugr_Line_2D_cen2hom(x0,p,sp,sq)">sugr_Line_2D_cen2hom</a>	% Uncertain homogenous line parameters from uncertain centered line parameters</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Line-2D/demo_sugr_Line_2D.html" class="code" title="">demo_sugr_Line_2D</a>	demo_sugr_Line_2D: demo routine for creating a 2D lines</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_construct_Point_2D.html" class="code" title="">demo_construct_Point_2D</a>	demo_construct_Point_2D</li><li><a href="../../../13-Two-View-Geometry/Demo-F-Matrix/demo_epipolar_geometry.html" class="code" title="function demo_epipolar_geometry()">demo_epipolar_geometry</a>	% Epipolar geometry</li><li><a href="../../../General-Functions/SUGR/Homography_2D/sugr_transform_with_Homography_2D.html" class="code" title="function y = sugr_transform_with_Homography_2D(H,x)">sugr_transform_with_Homography_2D</a>	% transform uncertain elements using a projective mapping</li><li><a href="sugr_construct_join_Line_2D.html" class="code" title="function Line_2D = sugr_construct_join_Line_2D(x,y)">sugr_construct_join_Line_2D</a>	% Construct 2D line joining two points x and y</li><li><a href="sugr_construct_midline_Line_2D.html" class="code" title="function Line_2D = sugr_construct_midline_Line_2D(x,y)">sugr_construct_midline_Line_2D</a>	% Construct midline of two 2D points x and y</li><li><a href="sugr_construct_parallel_lO_Line_2D.html" class="code" title="function Line_2D = sugr_construct_parallel_lO_Line_2D(l)">sugr_construct_parallel_lO_Line_2D</a>	% Construct line parallel to line l through origin</li><li><a href="sugr_construct_parallel_lx_Line_2D.html" class="code" title="function Line_2D = sugr_construct_parallel_lx_Line_2D(l,x)">sugr_construct_parallel_lx_Line_2D</a>	% Construct 2D line parallel to line l through point x</li><li><a href="sugr_perturb_Lines_2D.html" class="code" title="function lstruct = sugr_perturb_Lines_2D(x0,d,lines,resolution,sigma, rigorous) %#ok<INUSD>">sugr_perturb_Lines_2D</a>	% Perturbes given image lines through one point</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% create homogeneous 2D line</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% input cases</span>
+0006 <span class="comment">% (1) le             Hessian parameters [phi,d], CovM = 0</span>
+0007 <span class="comment">% (1) lh             homogeneous coordinate vector, CovM = 0</span>
+0008 <span class="comment">% (2) phi, d         Hessian parameters, CovM = 0</span>
+0009 <span class="comment">% (2) le,Cee         Euclidean coordinate vector</span>
+0010 <span class="comment">% (2) lh,Chh         homogeneous coordinate vector</span>
+0011 <span class="comment">% (3) a,b,c          homogeneous coordinates, CovM == 0</span>
+0012 <span class="comment">% (3) phi,d,Cee      Euclidean coordinates</span>
+0013 <span class="comment">% (4) u,v,w,Chh      homogeneous coordinates</span>
+0014 <span class="comment">% (5) x,y,phi,sp,sq  centroid form</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Line_2D = structure</span>
+0017 <span class="comment">% *           .h    = spherically normalized homogeneous coordinates</span>
+0018 <span class="comment">% *           .Crr  = reduced covariance matrix of l.h</span>
+0019 <span class="comment">% *           .Jr   = nullspace of .h'</span>
+0020 <span class="comment">% *           .type = 2</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% Wolfgang Förstner 1/2011</span>
+0023 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% See also sugr_Line_2D_hom2Hes, sugr_Line_2D_hom2cen,</span>
+0026 <span class="comment">% sugr_Line_2D_Hes2hom, sugr_Line_2D_Hes2cen, sugr_Line_2D_cen2hom,</span>
+0027 <span class="comment">% sugr_get_Euclidean_Line_2D, sugr_get_centroid_Line_2D</span>
+0028 
+0029 <a name="_sub0" href="#_subfunctions" class="code">function Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)</a>
+0030 
+0031 <span class="comment">% default</span>
+0032 Chh  = zeros(3);
+0033 
+0034 <span class="keyword">switch</span> nargin
+0035     <span class="keyword">case</span> 1 <span class="comment">% 2- or 3-vector</span>
+0036         size_a1=size(a1,1);
+0037         <span class="keyword">switch</span> size_a1
+0038             <span class="keyword">case</span> 2
+0039                 <span class="comment">%% (1) Euclidean vector (angle-distance), CovM == 0</span>
+0040                 <span class="comment">% minimal representation</span>
+0041                 Line_2D   = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([cos(a1(1)); sin(a1(1)); -a1(2)],Chh);
+0042                 
+0043             <span class="keyword">case</span> 3
+0044                 <span class="comment">%% (1) homogeneous vector, CovM == 0</span>
+0045                 <span class="comment">% minimal representation</span>
+0046                 Line_2D   = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(a1,Chh);
+0047                 
+0048         <span class="keyword">end</span>
+0049         
+0050     <span class="keyword">case</span> 2
+0051         size_a1=size(a1,1);
+0052         <span class="keyword">switch</span> size_a1
+0053             <span class="keyword">case</span> 1
+0054                 <span class="comment">%% (2) Euclidean coordinates, CovM == 0</span>
+0055                 <span class="comment">% minimal representation</span>
+0056                 Line_2D   = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([cos(a1(1)); sin(a1(1)); -a2],Chh);
+0057                 
+0058             <span class="keyword">case</span> 2
+0059                 <span class="comment">%% (2) Euclidean coordinate vector</span>
+0060                 <span class="comment">% homogeneous coordinates</span>
+0061                 [h,Chh] =   <a href="sugr_Line_2D_Hes2hom.html" class="code" title="function [h,Chh] = sugr_Line_2D_Hes2hom(e,Cee)">sugr_Line_2D_Hes2hom</a>(a1,a2);
+0062                 <span class="comment">% minimal representation</span>
+0063                 Line_2D   = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(h,Chh);
+0064                 
+0065             <span class="keyword">case</span> 3
+0066                 <span class="comment">%% (3) homogeneous coordinates</span>
+0067                 <span class="comment">% minimal representation</span>
+0068                 Line_2D=<a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(a1,a2);
+0069                 
+0070         <span class="keyword">end</span>
+0071     <span class="keyword">case</span> 3
+0072         size_a3=size(a3,1);
+0073         <span class="keyword">switch</span> size_a3
+0074             <span class="keyword">case</span> 1
+0075                 <span class="comment">%% (3) homogeneous coordinates, CovM == 0</span>
+0076                 <span class="comment">% minimal representation</span>
+0077                 Line_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;a2;a3],Chh);
+0078                 
+0079             <span class="keyword">case</span> 2
+0080                 <span class="comment">%% (3) Euclidean coordinates</span>
+0081                 <span class="comment">% spherically normalized homogeneous vector</span>
+0082                 [h,Chh] = <a href="sugr_Line_2D_Hes2hom.html" class="code" title="function [h,Chh] = sugr_Line_2D_Hes2hom(e,Cee)">sugr_Line_2D_Hes2hom</a>([a1;a2],a3);
+0083                 <span class="comment">% minimal representation</span>
+0084                 Line_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(h,Chh);
+0085                 
+0086         <span class="keyword">end</span>
+0087         
+0088     <span class="keyword">case</span> 4
+0089         <span class="comment">%% (4) homogeneous coordinates</span>
+0090         <span class="comment">% minimal representation</span>
+0091         Line_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;a2;a3],a4);
+0092         
+0093     <span class="keyword">case</span> 5
+0094         <span class="comment">%% (5) centroid form</span>
+0095         <span class="comment">% homogeneous coordinates</span>
+0096         [h,Chh] = <a href="sugr_Line_2D_cen2hom.html" class="code" title="function [h,Chh] = sugr_Line_2D_cen2hom(x0,p,sp,sq)">sugr_Line_2D_cen2hom</a>([a1;a2],a3,a4,a5);
+0097         Line_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(h,Chh);
+0098 <span class="keyword">end</span>
+0099 Line_2D.Jr = null(Line_2D.h');
+0100 Line_2D.type = 2;</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_ghm_update_vector</title>
+  <meta name="keywords" content="sugr_ghm_update_vector">
+  <meta name="description" content="% GHM update spherically normalized vector">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../Documentation.html">Home</a> &gt;  <a href="../../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="../Documentation.html">General</a> &gt; <a href="Documentation.html">Estimation</a> &gt; sugr_ghm_update_vector.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../Documentation.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\General\Estimation&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_ghm_update_vector
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>% GHM update spherically normalized vector</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function xu = sugr_ghm_update_vector(x,p) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% GHM update spherically normalized vector
+
+ xu = sugr_ghm_update_vector(x,p)
+
+ * x = N-vector, approximate values
+ * p = (N-1)-vector, reduced corrections
+
+ xu = updated vector
+
+ Wolfgang Förstner 03/2011
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../10-Uncertain-Geometry/demo_estimate_two_symmetric_planes_from_points.html" class="code" title="">demo_estimate_two_symmetric_planes_from_points</a>	% test_two_symmetric_planes_from_points</li><li><a href="../../../../General-Functions/SUGR/E-Matrix/sugr_estimation_ml_E_Matrix_from_point_pairs.html" class="code" title="function [E, sigma_0, R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_E_Matrix_from_point_pairs</a>	% ML estimation of E-Matrix from point pairs</li><li><a href="../../../../General-Functions/SUGR/Homography_2D/sugr_estimation_ml_Homography_2D_from_point_pairs.html" class="code" title="function [H, sigma_0, R] = sugr_estimation_ml_Homography_2D_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_Homography_2D_from_point_pairs</a>	% ML estimate of 2D homography from point pairs</li><li><a href="../../../../General-Functions/SUGR/Plane/sugr_estimation_ml_Plane_from_points.html" class="code" title="function [x,sigma_0,R,N_matrix,h_vector,estx0,estl] =sugr_estimation_ml_Plane_from_points(l,xa,T,maxiter)">sugr_estimation_ml_Plane_from_points</a>	% ML estiamte of plane from points</li><li><a href="../../../../General-Functions/SUGR/Plane/sugr_estimation_ml_symmetric_Planes_from_points.html" class="code" title="function [x, estl, sigma_0, R] =sugr_estimation_ml_symmetric_Planes_from_points(XL, XR, xa, T, maxiter)">sugr_estimation_ml_symmetric_Planes_from_points</a>	% ML estiamte of plane from points</li><li><a href="../../../../General-Functions/SUGR/Point_2D/sugr_estimation_ml_Point_2D_from_Lines.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines</a>	% ML estimate of intersection Point_2D from N Lines_2D</li><li><a href="../../../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs_spherical.html" class="code" title="function PP = sugr_perturb_2D_point_pairs_spherical(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs_spherical</a>	% Perturb sampled 2D points pairs sphericaly</li><li><a href="../../../../General-Functions/SUGR/Projection_3D_2D/sugr_estimation_ml_Projection_3D_2D_from_point_pairs.html" class="code" title="function [P,sigma_0,R] = sugr_estimation_ml_Projection_3D_2D_from_point_pairs(X,y,xa,T,maxiter)">sugr_estimation_ml_Projection_3D_2D_from_point_pairs</a>	% ML estimate of Projection from corresponding 3D-2D point pairs</li><li><a href="../../../../General-Functions/SUGR/Projection_3D_2D/sugr_estimation_ml_Projection_3D_2D_from_point_pairs_hnh.html" class="code" title="function [P,sigma_0,R] = sugr_estimation_ml_Projection_3D_2D_from_point_pairs_hnh(X,y,xa,T,maxiter)">sugr_estimation_ml_Projection_3D_2D_from_point_pairs_hnh</a>	% ML estimate of Projection from corresponding 3D-2D point pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% GHM update spherically normalized vector</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% xu = sugr_ghm_update_vector(x,p)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * x = N-vector, approximate values</span>
+0006 <span class="comment">% * p = (N-1)-vector, reduced corrections</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% xu = updated vector</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Wolfgang Förstner 03/2011</span>
+0011 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0012 
+0013 <a name="_sub0" href="#_subfunctions" class="code">function xu = sugr_ghm_update_vector(x,p)</a>
+0014 
+0015 <span class="comment">% Update in tangent space</span>
+0016 xu = x + null(x') * p;
+0017 
+0018 <span class="comment">% normalize</span>
+0019 xu = xu / norm(xu);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_9_demo_profile_reconstruction</title>
+  <meta name="keywords" content="fig_16_9_demo_profile_reconstruction">
+  <meta name="description" content="% Fig. 16.9 page 740">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">16-Profilereconstruction</a> &gt; fig_16_9_demo_profile_reconstruction.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Profilereconstruction&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_9_demo_profile_reconstruction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Fig. 16.9 page 740</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 16.9 page 740
+ demo profile smoothing 
+
+ Wolfgang Förstner 2014-10-07
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../16-Profilereconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a>	% estimate_profile_robust</li><li><a href="../16-Profilereconstruction/Functions/estimate_profile_robust_flat.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust_flat(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type)">estimate_profile_robust_flat</a>	% estimate_profile_robust_flat</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 16.9 page 740</span>
+0002 <span class="comment">% demo profile smoothing</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner 2014-10-07</span>
+0005 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0007 
+0008 addpath(<span class="string">'Functions'</span>)
+0009 
+0010 close all
+0011 
+0012 <span class="comment">%% plot settings</span>
+0013 ss = plot_init;
+0014 figure(<span class="string">'name'</span>,<span class="string">'Fig. 16.9: Profile smoothing'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0015     <span class="string">'Position'</span>,[0.2*ss(1),0.2*ss(2),0.5*ss(1),0.5*ss(2)]);
+0016 
+0017 <span class="comment">%% set parameters</span>
+0018 N = 45;
+0019 factor_sigma = 1.5;    <span class="comment">% factor for displying std of estimated profile</span>
+0020 Niter = 0;
+0021 type_robust = zeros(4,1);
+0022 print_type = 0;
+0023 plot_type  = 0;
+0024 
+0025 <span class="comment">%% generate point</span>
+0026 xs = [15,20,25,30]';
+0027 zs = [-1.8,-2,2,0]'*2.5;
+0028 out_in = [0,0,0]';
+0029 
+0030 <span class="comment">%% reconstruct profile flat</span>
+0031 sigma_e = 1.0;    <span class="comment">% process noise</span>
+0032 sigma_n = 0.25;   <span class="comment">% observation noise</span>
+0033 
+0034 [zest,x1,x2,x3,Cov] = <a href="../16-Profilereconstruction/Functions/estimate_profile_robust_flat.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust_flat(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type)">estimate_profile_robust_flat</a><span class="keyword">...</span>
+0035     (N,xs,zs,sigma_e,sigma_n,Niter,0,type_robust,print_type);
+0036 
+0037 subplot(2,2,1); hold on
+0038 plot(1:N,zest,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0039 plot(xs,zs,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,20)
+0040 axis equal
+0041 title(<span class="string">'flat reconstruction'</span>)
+0042 xlim([5,50]);ylim([-20,15])
+0043 
+0044 
+0045 <span class="comment">%% show precision</span>
+0046 subplot(2,2,3); hold on
+0047 plot(xs,zs,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,15)
+0048 plot(1:N,zest,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0049 plot(1:N,zest+3*factor_sigma*sqrt(diag(Cov)),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,1)
+0050 plot(1:N,zest-3*factor_sigma*sqrt(diag(Cov)),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,1)
+0051 title([<span class="string">'blow up factor for $\sigma_z = '</span>,num2str(factor_sigma),<span class="string">'$'</span>])
+0052 axis equal; xlim([5,50]); ylim([-20,15]);
+0053 
+0054 
+0055 <span class="comment">%% reconstruct profile smooth</span>
+0056 sigma_e = 1.0;     <span class="comment">% process noise</span>
+0057 sigma_n = 0.25;    <span class="comment">% observation noise</span>
+0058 
+0059 [zest,A,ver,weights,Cov] = <a href="../16-Profilereconstruction/Functions/estimate_profile_robust.html" class="code" title="function [xest,A,v,weights,Cov] = estimate_profile_robust(N,ts,ys,sigma_e,sigma_n,Niter,type_out,type_r,print_type,plot_type)">estimate_profile_robust</a><span class="keyword">...</span>
+0060     (N,xs,zs,sigma_e,sigma_n,Niter,0,type_robust,print_type,plot_type);
+0061 
+0062 subplot(2,2,2);hold on;
+0063 plot(1:N,zest,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0064 plot(xs,zs,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,20)
+0065 title(<span class="string">'smooth reconstruction'</span>)
+0066 axis equal;xlim([5,50]);ylim([-20,15]);
+0067 
+0068 <span class="comment">%% show precision</span>
+0069 subplot(2,2,4);hold on;
+0070 plot(xs,zs,<span class="string">'.b'</span>,<span class="string">'MarkerSize'</span>,20)
+0071 plot(1:N,zest,<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2)
+0072 plot(1:N,zest+3*factor_sigma*sqrt(diag(Cov)),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,1)
+0073 plot(1:N,zest-3*factor_sigma*sqrt(diag(Cov)),<span class="string">'-r'</span>,<span class="string">'LineWidth'</span>,1)
+0074 title([<span class="string">'blow up factor for $\sigma_z = '</span>,num2str(factor_sigma),<span class="string">'$'</span>])
+0075 axis equal; xlim([5,50]);ylim([-20,15]);
+0076 
+0077</pre></div>
+<hr><address>Generated on Mon 19-Sep-2016 01:11:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

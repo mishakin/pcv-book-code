@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_bR_from_E_uv</title>
+  <meta name="keywords" content="sugr_bR_from_E_uv">
+  <meta name="description" content="% b and R from E using set of pairs of directions">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">E-Matrix</a> &gt; sugr_bR_from_E_uv.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\E-Matrix&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_bR_from_E_uv
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% b and R from E using set of pairs of directions</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [b, R, code] = sugr_bR_from_E_uv(E, u, v) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% b and R from E using set of pairs of directions
+
+ Alg. 20 
+
+ [b, R, code] = sugr_bR_from_E_uv(E,u,v)
+
+ E     = 3x3 E-matrix
+ u,v   = Nx3 matrices of directions
+
+ b     = 3x1 normalized base vector
+ R     = 3x3 rotation matrix
+ code  = code for signes of b and R
+           0 S(b)= UZU', R = VWU
+           1 S(b)= UZ'U', R = VWU
+           2 S(b)= UZU', R = VW'U
+           3 S(b)= UZ'U', R = VW'U
+            
+ Wolfgang Förstner 8/2013
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_bR_from_UVuv.html" class="code" title="">demo_bR_from_UVuv</a>	% demo: bR from (U,V,xs,xss)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% b and R from E using set of pairs of directions</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Alg. 20</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% [b, R, code] = sugr_bR_from_E_uv(E,u,v)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% E     = 3x3 E-matrix</span>
+0008 <span class="comment">% u,v   = Nx3 matrices of directions</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% b     = 3x1 normalized base vector</span>
+0011 <span class="comment">% R     = 3x3 rotation matrix</span>
+0012 <span class="comment">% code  = code for signes of b and R</span>
+0013 <span class="comment">%           0 S(b)= UZU', R = VWU</span>
+0014 <span class="comment">%           1 S(b)= UZ'U', R = VWU</span>
+0015 <span class="comment">%           2 S(b)= UZU', R = VW'U</span>
+0016 <span class="comment">%           3 S(b)= UZ'U', R = VW'U</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Wolfgang Förstner 8/2013</span>
+0019 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% See also sugr_E_Matrix</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function [b, R, code] = sugr_bR_from_E_uv(E, u, v)</a>
+0024 
+0025 <span class="comment">% set basic matrices</span>
+0026 W = [0 1 0; - 1, 0, 0; 0, 0, 1];
+0027 Z = [0 1 0; - 1, 0, 0; 0, 0, 0];
+0028 I = size(u, 1);
+0029 
+0030 <span class="comment">% svd of E</span>
+0031 [U, S, V] = svd(E);
+0032 <span class="comment">% enforce U and V to be proper rotations</span>
+0033 U = U * det(U);
+0034 V = V * det(V);
+0035 <span class="comment">% check sign of b and R</span>
+0036 code = - 1;
+0037 count = 0;
+0038 <span class="keyword">for</span> c = 0:3 <span class="comment">% for all four cases set b and R</span>
+0039  
+0040     count = count + 1;
+0041     <span class="keyword">switch</span> c
+0042         <span class="keyword">case</span> 0
+0043             S = U * Z'*U'; R = V * W'*U';
+0044         <span class="keyword">case</span> 1
+0045             S = U * Z * U';      R=V*W' * U';
+0046         <span class="keyword">case</span> 2
+0047             S = U * Z'*U'; R = V * W * U';
+0048         <span class="keyword">case</span> 3
+0049             S = U * Z * U';      R=V*W*U';
+0050     <span class="keyword">end</span>
+0051     b = [S(3, 2); S(1, 3); S(2, 1)];
+0052     b = b / norm(b);
+0053     <span class="comment">% check whether all 3D points are in direction of u and v</span>
+0054     sign_s = zeros(I, 1);
+0055     sign_r = zeros(I, 1);
+0056     <span class="keyword">for</span> i = 1:I
+0057         ui = u(i, :)';
+0058         vi = v(i, :)';
+0059         wi = R'*vi;
+0060         m = cross(cross(b, ui), b);
+0061         sign_s(i) = sign(det([b, m, cross(ui, wi)]));
+0062         sign_r(i) = sign_s(i) * sign(m'*wi);
+0063     <span class="keyword">end</span>
+0064     <span class="comment">% check: the majority of points need to be in direction of u and v</span>
+0065     <span class="comment">%     signs = [sign_s,sign_r];</span>
+0066     <span class="comment">%     correct_sign = [mean(sign_s),mean(sign_r)];</span>
+0067     <span class="keyword">if</span> mean(sign_s) &gt; 0 &amp;&amp; mean(sign_r) &gt; 0
+0068         code = c;
+0069         <span class="keyword">return</span>
+0070     <span class="keyword">end</span>
+0071 <span class="keyword">end</span>
+0072 
+0073 
+0074         
+0075</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

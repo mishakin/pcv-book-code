@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of simulate_points_dem_10</title>
+  <meta name="keywords" content="simulate_points_dem_10">
+  <meta name="description" content="% read ply-file">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">16-Surfacereconstruction</a> &gt; <a href="index.html">Functions</a> &gt; simulate_points_dem_10.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>simulate_points_dem_10
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% read ply-file</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [points,BB,delta_x,sigma_k,XYZ_ori]=simulate_points_dem_10(file_name,Nbin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% read ply-file
+
+ [points,BB,delta_x,sigma_k]=simulate_points_dem_10(file_name);
+
+ file_name     = name of ply-file
+                 given in '..\Data'
+                 fa2_aurelo_result_pyra0_ausgeschnitten-1.ply
+                        (used in Fig. 16.23)
+                 fa2_aurelo_result_pyra0_ausgeschnitten-4.ply
+                        (larger data set)
+ Nbin          = resolution
+
+ points        = N x 4 vector of points and sigma
+ BB            = bounding box
+ delta_x       = grid distance
+ sigma_k       = sigma of curvatures
+
+ Wolfgang Förstner 07/14
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ply_read.html" class="code" title="function [ Elements, varargout ] = ply_read ( Path, Str )">ply_read</a>	*****************************************************************************80</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="test_smooth_dem_robust_bilinear.html" class="code" title="">test_smooth_dem_robust_bilinear</a>	% test dem smoothing</li><li><a href="test_smooth_dem_robust_bilinear_square.html" class="code" title="">test_smooth_dem_robust_bilinear_square</a>	% test dem smoothing</li><li><a href="../../16-Surfacereconstruction/fig_16_23_aurelo_result.html" class="code" title="">fig_16_23_aurelo_result</a>	% Fig. 16.23 page 764</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% read ply-file</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [points,BB,delta_x,sigma_k]=simulate_points_dem_10(file_name);</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% file_name     = name of ply-file</span>
+0006 <span class="comment">%                 given in '..\Data'</span>
+0007 <span class="comment">%                 fa2_aurelo_result_pyra0_ausgeschnitten-1.ply</span>
+0008 <span class="comment">%                        (used in Fig. 16.23)</span>
+0009 <span class="comment">%                 fa2_aurelo_result_pyra0_ausgeschnitten-4.ply</span>
+0010 <span class="comment">%                        (larger data set)</span>
+0011 <span class="comment">% Nbin          = resolution</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% points        = N x 4 vector of points and sigma</span>
+0014 <span class="comment">% BB            = bounding box</span>
+0015 <span class="comment">% delta_x       = grid distance</span>
+0016 <span class="comment">% sigma_k       = sigma of curvatures</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Wolfgang Förstner 07/14</span>
+0019 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0020 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0021 
+0022 <a name="_sub0" href="#_subfunctions" class="code">function [points,BB,delta_x,sigma_k,XYZ_ori]=simulate_points_dem_10(file_name,Nbin)</a>
+0023 
+0024 <span class="comment">%% plot settings</span>
+0025 ss = plot_init;
+0026 
+0027 <span class="comment">%% read file</span>
+0028 pts = <a href="ply_read.html" class="code" title="function [ Elements, varargout ] = ply_read ( Path, Str )">ply_read</a>(file_name);
+0029 
+0030 <span class="comment">%% extract coordinates</span>
+0031 XYZ_ori = [pts.vertex.x,pts.vertex.y,pts.vertex.z];
+0032 N = size(XYZ_ori,1);
+0033 
+0034 <span class="comment">%% normalize points</span>
+0035 <span class="comment">% % determine principal axes</span>
+0036 <span class="comment">% C = cov(XYZ_ori);</span>
+0037 <span class="comment">% [R,D] = eigs(C);</span>
+0038 <span class="comment">% R = R*diag(diag(sign(R)))</span>
+0039 <span class="comment">% % normalize</span>
+0040 <span class="comment">% XYZ = XYZ_ori*R;</span>
+0041 XYZ = XYZ_ori*diag([-1,-1,1]);
+0042 
+0043 <span class="comment">%%</span>
+0044 xmin = min(XYZ(:,1));
+0045 xmax = max(XYZ(:,1));
+0046 ymin = min(XYZ(:,2));
+0047 ymax = max(XYZ(:,2));
+0048 frame_size = 1.1;
+0049 bord = (frame_size-1)/2;
+0050 Range_x = (xmax-xmin);
+0051 Range_y = (ymax-ymin);
+0052 delta_x = min(Range_x,Range_y)/(Nbin-1);
+0053 Nr = ceil(Range_x*frame_size/delta_x);
+0054 Mc = ceil(Range_y*frame_size/delta_x);
+0055 BB = [xmin-bord*Range_x,               ymin-bord*Range_y,<span class="keyword">...</span>
+0056       xmin-bord*Range_x+(Nr-1)*delta_x,ymin-bord*Range_y+(Mc-1)*delta_x];
+0057 
+0058 <span class="comment">% sigma_n</span>
+0059 factor_n = 0.1;
+0060 sigma_n = factor_n*max([Range_x,Range_y])/sqrt(N);
+0061 sigma_k = 2.0 * sigma_n;
+0062 
+0063 <span class="comment">% prepare points</span>
+0064 points = [XYZ(:,1),XYZ(:,2),XYZ(:,3),sigma_n*ones(N,1)];
+0065 
+0066 <span class="comment">%%</span>
+0067 figure(<span class="string">'name'</span>,<span class="string">'Given points'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0068     <span class="string">'Position'</span>,[0.1*ss(1),0.3*ss(2),0.3*ss(1),0.4*ss(2)]);
+0069 plot3(points(:,1),points(:,2),points(:,3),<span class="string">'.k'</span>)
+0070 axis equal;axis off;hold on
+0071 xlabel(<span class="string">'x'</span>);ylabel(<span class="string">'y'</span>);zlabel(<span class="string">'z'</span>);
+0072 view([0,90])
+0073 title(<span class="string">'Given points'</span>)
+0074 plot3([BB(1),BB(1),BB(3),BB(3),BB(1)],[BB(2),BB(4),BB(4),BB(2),BB(2)],[0,0,0,0,0],<span class="string">'-k'</span>);
+0075 
+0076 
+0077 
+0078 
+0079 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_estimation_algebraic_E_Matrix_from_point_pairs</title>
+  <meta name="keywords" content="sugr_estimation_algebraic_E_Matrix_from_point_pairs">
+  <meta name="description" content="% Algebraic estimation of E-Matrix from point pairs,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">E-Matrix</a> &gt; sugr_estimation_algebraic_E_Matrix_from_point_pairs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\E-Matrix&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_estimation_algebraic_E_Matrix_from_point_pairs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Algebraic estimation of E-Matrix from point pairs,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [E,est_sigma_0,error] = sugr_estimation_algebraic_E_Matrix_from_point_pairs(P) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Algebraic estimation of E-Matrix from point pairs, 
+ assumption: independent observations
+ assumption: points are conditioned.
+
+ following Sect. 13.3.2.3, p. 575
+    with CovM following Sect. 4.9.2.4
+ 
+ [E,est_sigma_0,error] = sugr_estimation_algebraic_E_Matrix_from_point_pairs(P) 
+
+ P contains point pairs
+ P.h = [X,Y]
+ * X = N x 3 matrix of points 
+ * Y = N x 3 matrix of points
+ P.Crr = N x 4 x 4 contains reduced covariance matrix
+ 
+ model
+ X(n,:) * E * Y(n,:)' = 0
+
+ E      relatiove orientation
+        E.bR = estimated homography with uncertainty, 
+               using algebraic minimization, thus neglecting the accuracy
+        E.Crr = CovM of reduced parameters, derived by variance propagation
+
+ est_sigma_0  estimated standard deviation of constraint
+
+ error   = 0  ok
+         = 1  no basis found
+
+ Wolfgang Förstner 2/2010
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>, <a href="sugr_estimation_ml_E_Matrix_from_point_pairs.html" class="code" title="function [E, sigma_0, R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l, xa, T, maxiter)">sugr_estimation_ml_E_Matrix_from_point_pairs</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>	% create E-matrix</li><li><a href="sugr_select_bR_from_E_UV_uv.html" class="code" title="function [be,Re] = sugr_select_bR_from_E_UV_uv(U,V,u,v)">sugr_select_bR_from_E_UV_uv</a>	% Select bR from E</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_estimate_E_Matrix_from_point_pairs.html" class="code" title="">demo_estimate_E_Matrix_from_point_pairs</a>	% test_estimate_E_Matrix_from_point_pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Algebraic estimation of E-Matrix from point pairs,</span>
+0002 <span class="comment">% assumption: independent observations</span>
+0003 <span class="comment">% assumption: points are conditioned.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% following Sect. 13.3.2.3, p. 575</span>
+0006 <span class="comment">%    with CovM following Sect. 4.9.2.4</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% [E,est_sigma_0,error] = sugr_estimation_algebraic_E_Matrix_from_point_pairs(P)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% P contains point pairs</span>
+0011 <span class="comment">% P.h = [X,Y]</span>
+0012 <span class="comment">% * X = N x 3 matrix of points</span>
+0013 <span class="comment">% * Y = N x 3 matrix of points</span>
+0014 <span class="comment">% P.Crr = N x 4 x 4 contains reduced covariance matrix</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% model</span>
+0017 <span class="comment">% X(n,:) * E * Y(n,:)' = 0</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% E      relatiove orientation</span>
+0020 <span class="comment">%        E.bR = estimated homography with uncertainty,</span>
+0021 <span class="comment">%               using algebraic minimization, thus neglecting the accuracy</span>
+0022 <span class="comment">%        E.Crr = CovM of reduced parameters, derived by variance propagation</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% est_sigma_0  estimated standard deviation of constraint</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% error   = 0  ok</span>
+0027 <span class="comment">%         = 1  no basis found</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% Wolfgang Förstner 2/2010</span>
+0030 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% See also sugr_E_Matrix, sugr_estimation_ml_E_Matrix_from_point_pairs</span>
+0033 
+0034 
+0035 <a name="_sub0" href="#_subfunctions" class="code">function [E,est_sigma_0,error] = sugr_estimation_algebraic_E_Matrix_from_point_pairs(P)</a>
+0036 
+0037 <span class="comment">% pair coordinates</span>
+0038 Ph   = P.h;
+0039 <span class="comment">% homogeneous coordinates</span>
+0040 xl = Ph(:,1:3);
+0041 xr = Ph(:,4:6);
+0042 <span class="comment">% number of point pairs</span>
+0043 N = size(Ph,1);
+0044 
+0045 <span class="comment">%%</span>
+0046 <span class="comment">% estimate E algebraically using &gt; 7 points</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">% build coefficient matrix</span>
+0049 A = zeros(N,9);
+0050 <span class="keyword">for</span> n = 1:N 
+0051     <span class="comment">% Kronecker 1x9 -matrix</span>
+0052     A(n,:)  = [xr(n,1)*xl(n,:), xr(n,2)*xl(n,:) xr(n,3)*xl(n,:)];
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">% partition</span>
+0056 N_rows = size(A,1);
+0057 <span class="keyword">if</span> N_rows == 8
+0058     e = null(A);
+0059     A_plus = A'*inv(A*A');                                                 <span class="comment">%#ok&lt;*MINV&gt;</span>
+0060     est_sigma_0 = 1;
+0061 <span class="keyword">else</span>
+0062     [U,D,V] = svd(A,<span class="string">'econ'</span>);
+0063     <span class="comment">% find algebraically best solution</span>
+0064     e        = V(:,9);
+0065     <span class="comment">% determine A+ = pseudo inverse of A with last singular value = 0</span>
+0066     Di          = inv(D+eps*eye(9));
+0067     est_sigma_0 = sqrt(Di(9,9)/(N-5));
+0068     Di(9,9)  = 0;
+0069     A_plus   = V * Di * U';
+0070 <span class="keyword">end</span>
+0071 E0   = reshape(e,3,3);
+0072 
+0073 <span class="comment">% Enforce same eigenvalues == 1</span>
+0074 [U0,~,V0]= svd(E0);
+0075 U0        = U0*det(U0);
+0076 V0        = V0*det(V0);
+0077 Ee        = U0 * diag([1,1,0]) * V0';
+0078 
+0079 <span class="comment">% select from four cases</span>
+0080 [b,R] = <a href="sugr_select_bR_from_E_UV_uv.html" class="code" title="function [be,Re] = sugr_select_bR_from_E_UV_uv(U,V,u,v)">sugr_select_bR_from_E_UV_uv</a>(U0,V0,xl,xr);
+0081 <span class="keyword">if</span> norm(b) == 0
+0082     E           = zeros(3);
+0083     est_sigma_0 = 0;
+0084     error       = 1;
+0085     <span class="keyword">return</span>
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="comment">% determine CovM of residuals of constraints from x=xl, y=xr</span>
+0089 <span class="comment">% (following Sect. 4.9.2.4)</span>
+0090 <span class="comment">% x' E y = g</span>
+0091 <span class="comment">% d(x' E y) = d(g)</span>
+0092 <span class="comment">% x' E dy + y' E' dx = dg</span>
+0093 <span class="comment">%x' E Jyr dyr + y' E' Jxr dxr = dg</span>
+0094 <span class="comment">%</span>
+0095 Cgg = sparse(zeros(N));
+0096 <span class="keyword">for</span> n=1:N
+0097     x1    = xl(n,:)';
+0098     x2    = xr(n,:)';
+0099     <span class="comment">% VarProp for g</span>
+0100     J_x = + x2' * Ee' * null(x1');
+0101     J_y = + x1' * Ee  * null(x2');
+0102     J = [J_x, J_y];
+0103     <span class="comment">% effect of both</span>
+0104     Cgg(n,n)  = Cgg(n,n) <span class="keyword">...</span>
+0105         + J * squeeze(P.Crr(n,:,:)) * J'; <span class="comment">%#ok&lt;SPRIX&gt;</span>
+0106 <span class="keyword">end</span>
+0107 
+0108 <span class="comment">% determine Crr for 5 parameters</span>
+0109 Chh = A_plus * Cgg * A_plus';
+0110 
+0111 E     = <a href="sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>(b,R,Chh);
+0112 error = 0;</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

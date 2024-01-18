@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_constrain_3D_Line</title>
+  <meta name="keywords" content="sugr_constrain_3D_Line">
+  <meta name="description" content="% imposes Plücker constraint for 3D lines">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Line_3D</a> &gt; sugr_constrain_3D_Line.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Line_3D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_constrain_3D_Line
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% imposes Plücker constraint for 3D lines</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function L = sugr_constrain_3D_Line(L) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% imposes Plücker constraint for 3D lines
+ 
+ L = sugr_constrain_3D_Line(L) 
+ 
+ Wolfgang Förstner 7/2012
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="sugr_Line_3D.html" class="code" title="function Line_3D = sugr_Line_3D(a1,a2)">sugr_Line_3D</a>, <a href="sugr_minimal_3D_Line.html" class="code" title="function Ls = sugr_minimal_3D_Line(L,CLL)">sugr_minimal_3D_Line</a>, <a href="sugr_construct_join_Line_3D.html" class="code" title="function L = sugr_construct_join_Line_3D(X,Y)">sugr_construct_join_Line_3D</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/demo_selection_X_on_Li.html" class="code" title="">demo_selection_X_on_Li</a>	% test whether selection is necessary when using L through X constraint</li><li><a href="sugr_minimal_3D_Line.html" class="code" title="function Ls = sugr_minimal_3D_Line(L,CLL)">sugr_minimal_3D_Line</a>	% generate minimal representation for 3D homogeneous line</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% imposes Plücker constraint for 3D lines</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% L = sugr_constrain_3D_Line(L)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Wolfgang Förstner 7/2012</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% See also sugr_Line_3D, sugr_minimal_3D_Line, sugr_construct_join_Line_3D</span>
+0009 
+0010 <a name="_sub0" href="#_subfunctions" class="code">function L = sugr_constrain_3D_Line(L)</a>
+0011 
+0012 <span class="comment">% take parts</span>
+0013 Lh  = L(1:3);
+0014 L0  = L(4:6);
+0015 
+0016 <span class="comment">% possibly distorted directions</span>
+0017 Dht = Lh/norm(Lh);
+0018 D0t = L0/norm(L0);
+0019 
+0020 <span class="comment">% auxiliary variables</span>
+0021 d   = norm(Dht-D0t);
+0022 r   = sqrt(1-d^2/4);
+0023 
+0024 <span class="comment">% corrected disrections</span>
+0025 Dh  = (1/2 + r/d)*Dht + (1/2-r/d)*D0t;
+0026 D0  = (1/2 - r/d)*Dht + (1/2+r/d)*D0t;
+0027 
+0028 <span class="comment">% corrected line parameters</span>
+0029 L   = [norm(Lh)*Dh; norm(L0)*D0];
+0030 
+0031</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

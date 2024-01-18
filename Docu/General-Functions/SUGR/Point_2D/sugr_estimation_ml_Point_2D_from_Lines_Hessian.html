@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_estimation_ml_Point_2D_from_Lines_Hessian</title>
+  <meta name="keywords" content="sugr_estimation_ml_Point_2D_from_Lines_Hessian">
+  <meta name="description" content="% ML estimate of intersection Point_2D from N Lines_2D">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Point_2D</a> &gt; sugr_estimation_ml_Point_2D_from_Lines_Hessian.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Point_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_estimation_ml_Point_2D_from_Lines_Hessian
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% ML estimate of intersection Point_2D from N Lines_2D</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines_Hessian(l,xa,T,maxiter) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% ML estimate of intersection Point_2D from N Lines_2D
+ using line's Hessian representation
+
+ model
+ x cos(p) + y sin(p) - d = 0
+ [x,sigma_0,R] = sugr_ml_estimate_2d_point_from_lines_Heesian(l,xa,T,maxiter)
+
+ * l    = struct of lines: lines, uncertain, spherically normalized homogeneous
+ * xa   = struct/2-vector, approximate value
+ * T    = threshold for iteration
+ * maxiter = maximal iteration
+
+ * x = struct estimated point
+ * sigma0 = estimated sigma0
+ * R = redundancy
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>, sugr_Line_2D,  <a href="sugr_estimation_ml_Point_2D_from_Lines.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines</a>
+ <a href="sugr_estimation_algebraic_Point_2D_from_Lines.html" class="code" title="function [ex,sigma_0_est_D,sigma_0_est_O] = sugr_estimation_algebraic_Point_2D_from_Lines(lines,sph)">sugr_estimation_algebraic_Point_2D_from_Lines</a>, <a href="sugr_estimation_geometric_Point_2D_from_Lines.html" class="code" title="function [xe,sigma_0,x] = sugr_estimation_geometric_Point_2D_from_Lines(lines)">sugr_estimation_geometric_Point_2D_from_Lines</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/Line_2D/sugr_Line_2D_hom2Hes.html" class="code" title="function [e,Cee] = sugr_Line_2D_hom2Hes(ul)">sugr_Line_2D_hom2Hes</a>	% Uncertain Hessian line from homogeneous line</li><li><a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li><li><a href="sugr_ghm_cg_Point_2D_from_Lines_Hessian.html" class="code" title="function [va,C,cg,atr,btr] = sugr_ghm_cg_Point_2D_from_Lines_Hessian(l,le,xe,C)">sugr_ghm_cg_Point_2D_from_Lines_Hessian</a>	% Determines residuals etc. for 2D point from passing lines</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_estimate_Point_2D_from_Lines.html" class="code" title="">demo_estimate_Point_2D_from_Lines</a>	% demo_estimate_Point_2D_from_Lines</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% ML estimate of intersection Point_2D from N Lines_2D</span>
+0002 <span class="comment">% using line's Hessian representation</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% model</span>
+0005 <span class="comment">% x cos(p) + y sin(p) - d = 0</span>
+0006 <span class="comment">% [x,sigma_0,R] = sugr_ml_estimate_2d_point_from_lines_Heesian(l,xa,T,maxiter)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% * l    = struct of lines: lines, uncertain, spherically normalized homogeneous</span>
+0009 <span class="comment">% * xa   = struct/2-vector, approximate value</span>
+0010 <span class="comment">% * T    = threshold for iteration</span>
+0011 <span class="comment">% * maxiter = maximal iteration</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% * x = struct estimated point</span>
+0014 <span class="comment">% * sigma0 = estimated sigma0</span>
+0015 <span class="comment">% * R = redundancy</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Wolfgang Förstner</span>
+0018 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% See also sugr_Point_2D, sugr_Line_2D,  sugr_estimation_ml_Point_2D_from_Lines</span>
+0021 <span class="comment">% sugr_estimation_algebraic_Point_2D_from_Lines, sugr_estimation_geometric_Point_2D_from_Lines</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function [x,sigma_0,R] = </a><span class="keyword">...</span>
+0024     sugr_estimation_ml_Point_2D_from_Lines_Hessian(l,xa,T,maxiter)
+0025 
+0026 <span class="keyword">global</span> print_option_estimation
+0027 <span class="keyword">global</span> min_redundancy
+0028 
+0029 <span class="comment">%% Initialization</span>
+0030 
+0031 <span class="comment">% select and transfer to Hessian</span>
+0032 lh    = l.h;
+0033 lCrr  = l.Crr;
+0034 
+0035 [N,~] = size(lh);                 <span class="comment">% number of elements</span>
+0036 R = N-2;            <span class="comment">% redundancy</span>
+0037 <span class="keyword">if</span> R &lt; 0
+0038     <span class="keyword">return</span>
+0039 <span class="keyword">end</span>;
+0040 
+0041 <span class="comment">%% transfer to Hessian</span>
+0042 Cee=zeros(N,2,2);
+0043 le = zeros(N,2);
+0044 <span class="keyword">for</span> n=1:N
+0045     lhn.h      = lh(n,:)';
+0046     lhn.Crr    = reshape(lCrr(n,:,:),2,2);
+0047     lhn.type   = 2;
+0048     [en,Ceen]  = <a href="../../../General-Functions/SUGR/Line_2D/sugr_Line_2D_hom2Hes.html" class="code" title="function [e,Cee] = sugr_Line_2D_hom2Hes(ul)">sugr_Line_2D_hom2Hes</a>(lhn);
+0049     le(n,:)    = en';
+0050     Cee(n,1:2,1:2) = Ceen(1:2,1:2);
+0051 <span class="keyword">end</span>
+0052 
+0053 estl = le;                       <span class="comment">% initialize estimated observations</span>
+0054 w_g  = ones(N,1);                <span class="comment">% initial weights for robust estimate</span>
+0055 
+0056 <span class="keyword">if</span> isstruct(xa)                  <span class="comment">% initiate estx, estimated unknowns</span>
+0057     estx = xa.h(1:2)/xa.h(3);
+0058 <span class="keyword">else</span>
+0059     estx = xa(1:2)/xa(3);
+0060 <span class="keyword">end</span>
+0061 
+0062 s=0;                             <span class="comment">% control variable for iterations</span>
+0063 residuals=zeros(N,1);            <span class="comment">% intial residuals</span>
+0064 
+0065 
+0066 <span class="comment">%% Start iteration -------------------------------------</span>
+0067 v       = zeros(N,2);      <span class="comment">% Residuals</span>
+0068 <span class="keyword">for</span> nu=1:maxiter
+0069     <span class="keyword">if</span> print_option_estimation &gt; 0
+0070         sprintf(<span class="string">'nu = %2'</span>,nu);
+0071     <span class="keyword">end</span>
+0072     <span class="comment">%     C        = zeros(N,2,2); % covariance matrices</span>
+0073     <span class="comment">%     v_r      = zeros(N,2); % reduced residuals</span>
+0074     A        = zeros(N,2); <span class="comment">% Jacobians c -&gt; x</span>
+0075     B        = zeros(N,2); <span class="comment">% Jacobians c -&gt; l</span>
+0076     W        = zeros(N,1); <span class="comment">% Weights of constraints</span>
+0077     cg       = zeros(N,1); <span class="comment">% constraint's residuals</span>
+0078     
+0079     N_matrix = zeros(2);   <span class="comment">% normal equation matrix</span>
+0080     h_vector = zeros(2,1); <span class="comment">% right hand sides</span>
+0081     
+0082     <span class="comment">%% Build design matrices</span>
+0083     <span class="keyword">for</span> n=1:N
+0084         estl_n = estl(n,:)';                  <span class="comment">% get estl</span>
+0085         l_n    =   le(n,:)';                  <span class="comment">% get l</span>
+0086         Cee_n  = squeeze(Cee(n,:,:));
+0087         <span class="comment">%determine cg and Jacobians (checked)</span>
+0088         [va,Cee_n,cg_n,at_n,bt_n] = <span class="keyword">...</span>
+0089             <a href="sugr_ghm_cg_Point_2D_from_Lines_Hessian.html" class="code" title="function [va,C,cg,atr,btr] = sugr_ghm_cg_Point_2D_from_Lines_Hessian(l,le,xe,C)">sugr_ghm_cg_Point_2D_from_Lines_Hessian</a>(l_n,estl_n,estx,Cee_n);
+0090         <span class="comment">% Store these</span>
+0091         A(n,:)    = at_n(:);
+0092         B(n,:)    = bt_n(:);
+0093         v(n,:)    = -va';
+0094         cg(n)     = cg_n;
+0095         
+0096         <span class="comment">% weight W_g_gamma of contraint</span>
+0097         bCovb_n = bt_n * Cee_n * bt_n';
+0098         W(n)    = 1 / bCovb_n * w_g(n);
+0099         aW      = at_n' * W(n);
+0100         
+0101         N_matrix = N_matrix + aW * at_n;
+0102         h_vector = h_vector + aW * cg_n;
+0103         
+0104     <span class="keyword">end</span>
+0105     
+0106     <span class="comment">%     det(N_matrix);</span>
+0107     <span class="comment">%% Solve</span>
+0108     Cxx    = inv(N_matrix);
+0109     Delta_estx   = Cxx * h_vector;                                         <span class="comment">%#ok&lt;*MINV&gt;</span>
+0110     
+0111     <span class="keyword">if</span> print_option_estimation &gt; 1
+0112         disp([<span class="string">'Result of estimation in iteration: '</span>,num2str(nu)]);
+0113         <span class="comment">%         Delta_estx;</span>
+0114     <span class="keyword">end</span>
+0115     
+0116     max(abs(Delta_estx)./sqrt(diag(Cxx)));
+0117     <span class="keyword">if</span> max(abs(Delta_estx)./sqrt(diag(Cxx))) &lt; T
+0118         s=2;
+0119     <span class="keyword">end</span>
+0120     
+0121     <span class="comment">%% Determine Updates</span>
+0122     Omega = 0;
+0123     check=zeros(2,1);
+0124     <span class="keyword">for</span> n=1:N
+0125         <span class="comment">% covariance matrix of observations</span>
+0126         Cee_n = squeeze(Cee(n,:,:));
+0127         
+0128         <span class="comment">% corrections of reduced observations</span>
+0129         delta_l   = Cee_n * B(n,:)' * W(n) * (cg(n)-A(n,:)*Delta_estx)- v(n,:)';
+0130         ver       = v(n,:)' + delta_l;
+0131         
+0132         <span class="comment">% sum of squared residuals</span>
+0133         <span class="keyword">if</span> w_g(n) &gt; 0
+0134             vvp = ver' * inv(Cee_n) * ver;
+0135             Omega = Omega + vvp;
+0136             residuals(n)=vvp;
+0137             check=check+A(n,:)'*W(n)*B(n,:)*ver;
+0138             
+0139             <span class="comment">% eliminate observation by setting w_g=0</span>
+0140             <span class="keyword">if</span> vvp &gt; 10
+0141                 w_g(n)=0;
+0142             <span class="keyword">end</span>
+0143         <span class="keyword">end</span>
+0144         <span class="comment">% updated estimates of observations</span>
+0145         estl(n,:) = estl(n,:)+delta_l';
+0146         
+0147     <span class="keyword">end</span>
+0148     <span class="keyword">if</span> print_option_estimation &gt; 0
+0149         sigma_0 = sqrt(Omega/R)                                            <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0150     <span class="keyword">end</span>
+0151     <span class="comment">%     checkt = check';</span>
+0152     
+0153     <span class="comment">% update estimate of x</span>
+0154     <span class="comment">%     estx0=estx;</span>
+0155     <span class="comment">%     estx = estx+Delta_estx;</span>
+0156     <span class="comment">%     check_Atpv = (estl*Delta_estx.*w_g)';</span>
+0157     
+0158     <span class="comment">%% Stop iteration</span>
+0159     <span class="keyword">if</span> s == 2
+0160         <span class="keyword">break</span>
+0161     <span class="keyword">end</span>
+0162     
+0163 <span class="keyword">end</span>
+0164 <span class="comment">%% Evaluation of result ------------------------------</span>
+0165 
+0166 <span class="comment">% determine sigma_0</span>
+0167 <span class="keyword">if</span> R &gt; 0
+0168     sigma_0 = sqrt(Omega/R);
+0169 <span class="keyword">else</span>
+0170     sigma_0 = 1;
+0171 <span class="keyword">end</span>
+0172 <span class="comment">% residuals';</span>
+0173 
+0174 <span class="comment">% choose factor</span>
+0175 f = 1;
+0176 <span class="keyword">if</span> R &gt; min_redundancy
+0177     f = sigma_0;
+0178 <span class="keyword">end</span>
+0179 
+0180 <span class="comment">% estimated covariance matrix of estx</span>
+0181 estCxx = f^2 * Cxx;
+0182 
+0183 <span class="comment">% set output</span>
+0184 x = <a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(estx,estCxx);
+0185</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

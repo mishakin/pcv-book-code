@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_Gammadual_reduced</title>
+  <meta name="keywords" content="calc_Gammadual_reduced">
+  <meta name="description" content="% reduced dual Plückermatrix from Plücker vector">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_Gammadual_reduced.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_Gammadual_reduced
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% reduced dual Plückermatrix from Plücker vector</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [Gr , Rm] = calc_Gammadual_reduced(L) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% reduced dual Plückermatrix from Plücker vector
+ see PCV (7.132) ff
+
+ Usage
+   [Gr , Rm] = calc_Gammadual_reduced(L)
+
+   L - 6x1 Plücker Line
+   Gr - 2x4 reduced dual Gamma matrix / reduced dual Plückermatrix
+   Rm - 2x4 reduction matrix
+
+ Wolfgang Förstner 02/2010
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_Gamma.html" class="code" title="function G = calc_Gamma (L)">calc_Gamma</a>, <a href="calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>, <a href="calc_Gamma_reduced.html" class="code" title="function [Gr , Rm] = calc_Gamma_reduced(L)">calc_Gamma_reduced</a>,
+ <a href="calc_Pi.html" class="code" title="function P = calc_Pi(X)">calc_Pi</a>, <a href="calc_Pidual.html" class="code" title="function P = calc_Pidual (X)">calc_Pidual</a>, <a href="calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>	% dual Plückermatrix from Plücker vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../10-Uncertain-Geometry/demo_selection_X_on_Li.html" class="code" title="">demo_selection_X_on_Li</a>	% test whether selection is necessary when using L through X constraint</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% reduced dual Plückermatrix from Plücker vector</span>
+0002 <span class="comment">% see PCV (7.132) ff</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Usage</span>
+0005 <span class="comment">%   [Gr , Rm] = calc_Gammadual_reduced(L)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   L - 6x1 Plücker Line</span>
+0008 <span class="comment">%   Gr - 2x4 reduced dual Gamma matrix / reduced dual Plückermatrix</span>
+0009 <span class="comment">%   Rm - 2x4 reduction matrix</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Wolfgang Förstner 02/2010</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also calc_Gamma, calc_Gammadual, calc_Gamma_reduced,</span>
+0015 <span class="comment">% calc_Pi, calc_Pidual, calc_Dual</span>
+0016 
+0017 <a name="_sub0" href="#_subfunctions" class="code">function [Gr , Rm] = calc_Gammadual_reduced(L)</a>
+0018 
+0019 [~,i] = max(abs(L));
+0020 G = <a href="calc_Gammadual.html" class="code" title="function G = calc_Gammadual (L)">calc_Gammadual</a>(L);
+0021 
+0022 <span class="keyword">switch</span> i 
+0023     <span class="keyword">case</span> 1
+0024         Rm = [0 1 0 0;0 0 1 0];
+0025         Gr = G([2,3]',:);
+0026     <span class="keyword">case</span> 2
+0027         Rm = [0 0 1 0;1 0 0 0];
+0028         Gr = G([3,1]',:);
+0029     <span class="keyword">case</span> 3
+0030         Rm = [1 0 0 0;0 1 0 0];
+0031         Gr = G([1,2]',:);
+0032     <span class="keyword">case</span> 4
+0033         Rm = [1 0 0 0;0 0 0 1];
+0034         Gr = G([1,4]',:);
+0035     <span class="keyword">case</span> 5
+0036         Rm = [0 1 0 0;0 0 0 1];
+0037         Gr = G([2,4]',:);
+0038     <span class="keyword">case</span> 6
+0039         Rm = [0 0 1 0;0 0 0 1];
+0040         Gr = G([3,4]',:);
+0041 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

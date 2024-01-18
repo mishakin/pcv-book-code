@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of simulate_points_dem_square</title>
+  <meta name="keywords" content="simulate_points_dem_square">
+  <meta name="description" content="% generate a set of points for dem-interpolation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">16-Surfacereconstruction</a> &gt; <a href="index.html">Functions</a> &gt; simulate_points_dem_square.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for 16-Surfacereconstruction\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>simulate_points_dem_square
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% generate a set of points for dem-interpolation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [points,BB,dx,sigma_k,sigma_h,oi,dem]=simulate_points_dem_square </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% generate a set of points for dem-interpolation</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="test_smooth_dem_robust_bilinear_square.html" class="code" title="">test_smooth_dem_robust_bilinear_square</a>	% test dem smoothing</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% generate a set of points for dem-interpolation</span>
+0002 
+0003 <a name="_sub0" href="#_subfunctions" class="code">function [points,BB,dx,sigma_k,sigma_h,oi,dem]=simulate_points_dem_square</a>
+0004 
+0005 
+0006 <span class="comment">%% square box, all observed</span>
+0007 N=5;
+0008 <span class="comment">% bounding box</span>
+0009 BB=[0,0,N-1,N-1];
+0010 <span class="comment">% grid size</span>
+0011 factor=1;
+0012 dx = 1/factor;
+0013 
+0014 sigma_h = 1.0;
+0015 sigma_k = 4/factor^(3/2);
+0016 k=0;
+0017 <span class="keyword">for</span> i=1:N
+0018     <span class="keyword">for</span> j=1:N
+0019         k=k+1;
+0020         points(k,1:4)=[i,j,1,sigma_h];
+0021     <span class="keyword">end</span>
+0022 <span class="keyword">end</span>
+0023 
+0024 <span class="comment">%%</span>
+0025 
+0026 xmin = BB(1);
+0027 ymin = BB(2);
+0028 xmax = BB(3);
+0029 ymax = BB(4);
+0030 Nr = ceil((xmax-xmin)/dx)+1;
+0031 Mc = ceil((ymax-ymin)/dx)+1;
+0032 <span class="comment">%points(:,3)=(points(:,3)-mean(points(:,3)))*sqrt(Nr)/4;</span>
+0033 <span class="comment">% interpolation kernel</span>
+0034 sigma = min(Nr,Mc)/5;
+0035 
+0036 dem = zeros(Nr,Mc);
+0037 oi=ones(N^2,1);
+0038 
+0039 
+0040 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 01-Oct-2016 21:05:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

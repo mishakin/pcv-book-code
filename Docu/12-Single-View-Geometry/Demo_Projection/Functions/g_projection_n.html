@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of g_projection_n</title>
+  <meta name="keywords" content="g_projection_n">
+  <meta name="description" content="% Check the Jacobian of the projection constraint">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">12-Single-View-Geometry</a> &gt; <a href="../Documentation.html">Demo_Projection</a> &gt; <a href="Documentation.html">Functions</a> &gt; g_projection_n.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 12-Single-View-Geometry\Demo_Projection\Functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>g_projection_n
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Check the Jacobian of the projection constraint</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function g = g_projection_n(px) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Check the Jacobian of the projection constraint
+
+ g  = N(x') - N(P X)
+
+ px = [vecP; X; x']
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de
+
+ last changes: Susanne Wenzel 04/18
+ wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Check the Jacobian of the projection constraint</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% g  = N(x') - N(P X)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% px = [vecP; X; x']</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Wolfgang Förstner</span>
+0008 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% last changes: Susanne Wenzel 04/18</span>
+0011 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0012 <span class="comment">%</span>
+0013 <a name="_sub0" href="#_subfunctions" class="code">function g = g_projection_n(px)</a>
+0014 
+0015 yn = px(17:19); 
+0016 yn = yn/norm(yn);
+0017 
+0018 ypn = reshape( px(1:12),3,4 ) * px(13:16);
+0019 ypn = ypn/norm(ypn);
+0020 
+0021 g = yn - ypn;
+0022</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

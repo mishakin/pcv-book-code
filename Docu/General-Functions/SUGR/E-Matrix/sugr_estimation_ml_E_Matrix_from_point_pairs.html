@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_estimation_ml_E_Matrix_from_point_pairs</title>
+  <meta name="keywords" content="sugr_estimation_ml_E_Matrix_from_point_pairs">
+  <meta name="description" content="% ML estimation of E-Matrix from point pairs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">E-Matrix</a> &gt; sugr_estimation_ml_E_Matrix_from_point_pairs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\E-Matrix&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_estimation_ml_E_Matrix_from_point_pairs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% ML estimation of E-Matrix from point pairs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [E, sigma_0, R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l, xa, T, maxiter) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% ML estimation of E-Matrix from point pairs
+
+ following Sect. 13.3.5, p. 585 ff
+
+ [E,sigma_0,R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l,xa,T,maxiter)
+
+ * l    = struct of point paris
+ * xa   = 3 x 4 matrix [b,R] 
+ * T    = threshold for iteration
+ * maxiter = maximal iteration
+
+ * E = struct estimated essential matrix, with sigma_0=1
+ * sigma0 = estimated sigma0
+ * R = redundancy
+
+
+ Wolfgang Förstner 11/2017
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>, <a href="sugr_estimation_algebraic_E_Matrix_from_point_pairs.html" class="code" title="function [E,est_sigma_0,error] = sugr_estimation_algebraic_E_Matrix_from_point_pairs(P)">sugr_estimation_algebraic_E_Matrix_from_point_pairs</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li><li><a href="sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>	% create E-matrix</li><li><a href="sugr_ghm_cg_E_matrix_from_point_pairs.html" class="code" title="function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_E_matrix_from_point_pairs(l,le,xe,C)">sugr_ghm_cg_E_matrix_from_point_pairs</a>	% Constraints and Jacobians for GHM for estimating E-matrix from point pairs</li><li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_E_Matrix.html" class="code" title="function estx = sugr_ghm_update_E_Matrix(estx,estx_r)">sugr_ghm_update_E_Matrix</a>	% GHM update params relative orientation/E-matrix</li><li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>	% GHM update spherically normalized vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_estimate_E_Matrix_from_point_pairs.html" class="code" title="">demo_estimate_E_Matrix_from_point_pairs</a>	% test_estimate_E_Matrix_from_point_pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% ML estimation of E-Matrix from point pairs</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% following Sect. 13.3.5, p. 585 ff</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% [E,sigma_0,R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l,xa,T,maxiter)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% * l    = struct of point paris</span>
+0008 <span class="comment">% * xa   = 3 x 4 matrix [b,R]</span>
+0009 <span class="comment">% * T    = threshold for iteration</span>
+0010 <span class="comment">% * maxiter = maximal iteration</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% * E = struct estimated essential matrix, with sigma_0=1</span>
+0013 <span class="comment">% * sigma0 = estimated sigma0</span>
+0014 <span class="comment">% * R = redundancy</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Wolfgang Förstner 11/2017</span>
+0018 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% See also sugr_E_Matrix, sugr_estimation_algebraic_E_Matrix_from_point_pairs</span>
+0021 
+0022 <a name="_sub0" href="#_subfunctions" class="code">function [E, sigma_0, R] = sugr_estimation_ml_E_Matrix_from_point_pairs(l, xa, T, maxiter)</a>
+0023 
+0024 <span class="keyword">global</span> print_option_estimation
+0025 <span class="keyword">global</span> min_redundancy
+0026 
+0027 <span class="comment">%% Initialization</span>
+0028 U = 5; <span class="comment">% number of unknown parameters</span>
+0029 Nlr = 4; <span class="comment">% number of reduced parameters per observational group</span>
+0030 Gc = 1; <span class="comment">% number of constraints per observational group</span>
+0031 
+0032 lh = l.h; <span class="comment">% Nc x Nl matrix</span>
+0033 lCrr = l.Crr; <span class="comment">% Nc x Nlr x Nlr matric with Crr</span>
+0034 Nc = size(lh, 1); <span class="comment">% number of pairs</span>
+0035 
+0036 G = Nc * Gc; <span class="comment">% number of constraints</span>
+0037 R = G - U; <span class="comment">% redundancy</span>
+0038 <span class="keyword">if</span> R &lt; 0
+0039     <span class="keyword">return</span>
+0040 <span class="keyword">end</span>;
+0041 
+0042 estl = lh; <span class="comment">% initialize estimated observations</span>
+0043 w_f = ones(Nc, 1); <span class="comment">% initial weights for robust estimate</span>
+0044 
+0045 <span class="keyword">if</span> isstruct(xa) <span class="comment">% initiate estx, estimated unknowns</span>
+0046     estx = xa.bR; <span class="comment">% [ba,Ra]</span>
+0047 <span class="keyword">else</span>
+0048     estx = xa;
+0049 <span class="keyword">end</span>
+0050 
+0051 s = 0; <span class="comment">% control variable for iterations</span>
+0052 residuals = zeros(Nc, 1); <span class="comment">% intial residuals</span>
+0053 
+0054 <span class="comment">%% Start iteration -------------------------------------</span>
+0055 <span class="keyword">for</span> nu = 1:maxiter
+0056     <span class="keyword">if</span> print_option_estimation &gt; 0
+0057         sprintf(<span class="string">'nu = %2'</span>, nu);
+0058     <span class="keyword">end</span>
+0059     Cr = zeros(Nc, Nlr, Nlr); <span class="comment">% reduced covariance matrices</span>
+0060     v_r = zeros(Nc, Nlr); <span class="comment">% reduced residuals</span>
+0061     A = zeros(Nc, Gc, U); <span class="comment">% Jacobians c -&gt; x</span>
+0062     B = zeros(Nc, Gc, Nlr); <span class="comment">% Jacobians c -&gt; l</span>
+0063     W = zeros(Nc, Gc, Gc); <span class="comment">% Weights of constraints</span>
+0064     cg = zeros(Nc, Gc); <span class="comment">% constraint's residuals</span>
+0065  
+0066     N_matrix = zeros(U); <span class="comment">% normal equation matrix</span>
+0067     h_vector = zeros(U, 1); <span class="comment">% right hand sides</span>
+0068  
+0069     <span class="comment">%% Build design matrices</span>
+0070     <span class="keyword">for</span> n = 1:Nc
+0071         estl_n = estl(n, :)';                 <span class="comment">% get estl</span>
+0072         l_n = lh(n, :)';                   <span class="comment">% get l</span>
+0073         Crr_n = squeeze(lCrr(n, :, :));
+0074         <span class="comment">% determine cg and Jacobians (checked)</span>
+0075         [lr_n, Cr_n, cg_n, atr_n, btr_n] = <a href="sugr_ghm_cg_E_matrix_from_point_pairs.html" class="code" title="function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_E_matrix_from_point_pairs(l,le,xe,C)">sugr_ghm_cg_E_matrix_from_point_pairs</a>(l_n, estl_n, estx, Crr_n);
+0076         <span class="comment">% Store these</span>
+0077         A(n, :, :) = atr_n; <span class="comment">% Gc x U</span>
+0078         B(n, :, :) = btr_n; <span class="comment">% Gc x Nlr</span>
+0079         Cr(n, :, :) = Cr_n; <span class="comment">% Nlr x Nlr</span>
+0080         v_r(n, :) = - lr_n';                <span class="comment">% 1 x Nlr</span>
+0081         cg(n, :) = cg_n';                 <span class="comment">% 1 x Gc</span>
+0082      
+0083         <span class="comment">% weight of contraint</span>
+0084         bCovb_n = btr_n * Cr_n * btr_n';      <span class="comment">% Gc x Gc</span>
+0085         W(n, :, :) = inv(bCovb_n) * w_f(n); <span class="comment">% Gc x Gc</span>
+0086         aW = atr_n' * squeeze(W(n,:,:)); <span class="comment">% U x Gc</span>
+0087      
+0088         N_matrix = N_matrix + aW * atr_n; <span class="comment">% U x U</span>
+0089         h_vector = h_vector + aW * cg_n; <span class="comment">% U x 1</span>
+0090      
+0091     <span class="keyword">end</span>
+0092  
+0093     <span class="keyword">if</span> print_option_estimation &gt; 0
+0094         N_matrix = N_matrix                                                <span class="comment">%#ok&lt;NOPRT,ASGSL&gt;</span>
+0095         l_lambda = log(eigs(N_matrix))                                     <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0096         h_vector                                                           <span class="comment">%#ok&lt;NOPRT&gt;</span>
+0097     <span class="keyword">end</span>
+0098  
+0099     det(N_matrix);
+0100     <span class="comment">%% Solve</span>
+0101     Cxrxr = inv(N_matrix);
+0102     estx_r = Cxrxr * h_vector;                                             <span class="comment">%#ok&lt;*MINV&gt;</span>
+0103  
+0104     <span class="keyword">if</span> print_option_estimation &gt; 0
+0105         disp([<span class="string">'Result of estimation in iteration: '</span>, num2str(nu)]);
+0106         estimated_x = estx_r'                                               <span class="comment">%#ok&lt;NOPRT,NASGU&gt;</span>
+0107     <span class="keyword">end</span>
+0108  
+0109     max(abs(estx_r) ./ sqrt(diag(Cxrxr)));
+0110     <span class="keyword">if</span> max(abs(estx_r) ./ sqrt(diag(Cxrxr))) &lt; T
+0111         s = 2;
+0112     <span class="keyword">end</span>
+0113  
+0114     <span class="comment">%% Determine Updates</span>
+0115     Omega = 0;
+0116     <span class="comment">% Omega_c = 0;    % check c'Wc = Omega stimmt</span>
+0117     check = zeros(Gc, 1);
+0118     <span class="keyword">for</span> n = 1:Nc
+0119         <span class="comment">% covariance matrix of observations (normalized)</span>
+0120         Clrlr = squeeze(Cr(n, :, :));
+0121      
+0122         <span class="comment">% corrections of reduced observations</span>
+0123         delta_l_r = Clrlr * squeeze(B(n, :, :)) * squeeze(W(n, :, :)) * <span class="keyword">...</span>
+0124             (cg(n, :)'-squeeze(A(n,:,:))' * estx_r) - v_r(n, :)';
+0125         ver_r = v_r(n, :)' + delta_l_r;
+0126      
+0127         <span class="comment">%sum of squared residuals</span>
+0128         <span class="keyword">if</span> w_f(n) &gt; 0
+0129             vvp_r = ver_r' * inv(Clrlr) * ver_r;                            
+0130             Omega = Omega + vvp_r;
+0131             residuals(n) = vvp_r;
+0132          
+0133             <span class="comment">% Omega_c = Omega_c + cg(n,:)' * squeeze(W(n,:,:)) * cg(n,:);</span>
+0134          
+0135             <span class="comment">%             % eliminate obsservation by setting w_f=0</span>
+0136             <span class="comment">%             if vvp_r &gt; 10</span>
+0137             <span class="comment">%                 w_f(n)=0;</span>
+0138             <span class="comment">%             end</span>
+0139          
+0140         <span class="keyword">end</span>
+0141         <span class="comment">% weigths = w_f'</span>
+0142         <span class="comment">% [n, norm(ver_r ./ sqrt(diag(Clrlr)))];</span>
+0143         
+0144         <span class="comment">% updated estimates of both points</span>
+0145         estl(n, 1:3) = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>(estl(n, 1:3)',delta_l_r(1:2))';
+0146         estl(n, 4:6) = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>(estl(n, 4:6)',delta_l_r(3:4))';
+0147      
+0148     <span class="keyword">end</span>
+0149     sigma_0 = 1;
+0150     <span class="keyword">if</span> R &gt; min_redundancy
+0151         sigma_0 = sqrt(Omega / R);
+0152     <span class="keyword">end</span>
+0153     <span class="keyword">if</span> print_option_estimation &gt; 0
+0154         R                                                                  <span class="comment">%#ok&lt;NOPRT&gt;</span>
+0155         sigma_0                                                            <span class="comment">%#ok&lt;NOPRT&gt;</span>
+0156         <span class="comment">%sigma_c = sqrt(Omega_c/R)          % check stimmt</span>
+0157     <span class="keyword">end</span>
+0158  
+0159     <span class="comment">% update estimate of x</span>
+0160     estx = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_E_Matrix.html" class="code" title="function estx = sugr_ghm_update_E_Matrix(estx,estx_r)">sugr_ghm_update_E_Matrix</a>(estx, estx_r);
+0161  
+0162     <span class="comment">% perform check</span>
+0163     <span class="keyword">for</span> n = 1:Nc
+0164         E = <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(estx(:, 1)) * estx(:, 2:4)';
+0165         check(n) = estl(n, 1:3) * E * estl(n, 4:6)';
+0166     <span class="keyword">end</span>
+0167  
+0168     <span class="comment">%% Stop iteration</span>
+0169     <span class="keyword">if</span> s == 2
+0170         <span class="keyword">break</span>
+0171     <span class="keyword">end</span>
+0172  
+0173 <span class="keyword">end</span>
+0174 <span class="comment">%% Evaluation of result ------------------------------</span>
+0175 
+0176 <span class="comment">% determin sigma_0</span>
+0177 
+0178 <span class="keyword">if</span> R &gt; min_redundancy
+0179     sigma_0 = sqrt(Omega / R);
+0180 <span class="keyword">else</span>
+0181     sigma_0 = 1;
+0182 <span class="keyword">end</span>
+0183 
+0184 <span class="comment">% % choose factor</span>
+0185 <span class="comment">% f = 1;</span>
+0186 <span class="comment">% if R &gt; min_redundancy</span>
+0187 <span class="comment">%     f = sigma_0;</span>
+0188 <span class="comment">% end</span>
+0189 
+0190 <span class="comment">% set output</span>
+0191 E = <a href="sugr_E_Matrix.html" class="code" title="function E = sugr_E_Matrix(a1,a2,a3)">sugr_E_Matrix</a>(estx(:, 1), estx(:, 2:4), Cxrxr);
+0192 
+0193 
+0194 
+0195 
+0196</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

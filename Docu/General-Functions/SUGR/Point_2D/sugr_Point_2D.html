@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_Point_2D</title>
+  <meta name="keywords" content="sugr_Point_2D">
+  <meta name="description" content="% Create 2D point">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Point_2D</a> &gt; sugr_Point_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Point_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_Point_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Create 2D point</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function Point_2D = sugr_Point_2D(a1,a2,a3,a4) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Create 2D point
+
+ Usage:
+    Point_2D = sugr_Point_2D(xe)
+         Euclidean vector, CovM = 0
+
+    Point_2D = sugr_Point_2D(xh)
+         homogeneous vector, CovM = 0
+
+    Point_2D = sugr_Point_2D(x,y)
+         Euclidean coordinates, CovM = 0
+
+   Point_2D = sugr_Point_2D(xe,Cee)
+         Euclidean vector with Cov.matrix
+
+    Point_2D = sugr_Point_2D(xh,Chh)
+          homgeneous vector with Cov.matrix
+
+    Point_2D = sugr_Point_2D(u,v,w)
+         homogeneous coordinates, CovM = 0
+
+    Point_2D = sugr_Point_2D(x,y,Cee)
+         Euclidean coordinates with Euclidean Cov.matrix
+
+    Point_2D = sugr_Point_2D(x,y,sx,sy)
+         independent Euclidean coordinates with standard deviations
+
+    Point_2D = sugr_Point_2D(u,v,w,Chh)
+         homogeneous coordinates with homogeneous Cov.matrix
+ 
+  * Point_2D = structure 
+        .h    = spherically normalized homogeneous coordinates
+        .Crr  = reducedcovariance matrix
+        .Jr   = null space of .h'
+        .type = 1
+
+ Wolfgang Förstner 1/2011
+ wfoerstn@uni-bonn.de
+
+ See also sugr_Line_2D, sugr_Line_3D, sugr_Plane_3D, sugr_Point_3D</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>	% generate minimal representation for homogeneous vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Line-2D/demo_construct_Line_2D.html" class="code" title="">demo_construct_Line_2D</a>	% test_construct_Line_2D: test routine for constructing 2D lines</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_construct_Point_2D.html" class="code" title="">demo_construct_Point_2D</a>	demo_construct_Point_2D</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_estimate_Point_2D_from_Lines.html" class="code" title="">demo_estimate_Point_2D_from_Lines</a>	% demo_estimate_Point_2D_from_Lines</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_sugr_Point_2D.html" class="code" title="">demo_sugr_Point_2D</a>	demo_sugr_Point_2D: demo routine for generating 2D point</li><li><a href="../../../10-Uncertain-Geometry/Functions/determine_Homography_2D_from_two_images.html" class="code" title="function [H,X] = determine_Homography_2D_from_two_images(Image_l,Image_r,readX)">determine_Homography_2D_from_two_images</a>	demo_h_determine_homography_from_two_images: read/interactively determine homography</li><li><a href="../../../10-Uncertain-Geometry/Functions/h_transfer_grid.html" class="code" title="function h_transfer_grid(H,CP,Image_l,Image_r,magnification,grid_out)">h_transfer_grid</a>	demo_h_transfer_grid: transfer point in demo_homography</li><li><a href="../../../10-Uncertain-Geometry/Functions/h_transfer_points.html" class="code" title="function h_transfer_points(H,CP,Image_l,Image_r,magnification)">h_transfer_points</a>	demo_h_transfer_points: transfer point in demo_homography</li><li><a href="../../../10-Uncertain-Geometry/demo_estimate_two_symmetric_planes_from_points.html" class="code" title="">demo_estimate_two_symmetric_planes_from_points</a>	% test_two_symmetric_planes_from_points</li><li><a href="../../../13-Two-View-Geometry/Demo-F-Matrix/demo_epipolar_geometry.html" class="code" title="function demo_epipolar_geometry()">demo_epipolar_geometry</a>	% Epipolar geometry</li><li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_condition_Points.html" class="code" title="function [xc,M] = sugr_condition_Points(x)">sugr_condition_Points</a>	% condition points, determine conditioning matrix</li><li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_uncondition_Points.html" class="code" title="function x = sugr_uncondition_Points(xc, M)">sugr_uncondition_Points</a>	% Uncondition points</li><li><a href="../../../General-Functions/SUGR/Homography_2D/sugr_plot_Homography_2D.html" class="code" title="function sugr_plot_Homography_2D(H,center_type,bound_type,lw,factor,type)">sugr_plot_Homography_2D</a>	% plot uncertain homography 2D</li><li><a href="../../../General-Functions/SUGR/Homography_2D/sugr_transform_with_Homography_2D.html" class="code" title="function y = sugr_transform_with_Homography_2D(H,x)">sugr_transform_with_Homography_2D</a>	% transform uncertain elements using a projective mapping</li><li><a href="sugr_construct_footpoint_Ol_Point_2D.html" class="code" title="function Point_2D = sugr_construct_footpoint_Ol_Point_2D(l)">sugr_construct_footpoint_Ol_Point_2D</a>	% Foot point from 2D origin O to uncertain line l</li><li><a href="sugr_construct_intersection_Point_2D.html" class="code" title="function Point_2D = sugr_construct_intersection_Point_2D(l,m)">sugr_construct_intersection_Point_2D</a>	% Intersection 2D point two lines l and m</li><li><a href="sugr_construct_mean_Point_2D.html" class="code" title="function Point_2D = sugr_construct_mean_Point_2D(x,y)">sugr_construct_mean_Point_2D</a>	sugr_construct_mean_Point_2D: mid point of two 2D points</li><li><a href="sugr_construct_midpoint_Point_2D.html" class="code" title="function Point_2D = sugr_construct_midpoint_Point_2D(x,y)">sugr_construct_midpoint_Point_2D</a>	% Mid point of two 2D points</li><li><a href="sugr_estimation_algebraic_Point_2D_from_Lines.html" class="code" title="function [ex,sigma_0_est_D,sigma_0_est_O] = sugr_estimation_algebraic_Point_2D_from_Lines(lines,sph)">sugr_estimation_algebraic_Point_2D_from_Lines</a>	% Algebraic estimate of intersection Point_2D from N Lines_2D</li><li><a href="sugr_estimation_geometric_Point_2D_from_Lines.html" class="code" title="function [xe,sigma_0,x] = sugr_estimation_geometric_Point_2D_from_Lines(lines)">sugr_estimation_geometric_Point_2D_from_Lines</a>	% Geometric estimate of intersection Point_2D from N Lines_2D</li><li><a href="sugr_estimation_ml_Point_2D_from_Lines.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines</a>	% ML estimate of intersection Point_2D from N Lines_2D</li><li><a href="sugr_estimation_ml_Point_2D_from_Lines_Hessian.html" class="code" title="function [x,sigma_0,R] =sugr_estimation_ml_Point_2D_from_Lines_Hessian(l,xa,T,maxiter)">sugr_estimation_ml_Point_2D_from_Lines_Hessian</a>	% ML estimate of intersection Point_2D from N Lines_2D</li><li><a href="../../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs.html" class="code" title="function PP = sugr_perturb_2D_point_pairs(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs</a>	% Perturb sampled 2D points pairs</li><li><a href="../../../General-Functions/SUGR/Point_Pair_2D/sugr_perturb_2D_point_pairs_spherical.html" class="code" title="function PP = sugr_perturb_2D_point_pairs_spherical(PP_true,sigma_x,sigma_y,rho,fp)">sugr_perturb_2D_point_pairs_spherical</a>	% Perturb sampled 2D points pairs sphericaly</li><li><a href="../../../General-Functions/SUGR/Projection_3D_2D/sugr_perturb_3D_2D_point_pairs.html" class="code" title="function [X,y] = sugr_perturb_3D_2D_point_pairs(Xt,yt,sigma_X,sigma_y,fp)">sugr_perturb_3D_2D_point_pairs</a>	% Perturb sampled 3D 2D points pairs</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Create 2D point</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage:</span>
+0004 <span class="comment">%    Point_2D = sugr_Point_2D(xe)</span>
+0005 <span class="comment">%         Euclidean vector, CovM = 0</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%    Point_2D = sugr_Point_2D(xh)</span>
+0008 <span class="comment">%         homogeneous vector, CovM = 0</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%    Point_2D = sugr_Point_2D(x,y)</span>
+0011 <span class="comment">%         Euclidean coordinates, CovM = 0</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Point_2D = sugr_Point_2D(xe,Cee)</span>
+0014 <span class="comment">%         Euclidean vector with Cov.matrix</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%    Point_2D = sugr_Point_2D(xh,Chh)</span>
+0017 <span class="comment">%          homgeneous vector with Cov.matrix</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%    Point_2D = sugr_Point_2D(u,v,w)</span>
+0020 <span class="comment">%         homogeneous coordinates, CovM = 0</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%    Point_2D = sugr_Point_2D(x,y,Cee)</span>
+0023 <span class="comment">%         Euclidean coordinates with Euclidean Cov.matrix</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%    Point_2D = sugr_Point_2D(x,y,sx,sy)</span>
+0026 <span class="comment">%         independent Euclidean coordinates with standard deviations</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%    Point_2D = sugr_Point_2D(u,v,w,Chh)</span>
+0029 <span class="comment">%         homogeneous coordinates with homogeneous Cov.matrix</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%  * Point_2D = structure</span>
+0032 <span class="comment">%        .h    = spherically normalized homogeneous coordinates</span>
+0033 <span class="comment">%        .Crr  = reducedcovariance matrix</span>
+0034 <span class="comment">%        .Jr   = null space of .h'</span>
+0035 <span class="comment">%        .type = 1</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">% Wolfgang Förstner 1/2011</span>
+0038 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% See also sugr_Line_2D, sugr_Line_3D, sugr_Plane_3D, sugr_Point_3D</span>
+0041 
+0042 <a name="_sub0" href="#_subfunctions" class="code">function Point_2D = sugr_Point_2D(a1,a2,a3,a4)</a>
+0043 
+0044 <span class="comment">% default</span>
+0045 Chh  = zeros(3);
+0046 
+0047 <span class="keyword">switch</span> nargin
+0048     <span class="keyword">case</span> 0
+0049     <span class="keyword">case</span> 1 <span class="comment">% 2- or 3-vector</span>
+0050         size_a1 = size(a1,1);
+0051         <span class="keyword">switch</span> size_a1
+0052             <span class="keyword">case</span> 2 
+0053 <span class="comment">%% (1) Euclidean vector, CovM == 0</span>
+0054                 <span class="comment">% spherically normalized</span>
+0055                 Point_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;1],Chh);
+0056                 
+0057             <span class="keyword">case</span> 3 
+0058 <span class="comment">%% (1) homogeneous vector, CovM == 0</span>
+0059                 Point_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(a1,Chh);
+0060                 
+0061         <span class="keyword">end</span>
+0062     <span class="keyword">case</span> 2
+0063 
+0064         size_a2 = size(a1,1);
+0065         <span class="keyword">switch</span> size_a2
+0066             <span class="keyword">case</span> 1 
+0067 <span class="comment">%% (2) Euclidean coordinates, CovM == 0</span>
+0068                 Point_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;a2;1],Chh);
+0069                 
+0070             <span class="keyword">case</span> 2
+0071 <span class="comment">%% (2) Euclidean vector</span>
+0072                 <span class="comment">% spehrically normalized</span>
+0073                 Point_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;1],[a2 zeros(2,1); zeros(1,3)]);
+0074 
+0075             <span class="keyword">case</span> 3
+0076 <span class="comment">%% (3) uncertain homogeneous coordinates</span>
+0077                 Point_2D   = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(a1,a2);
+0078         <span class="keyword">end</span>
+0079     <span class="keyword">case</span> 3
+0080         size_a3 = size(a3,1);
+0081         <span class="keyword">switch</span> size_a3
+0082             <span class="keyword">case</span> 1 
+0083 <span class="comment">%% (3) homogeneous vector, CovM == 0</span>
+0084                  <span class="comment">% spehrically normalized</span>
+0085                 Point_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;a2;a3],Chh);
+0086                 
+0087             <span class="keyword">case</span> 2
+0088 <span class="comment">%% (3) Euclidean coordinates</span>
+0089                 <span class="comment">% spehrically normalized</span>
+0090                 Point_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;a2;1],[a3 zeros(2,1); zeros(1,3)]);
+0091         <span class="keyword">end</span>
+0092         
+0093     <span class="keyword">case</span> 4
+0094         size_a4 = size(a4,1);
+0095         <span class="keyword">switch</span> size_a4
+0096             <span class="keyword">case</span> 1 
+0097 <span class="comment">%% (4) Euclidean vector, independent coordinates</span>
+0098                 <span class="comment">% spehrically normalized</span>
+0099                 Point_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;a2;1],<span class="keyword">...</span>
+0100                            [ a3^2, 0, 0; 0, a4^2, 0; zeros(1,3)]);
+0101                 
+0102             <span class="keyword">case</span> 3
+0103 <span class="comment">%% (4) homogeneous coordinates</span>
+0104                 <span class="comment">% spehrically normalized</span>
+0105                 Point_2D = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>([a1;a2;a3],a4);
+0106         <span class="keyword">end</span>
+0107         
+0108 <span class="keyword">end</span>
+0109 
+0110 Point_2D.Jr = null(Point_2D.h');
+0111 Point_2D.type=1;
+0112</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

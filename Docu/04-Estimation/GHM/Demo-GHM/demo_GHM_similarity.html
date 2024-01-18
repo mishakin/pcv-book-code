@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_GHM_similarity</title>
+  <meta name="keywords" content="demo_GHM_similarity">
+  <meta name="description" content="% GHM with similarity">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GHM</a> &gt; <a href="Documentation.html">Demo-GHM</a> &gt; demo_GHM_similarity.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GHM\Demo-GHM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>demo_GHM_similarity
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% GHM with similarity</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% GHM with similarity
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de 
+
+ see GMM for similarity
+ See also demo_GHM_2D_lines</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../04-Estimation/GHM/Functions-GHM/GaussHelmertModelGroups.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,Xv,Rim,nabla_lv,muv,muv1,Uv1q,Uv2]=GaussHelmertModelGroups(lm,Cov_ll_m,cg_f,xa,ux,sx,Tx,maxiter,rU)">GaussHelmertModelGroups</a>	% Gauss Helmert Model for Groups</li><li><a href="../../../04-Estimation/GHM/Functions-GHM/cg_similarity_2D.html" class="code" title="function [cg,At,Bt] = cg_similarity_2D(l,la,xa)">cg_similarity_2D</a>	% determines constraint values and Jacobians for 2D similarity</li><li><a href="../../../04-Estimation/GHM/Functions-GHM/ux_similarity_2D.html" class="code" title="function x = ux_similarity_2D(xa,dx)">ux_similarity_2D</a>	% update of the four parameters of the 2D similarity transformation</li><li><a href="../../../General-Functions/Graphics/plot_circle.html" class="code" title="function h = plot_circle(xo,yo,r, fmt, varargin)">plot_circle</a>	% plot circle.</li><li><a href="../../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>	% init_rand_seed: initialize random number generation by specific seed</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% GHM with similarity</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Wolfgang Förstner</span>
+0004 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% see GMM for similarity</span>
+0007 <span class="comment">% See also demo_GHM_2D_lines</span>
+0008 
+0009 close all
+0010 clearvars
+0011 <span class="comment">% clear all                                                                  %#ok&lt;CLALL&gt;</span>
+0012 
+0013 addpath(genpath(<span class="string">'../../../General-Functions/'</span>));
+0014 addpath(genpath(<span class="string">'../Functions-GHM/'</span>));
+0015  
+0016 simulate_GMM_similarity = true;  <span class="comment">% choose transformed coordinates CovM=0</span>
+0017 <span class="comment">%simulate_GMM_similarity = false; % choose transformed coordinates CovM~=0</span>
+0018 
+0019  <span class="comment">% initialization for random numbers</span>
+0020 init_rand = 63;            
+0021 <a href="../../../General-Functions/Statistics/init_rand_seed.html" class="code" title="function seed = init_rand_seed(seed)">init_rand_seed</a>(init_rand);
+0022 
+0023 <span class="comment">%data_type = -10;         % type of generated data</span>
+0024 data_type =   2;         <span class="comment">% type of generated data</span>
+0025 <span class="keyword">if</span> data_type == 0
+0026     data_type = -10;
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="comment">% statistical parameters</span>
+0030 S = 0.99;                <span class="comment">% Significance level</span>
+0031 tol = chi2inv(S,2);
+0032 
+0033 <span class="comment">% controlling convergence</span>
+0034 Tx      = 0.00001; <span class="comment">% threshold for convergence</span>
+0035 maxiter = 10;   <span class="comment">% maximum number of iterations</span>
+0036 
+0037 <span class="comment">% selected parameters for sensititvity analysis</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">% 1,2 = translation (alternative choice)</span>
+0040 <span class="comment">% 3,4 = rotation, scale</span>
+0041 rU = [3,4];              
+0042 
+0043 
+0044 disp(<span class="string">'============================================'</span>)
+0045 disp(<span class="string">' Planar similarity with Gauss-Helmert model '</span>)
+0046 disp(<span class="string">'--------------------------------------------'</span>)
+0047 
+0048 <span class="keyword">if</span> simulate_GMM_similarity
+0049     disp(<span class="string">'Simulate similarity with Gauss-Markov model'</span>);
+0050     disp(<span class="string">'*******************************************'</span>)
+0051 <span class="keyword">end</span>
+0052 
+0053 <span class="comment">%% model ------------------------------------------------------------------</span>
+0054 <span class="comment">% xis = a xi - b yi + c</span>
+0055 <span class="comment">% yis = b xi + a yi + d</span>
+0056 <span class="keyword">switch</span> data_type
+0057     <span class="keyword">case</span> 1
+0058         tm  = [  1, 1; <span class="keyword">...</span>
+0059          2, 2; <span class="keyword">...</span>
+0060         -1,-2; <span class="keyword">...</span>
+0061         -2,-1 <span class="keyword">...</span>
+0062        ];
+0063     <span class="keyword">case</span> 2
+0064         tm  = [  -7, 7 ;<span class="keyword">...</span>
+0065             1, 1; <span class="keyword">...</span>
+0066          2, 2; <span class="keyword">...</span>
+0067         -1,-2; <span class="keyword">...</span>
+0068         -2,-1; <span class="keyword">...</span>
+0069        ];
+0070    <span class="keyword">otherwise</span>
+0071         tm=rand(-data_type,2)*5;
+0072 
+0073 <span class="keyword">end</span>
+0074 <span class="comment">% for plotting: bounding box</span>
+0075 bb   = [min(tm(:,1)),max(tm(:,1)),min(tm(:,2)),max(tm(:,2))];
+0076 maxd = max(max(tm(:,1))-min(tm(:,1)),max(tm(:,2))-min(tm(:,2)));
+0077 
+0078 xt  = [2,0.5,3,-2]';
+0079 disp(<span class="string">'Parameters'</span>)
+0080 disp(<span class="string">'   [ x(1)     -x(2)      x(3) ]'</span>);
+0081 disp(<span class="string">'   [ x(2)      x(1)      x(4) ]'</span>);
+0082 True_transformation = [xt(1) -xt(2) xt(3);xt(2) xt(1) xt(4)]                <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0083 
+0084 <span class="comment">% number of observations</span>
+0085 N   = 2*length(tm(:));
+0086 <span class="comment">% number of observations per correspondence</span>
+0087 d_I = 4;
+0088 <span class="comment">% number of correspondences = numbe rof points</span>
+0089 I   = N/d_I;
+0090 Number_of_points = I                                                        <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0091 <span class="comment">% number of unknown parameters</span>
+0092 U   = 4;
+0093 <span class="comment">% standard deviations for generation and estimation</span>
+0094 sigma_x = 0.01;                                                             <span class="comment">%#ok&lt;NASGU&gt;</span>
+0095 sigma_y  = 0.01;
+0096 <span class="keyword">if</span> simulate_GMM_similarity
+0097     sigma_x  = 0.00;
+0098 <span class="keyword">end</span>
+0099 Standard_deviation_observations_m = [sigma_x,sigma_y]                       <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0100 
+0101 <span class="comment">%% generate observations --------------------------------------------------</span>
+0102 lm         = zeros(I,d_I);           <span class="comment">% Ix4 matrix</span>
+0103 true_error = zeros(I,d_I);
+0104 Cov_ll_m   = zeros(I,d_I^2);         <span class="comment">% I x 16 matrix</span>
+0105 <span class="keyword">for</span> i =1:I
+0106     <span class="comment">% random perturbations</span>
+0107     <span class="keyword">if</span> simulate_GMM_similarity
+0108          true_error(i,:)  = [[0 0],randn(1,2)*sigma_y]; 
+0109     <span class="keyword">else</span>
+0110         true_error(i,:) = [randn(1,2)*sigma_x,randn(1,2)*sigma_y];          <span class="comment">%#ok&lt;UNRCH&gt;</span>
+0111     <span class="keyword">end</span>
+0112     
+0113     lm(i,:)= [tm(i,:),<span class="keyword">...</span>
+0114              ([xt(1) -xt(2) xt(3);xt(2) xt(1) xt(4)]*[tm(i,:)';1])'] <span class="keyword">...</span>
+0115            + true_error(i,:);
+0116     Am(2*i-1:2*i,:) = [tm(i,1) -tm(i,2) 1 0;<span class="keyword">...</span>
+0117                        tm(i,2)  tm(i,1) 0 1];
+0118     Cov_ll_m(i,:)= [sigma_x^2*[1 0 0 0 0 1 0 0], <span class="keyword">...</span>
+0119                     sigma_y^2*[0 0 1 0 0 0 0 1]];
+0120 <span class="keyword">end</span>
+0121 true_errors = true_error                                                    <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0122 observed_coordinates = lm                                                   <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0123 
+0124 <span class="comment">%% factors for plotting ---------------------------------------------------</span>
+0125 factor_v  = 0.5*maxd/sqrt(N/2)/max([sigma_x,sigma_y]);
+0126 factor_r  = 0.5*maxd/sqrt(N/2);
+0127 factor_X  = maxd/sqrt(N/2)/6;
+0128 factor_mu = maxd/sqrt(N/2)/4;
+0129 factor_nv = factor_v/20;
+0130 
+0131 <span class="comment">%% estimate parameters ----------------------------------------------------</span>
+0132 
+0133 <span class="comment">% xa = [1.8,0.6,2.5,-3]';    % approximate values, true [2,0.5,3,-2]';</span>
+0134 xa = zeros(4,1);
+0135 sa = max([sigma_x,sigma_y]) * [ [1,1]/maxd, [1,1]/sqrt(I) ];
+0136 
+0137 [est_x,Cov_xx,sigma_0q,R,vm,Xv,Rim,nabla_lv,muv,muv1,uv1q,uv2] = <span class="keyword">...</span>
+0138             <a href="../../../04-Estimation/GHM/Functions-GHM/GaussHelmertModelGroups.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,Xv,Rim,nabla_lv,muv,muv1,Uv1q,Uv2]=GaussHelmertModelGroups(lm,Cov_ll_m,cg_f,xa,ux,sx,Tx,maxiter,rU)">GaussHelmertModelGroups</a>(lm, Cov_ll_m, @<a href="../../../04-Estimation/GHM/Functions-GHM/cg_similarity_2D.html" class="code" title="function [cg,At,Bt] = cg_similarity_2D(l,la,xa)">cg_similarity_2D</a>, xa, <span class="keyword">...</span>
+0139             @<a href="../../../04-Estimation/GHM/Functions-GHM/ux_similarity_2D.html" class="code" title="function x = ux_similarity_2D(xa,dx)">ux_similarity_2D</a>, sa, Tx, maxiter, rU);
+0140           
+0141 <span class="comment">%% plot results -----------------------------------------------------------</span>
+0142 
+0143 <span class="comment">% for normalizing the test statistic of the observations</span>
+0144 <span class="comment">% assuming it ist the same for all observations</span>
+0145 rk_Cov_ll = rank(reshape(Cov_ll_m(1,:),4,4));
+0146 
+0147 ScrS = <a href="../../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;  
+0148 figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Position'</span>,[100 100  ScrS+[ -600 -300]])
+0149 subplot(2,3,1)
+0150 hold on
+0151 plot(tm(:,1),tm(:,2),<span class="string">'.r'</span>,<span class="string">'Markersize'</span>,12)       <span class="comment">% given data</span>
+0152 <span class="keyword">for</span> i = 1:I
+0153     plot([tm(i,1),tm(i,1)+factor_v*(vm(i,3))],[tm(i,2),tm(i,2)+factor_v*(vm(i,4))],<span class="string">'-k'</span>);
+0154 <span class="keyword">end</span>
+0155 title({<span class="string">'residuals [m]'</span>, strcat(<span class="string">'max='</span>,num2str(max(norm(vm(:,1:4)))))})
+0156 xlim([min(tm(:,1))-1,max(tm(:,1))+1]);
+0157 ylim([min(tm(:,2))-1,max(tm(:,2))+1]);
+0158 axis equal
+0159 
+0160 
+0161 subplot(2,3,2)
+0162 hold on
+0163 <span class="keyword">for</span> i = 1:I
+0164     <a href="../../../General-Functions/Graphics/plot_circle.html" class="code" title="function h = plot_circle(xo,yo,r, fmt, varargin)">plot_circle</a>(tm(i,1),tm(i,2),factor_r*Rim(i,1),<span class="string">'-r'</span>);
+0165 <span class="keyword">end</span>
+0166 title({<span class="string">'redundancy number'</span>, strcat(<span class="string">'min='</span>,num2str(min(Rim(:,1))))})
+0167 xlim([min(tm(:,1))-factor_r*1,max(tm(:,1))+factor_r*1]);
+0168 ylim([min(tm(:,2))-factor_r*1,max(tm(:,2))+factor_r*1]);
+0169 axis equal
+0170 
+0171 subplot(2,3,4)
+0172 hold on
+0173 <span class="keyword">for</span> i=1:I
+0174     <a href="../../../General-Functions/Graphics/plot_circle.html" class="code" title="function h = plot_circle(xo,yo,r, fmt, varargin)">plot_circle</a>(tm(i,1),tm(i,2),factor_X*sqrt(Xv(i)/rk_Cov_ll),<span class="string">'-k'</span>,<span class="string">'LineWidth'</span>,2);
+0175     <a href="../../../General-Functions/Graphics/plot_circle.html" class="code" title="function h = plot_circle(xo,yo,r, fmt, varargin)">plot_circle</a>(tm(i,1),tm(i,2),factor_X*sqrt(tol/rk_Cov_ll),<span class="string">'--r'</span>);
+0176 <span class="keyword">end</span>
+0177 title({<span class="string">'test statistics'</span>, strcat(<span class="string">'max='</span>,num2str(max(sqrt(Xv/rk_Cov_ll)))),<span class="string">'- - - critical values'</span>});
+0178 xlim([min(tm(:,1))-factor_X*5,max(tm(:,1))+factor_X*5]);
+0179 ylim([min(tm(:,2))-factor_X*5,max(tm(:,2))+factor_X*5]);
+0180 axis equal
+0181 
+0182 subplot(2,3,3)
+0183 hold on
+0184 <span class="keyword">for</span> i = 1:I
+0185     <a href="../../../General-Functions/Graphics/plot_circle.html" class="code" title="function h = plot_circle(xo,yo,r, fmt, varargin)">plot_circle</a>(tm(i,1),tm(i,2),factor_mu*muv(i),<span class="string">'-k'</span>);
+0186 <span class="keyword">end</span>
+0187 title({<span class="string">'sensitivity factors'</span>, strcat(<span class="string">'max='</span>,num2str(max(muv)))})
+0188 xlim([min(tm(:,1))-factor_mu*5,max(tm(:,1))+factor_mu*5]);
+0189 ylim([min(tm(:,2))-factor_mu*5,max(tm(:,2))+factor_mu*5]);
+0190 axis equal
+0191 
+0192 subplot(2,3,5)
+0193 hold on
+0194 <span class="keyword">for</span> i = 1:I
+0195     <a href="../../../General-Functions/Graphics/plot_circle.html" class="code" title="function h = plot_circle(xo,yo,r, fmt, varargin)">plot_circle</a>(tm(i,1),tm(i,2),factor_nv*nabla_lv(i),<span class="string">'-r'</span>);
+0196 <span class="keyword">end</span>
+0197 title({<span class="string">'min. detectable outliers [m]'</span>;strcat(<span class="string">'max='</span>,num2str(max(nabla_lv)))})
+0198 xlim([min(tm(:,1))-1,max(tm(:,1))+1]);
+0199 ylim([min(tm(:,2))-1,max(tm(:,2))+1]);
+0200 axis equal
+0201 
+0202 <span class="keyword">if</span> ~isempty(rU)
+0203     subplot(2,3,6)
+0204     hold on
+0205     <span class="keyword">for</span> i = 1:I
+0206         <a href="../../../General-Functions/Graphics/plot_circle.html" class="code" title="function h = plot_circle(xo,yo,r, fmt, varargin)">plot_circle</a>(tm(i,1),tm(i,2),factor_mu*muv1(i),<span class="string">'-k'</span>);
+0207     <span class="keyword">end</span>
+0208     title({<span class="string">'sens. factors partial'</span>;strcat(<span class="string">'max='</span>,num2str(max(muv1)),<span class="string">', param='</span>,num2str(rU))})
+0209     xlim([min(tm(:,1))-factor_mu*5,max(tm(:,1))+factor_mu*5]);
+0210     ylim([min(tm(:,2))-factor_mu*5,max(tm(:,2))+factor_mu*5]);
+0211     axis equal
+0212 <span class="keyword">end</span>
+0213 
+0214 <span class="comment">%% diagnostics ------------------------------------------------------------</span>
+0215 disp(<span class="string">'diagnostics                  '</span>)
+0216 disp(<span class="string">'.............................'</span>)
+0217 Estimated_transformation = <span class="keyword">...</span>
+0218     [est_x(1) -est_x(2) est_x(3);est_x(2) est_x(1) est_x(4)]                <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0219 Theoretical_precision   = sqrt(diag(full(Cov_xx)))'                         <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0220 Redundancy              = R                                                 <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0221 Estimated_sigma_0       = sqrt(sigma_0q)                                    <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0222 a________I_______vxl_______vyl_______vxr_______vyr_________X = <span class="keyword">...</span>
+0223 [(1:I)',vm,sqrt(Xv/rk_Cov_ll)]                                              <span class="comment">%#ok&lt;NOPTS&gt;</span>
+0224 
+0225 [m,i] = max(sqrt(diag(true_error*true_error')));
+0226     disp(horzcat(<span class="string">'Maximal true error                 = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0227                    <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)));
+0228 [m,i] = max(sqrt(diag(vm*vm')));
+0229     disp(horzcat(<span class="string">'Maximal residual                   = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0230                    <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)));
+0231 [m,i] = min(Rim(:,1));
+0232     disp([<span class="string">'Minimal redundancy number          = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0233                    <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)]);
+0234 
+0235 [m,i] = max(sqrt(Xv/rk_Cov_ll));
+0236 <span class="keyword">if</span> max(Xv) &gt; tol 
+0237     disp([<span class="string">'Maximal test statistic             = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0238                    <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>), <span class="string">' ***'</span>]);
+0239 <span class="keyword">else</span>
+0240     disp([<span class="string">'Maximal test statistic             = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0241                    <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)]);
+0242 <span class="keyword">end</span>
+0243 [m,i] = max(nabla_lv);
+0244     disp([<span class="string">'Max. of minimal detectable outlier = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0245                    <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)]);
+0246                
+0247 [m,i] = max(muv);  
+0248     disp([<span class="string">'Max. sensitivity factor            = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0249                    <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)]);
+0250 <span class="keyword">if</span> ~isempty(rU) 
+0251     [m,i] = max(muv1); 
+0252     disp([<span class="string">'Max. sensitivity factor ['</span>,num2str(rU),<span class="string">']     = '</span>,num2str(m,<span class="string">'% 12.5f'</span>),<span class="keyword">...</span>
+0253                    <span class="string">' at: '</span>, num2str(i,<span class="string">'% 3.0f'</span>)]);
+0254 <span class="keyword">end</span>
+0255 
+0256 
+0257</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

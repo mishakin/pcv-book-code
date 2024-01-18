@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_v_from_S</title>
+  <meta name="keywords" content="calc_v_from_S">
+  <meta name="description" content="% 3-vector from skew matrix S">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_v_from_S.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_v_from_S
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% 3-vector from skew matrix S</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function x = calc_v_from_S(S) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% 3-vector from skew matrix S
+ see PCV (A.34)
+
+ Usage:
+   x = calc_v_from_S(S)
+
+   S - 3x3 skew matrix
+   x - 3x1 vector
+
+ Wolfgang Förstner wf 1/2011
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>, <a href="calc_S_reduced.html" class="code" title="function [S , R] = calc_S_reduced(x)">calc_S_reduced</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/SUGR/E-Matrix/sugr_bR_from_UVuv.html" class="code" title="function [be,Re] = sugr_bR_from_UVuv(U,V,u,v)">sugr_bR_from_UVuv</a>	% Determine bR from (U,V,u,v</li><li><a href="../../General-Functions/SUGR/E-Matrix/sugr_select_bR_from_E_UV_uv.html" class="code" title="function [be,Re] = sugr_select_bR_from_E_UV_uv(U,V,u,v)">sugr_select_bR_from_E_UV_uv</a>	% Select bR from E</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% 3-vector from skew matrix S</span>
+0002 <span class="comment">% see PCV (A.34)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Usage:</span>
+0005 <span class="comment">%   x = calc_v_from_S(S)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   S - 3x3 skew matrix</span>
+0008 <span class="comment">%   x - 3x1 vector</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Wolfgang Förstner wf 1/2011</span>
+0011 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See also calc_S, calc_S_reduced</span>
+0014 
+0015 <a name="_sub0" href="#_subfunctions" class="code">function x = calc_v_from_S(S)</a>
+0016     x=[S(3,2); S(1,3); S(2,1)];</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

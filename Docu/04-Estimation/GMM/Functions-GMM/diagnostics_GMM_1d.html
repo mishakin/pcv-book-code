@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of diagnostics_GMM_1d</title>
+  <meta name="keywords" content="diagnostics_GMM_1d">
+  <meta name="description" content="% diagnostics 1d">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="#">04-Estimation</a> &gt; <a href="#">GMM</a> &gt; <a href="Documentation.html">Functions-GMM</a> &gt; diagnostics_GMM_1d.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 04-Estimation\GMM\Functions-GMM&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>diagnostics_GMM_1d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% diagnostics 1d</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [riv,zv,nabla_lv,muv,muv1,uv1q,uv2] =diagnostics_GMM_1d(r_U,Am,Cov_ll,W_ll,Cov_xx,W_xx,vv) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% diagnostics 1d
+
+ given all parameters of a linearized estimation problem
+ determine the essential diagnostic values
+ assuming the number N of observations is small enough
+    (requires several NxN matrices)
+
+ r_U    = index set for parameters to be estimated (others are nuisance)
+ Am     = Jacobian
+ Cov_ll = CovM of observations
+ W_ll   = WeightM of observations
+ Cov_xx = CovM of all estimated parameters
+ W_xx   = WeightM of all estimated parameters
+ vv     = residuals
+
+ riv    = redundancy numbers
+ zv     = standardized test statistics
+ nabla_lv = lowe bound for detectable outliers
+ muv      = influence factor for all parameters
+ muv1     = influence factor for parameters specified by r_U
+ uv1q     = diagonal elements of \bar U_1 (numerator of muv1^2)
+ uv2      = diagonal elements of U2
+
+ Wolfgang Förstner 10/2016
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="GaussMarkovModelLinear.html" class="code" title="function [est_x,Cov_xx,sigma_0q,R,vv,zv,riv,nabla_lv,muv,muv1,uv1q,uv2]=GaussMarkovModelLinear(lv,Cov_ll,Am,av,rU)">GaussMarkovModelLinear</a>	% Gauss-Markov model linear, individual observations</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% diagnostics 1d</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% given all parameters of a linearized estimation problem</span>
+0004 <span class="comment">% determine the essential diagnostic values</span>
+0005 <span class="comment">% assuming the number N of observations is small enough</span>
+0006 <span class="comment">%    (requires several NxN matrices)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% r_U    = index set for parameters to be estimated (others are nuisance)</span>
+0009 <span class="comment">% Am     = Jacobian</span>
+0010 <span class="comment">% Cov_ll = CovM of observations</span>
+0011 <span class="comment">% W_ll   = WeightM of observations</span>
+0012 <span class="comment">% Cov_xx = CovM of all estimated parameters</span>
+0013 <span class="comment">% W_xx   = WeightM of all estimated parameters</span>
+0014 <span class="comment">% vv     = residuals</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% riv    = redundancy numbers</span>
+0017 <span class="comment">% zv     = standardized test statistics</span>
+0018 <span class="comment">% nabla_lv = lowe bound for detectable outliers</span>
+0019 <span class="comment">% muv      = influence factor for all parameters</span>
+0020 <span class="comment">% muv1     = influence factor for parameters specified by r_U</span>
+0021 <span class="comment">% uv1q     = diagonal elements of \bar U_1 (numerator of muv1^2)</span>
+0022 <span class="comment">% uv2      = diagonal elements of U2</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% Wolfgang Förstner 10/2016</span>
+0025 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0026 
+0027 <a name="_sub0" href="#_subfunctions" class="code">function [riv,zv,nabla_lv,muv,muv1,uv1q,uv2] = </a><span class="keyword">...</span>
+0028     diagnostics_GMM_1d(r_U,Am,Cov_ll,W_ll,Cov_xx,W_xx,vv)
+0029 
+0030 <span class="comment">% non-centrality parameter for alpha_0 = 0.001, beta_0 = 0.8</span>
+0031 delta_0 = 4.13;
+0032 
+0033 [N,U]  = size(Am);
+0034 <span class="comment">%% observations: detectatbility, statistical test</span>
+0035 Rm     = eye(N)-Am*Cov_xx*Am'*W_ll;        <span class="comment">% redundancy matrix</span>
+0036 riv    = diag(Rm);                         <span class="comment">% redundancy numbers</span>
+0037 zv     = vv./sqrt(riv.*diag(Cov_ll)+eps);  <span class="comment">% normalized residuals</span>
+0038 nabla_lv = delta_0 * sqrt(1./riv);
+0039 
+0040 <span class="comment">%% sensitivity wrtall parameters</span>
+0041 muv    = sqrt((1-riv)./(riv+eps));         <span class="comment">% sensitivity factors</span>
+0042 
+0043 <span class="comment">%% sensitivity wrt selected parameters</span>
+0044 <span class="keyword">if</span> ~isempty(r_U)
+0045     <span class="comment">% ranges</span>
+0046     r_C= r_U;
+0047     r_D= setdiff(1:U,r_U);
+0048     <span class="comment">% partitioned design matrix A=[C,D]</span>
+0049     Cm = Am(:,r_C);
+0050     Dm = Am(:,r_D);
+0051     <span class="comment">% reduced design matrix</span>
+0052     Cmr = Cm - Dm * inv(W_xx(r_D,r_D)) * W_xx(r_D,r_C);  <span class="comment">%#ok&lt;*MINV&gt; % C_reduced</span>
+0053     Cov_11 = Cov_xx(r_C,r_C);
+0054     <span class="comment">% effect onto parameters</span>
+0055     U1q     = Cmr * Cov_11        * Cmr' * W_ll;         <span class="comment">% U_C_bar</span>
+0056     uv1q    = diag(U1q);                                 <span class="comment">% u_C_bar</span>
+0057     U2      = Dm  * inv(W_xx(r_D,r_D)) * Dm'  * W_ll;    <span class="comment">% U_D</span>
+0058     uv2     = diag(U2) ;                                 <span class="comment">% u_D</span>
+0059     <span class="comment">% sensitivity factors</span>
+0060     muv1    = sqrt(uv1q ./ riv);
+0061     
+0062     <span class="comment">%     check = uv1q+uv2+riv;  % should be ones</span>
+0063 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

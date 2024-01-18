@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of uncondition_RZ</title>
+  <meta name="keywords" content="uncondition_RZ">
+  <meta name="description" content="% uncondition Pose RZ">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; uncondition_RZ.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>uncondition_RZ
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% uncondition Pose RZ</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function RZ = uncondition_RZ(RZc, M) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% uncondition Pose RZ
+
+ Usage:
+   RZc = unconditioned Pose
+        RZc.RZ = [Rc,Zc]
+        RZc.C  = D([drc;dZc])
+  
+   M   - 4x4 condition matrix from scene points
+ 
+   RZ  - Pose, assuming P=[I3,0]*M(R,Z)
+        RZ.RZ = [R,Z]
+        RZ.C  = D([dr;dZ])
+
+ Wolfgang Förstner 1/2018
+ wfoerstn@uni-bonn.de 
+
+ conditioning-matrix: Xec = (Xe - t)/s -&gt; Xc = M * X 
+ [Xch] = [eye(3)/s -t/s]   [Xh] = [Xh/s-t*X0/s]
+ [Xc0]   [0'         1 ]   [X0]   [   X0      ]
+ y = N(R*(X0/Xh-Z)) = N(R*((X0/Xh-t) -(Z-t))/s) = N(R*(Xc-Zc))
+ Zc = (Z-t)/s  -&gt; Z = s*Zc+t</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% uncondition Pose RZ</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage:</span>
+0004 <span class="comment">%   RZc = unconditioned Pose</span>
+0005 <span class="comment">%        RZc.RZ = [Rc,Zc]</span>
+0006 <span class="comment">%        RZc.C  = D([drc;dZc])</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   M   - 4x4 condition matrix from scene points</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   RZ  - Pose, assuming P=[I3,0]*M(R,Z)</span>
+0011 <span class="comment">%        RZ.RZ = [R,Z]</span>
+0012 <span class="comment">%        RZ.C  = D([dr;dZ])</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Wolfgang Förstner 1/2018</span>
+0015 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% conditioning-matrix: Xec = (Xe - t)/s -&gt; Xc = M * X</span>
+0018 <span class="comment">% [Xch] = [eye(3)/s -t/s]   [Xh] = [Xh/s-t*X0/s]</span>
+0019 <span class="comment">% [Xc0]   [0'         1 ]   [X0]   [   X0      ]</span>
+0020 <span class="comment">% y = N(R*(X0/Xh-Z)) = N(R*((X0/Xh-t) -(Z-t))/s) = N(R*(Xc-Zc))</span>
+0021 <span class="comment">% Zc = (Z-t)/s  -&gt; Z = s*Zc+t</span>
+0022 <span class="comment">%</span>
+0023 
+0024 <a name="_sub0" href="#_subfunctions" class="code">function RZ = uncondition_RZ(RZc, M)</a>
+0025 <span class="comment">% Parameters of conditioning</span>
+0026 s =  1/M(1,1);
+0027 t = -M(1:3,4)*s;
+0028 
+0029 <span class="comment">% Unonditioning of Z</span>
+0030 RZ.RZ = [RZc.RZ(:,1:3), s*RZc.RZ(:,4)+t];
+0031 
+0032 <span class="comment">% variance propagation</span>
+0033 J = [eye(3) zeros(3); zeros(3) eye(3)*s];
+0034 RZ.C = J*RZc.C*J';
+0035 
+0036 
+0037 <span class="keyword">return</span>
+0038</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_minimal_3D_Line</title>
+  <meta name="keywords" content="sugr_minimal_3D_Line">
+  <meta name="description" content="% generate minimal representation for 3D homogeneous line">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Line_3D</a> &gt; sugr_minimal_3D_Line.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Line_3D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_minimal_3D_Line
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% generate minimal representation for 3D homogeneous line</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function Ls = sugr_minimal_3D_Line(L,CLL) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% generate minimal representation for 3D homogeneous line
+
+ Ls = sugr_minimal_3D_Line(L,CLL)
+
+ * L 6x1 uncertain homogeneous 3D line
+ * CLL covariance matrix
+
+ * Ls =   
+ * .h spherically normalized
+ * .Crr, reduced CovM
+ * .Jr    Jacobian Lr -&gt; Ls 
+
+ Wolfgang Förstner 7/2012
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="sugr_Line_3D.html" class="code" title="function Line_3D = sugr_Line_3D(a1,a2)">sugr_Line_3D</a>, <a href="sugr_construct_join_Line_3D.html" class="code" title="function L = sugr_construct_join_Line_3D(X,Y)">sugr_construct_join_Line_3D</a>, <a href="sugr_constrain_3D_Line.html" class="code" title="function L = sugr_constrain_3D_Line(L)">sugr_constrain_3D_Line</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>	% dualizing matrix</li><li><a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>	% generate minimal representation for homogeneous vector</li><li><a href="sugr_constrain_3D_Line.html" class="code" title="function L = sugr_constrain_3D_Line(L)">sugr_constrain_3D_Line</a>	% imposes Plücker constraint for 3D lines</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_Line_3D.html" class="code" title="function Line_3D = sugr_Line_3D(a1,a2)">sugr_Line_3D</a>	% Create 3D line</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% generate minimal representation for 3D homogeneous line</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Ls = sugr_minimal_3D_Line(L,CLL)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * L 6x1 uncertain homogeneous 3D line</span>
+0006 <span class="comment">% * CLL covariance matrix</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% * Ls =</span>
+0009 <span class="comment">% * .h spherically normalized</span>
+0010 <span class="comment">% * .Crr, reduced CovM</span>
+0011 <span class="comment">% * .Jr    Jacobian Lr -&gt; Ls</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Wolfgang Förstner 7/2012</span>
+0014 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% See also sugr_Line_3D, sugr_construct_join_Line_3D, sugr_constrain_3D_Line</span>
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function Ls = sugr_minimal_3D_Line(L,CLL)</a>
+0019 
+0020 <span class="comment">% impose Plücker constraint, no change of length</span>
+0021 L = <a href="sugr_constrain_3D_Line.html" class="code" title="function L = sugr_constrain_3D_Line(L)">sugr_constrain_3D_Line</a>(L);
+0022 
+0023 <span class="comment">% generate 3D line structure, normalized spherically</span>
+0024 Ls = <a href="../../../General-Functions/SUGR/General/Statistics/sugr_minimal_vector.html" class="code" title="function xs = sugr_minimal_vector(x,Cxx)">sugr_minimal_vector</a>(L,CLL);
+0025 
+0026 <span class="comment">% add Plücker constraint to CovM</span>
+0027 h = <a href="../../../General-Functions/Geometry/calc_Dual.html" class="code" title="function D = calc_Dual">calc_Dual</a>*Ls.h; 
+0028 P = (eye(6) - h*h')/norm(L);    <span class="comment">% scale to length 1</span>
+0029 CLL = P * CLL * P;
+0030 
+0031 <span class="comment">% reduce covariance matrix</span>
+0032 J6 =  null([Ls.h h]');
+0033 Ls.Crr = J6' * CLL * J6;
+0034 Ls.Jr  = J6;
+0035</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

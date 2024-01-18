@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of generate_observed_AR2</title>
+  <meta name="keywords" content="generate_observed_AR2">
+  <meta name="description" content="% generate_observed_AR2 with noise and ouliers">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Statistics</a> &gt; generate_observed_AR2.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Statistics&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>generate_observed_AR2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% generate_observed_AR2 with noise and ouliers</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [x, y, out_in, select, xs, ys] =generate_observed_AR2(N, sigma_e, sigma_n, Pout, Mout, type_out, dens) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% generate_observed_AR2 with noise and ouliers
+
+ [x,y,out_in,select,xs,ys] = generate_observed_AR2(N, sigma_e, sigma_n, Pout, Mout, type_out, dens)
+
+ N         = number of points
+ sigma_e   = process noise
+ sigma_n   = observation noise
+ Pout      = probability for outliers
+ Mout      = maximal outlier
+ type_out  = type otliers (0=symm., 1=asymm.)
+ dens      = percentage of observed points in (0,1]
+
+ x         = true profile with slope 0
+ y         = noisy profile with slope 0 (no outliers)
+ out_in    = Nx1 vector, 0/1: o inlier, 1 outlier
+ select    = index of observed points
+ xs        = observed true profile
+ ys        = observed noisy profile with outliers
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_14_test_scale.html" class="code" title="">fig_16_14_test_scale</a>	% Fig. 16.14 page 754</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_15_symmetric_outliers.html" class="code" title="">fig_16_15_symmetric_outliers</a>	% Fig. 16.15 page 755</li><li><a href="../../16-Surface-Reconstruction/Profile-Reconstruction/fig_16_17_asymmetric_outliers.html" class="code" title="">fig_16_17_asymmetric_outliers</a>	% Fig. 16.17 page 756</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% generate_observed_AR2 with noise and ouliers</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [x,y,out_in,select,xs,ys] = generate_observed_AR2(N, sigma_e, sigma_n, Pout, Mout, type_out, dens)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% N         = number of points</span>
+0006 <span class="comment">% sigma_e   = process noise</span>
+0007 <span class="comment">% sigma_n   = observation noise</span>
+0008 <span class="comment">% Pout      = probability for outliers</span>
+0009 <span class="comment">% Mout      = maximal outlier</span>
+0010 <span class="comment">% type_out  = type otliers (0=symm., 1=asymm.)</span>
+0011 <span class="comment">% dens      = percentage of observed points in (0,1]</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% x         = true profile with slope 0</span>
+0014 <span class="comment">% y         = noisy profile with slope 0 (no outliers)</span>
+0015 <span class="comment">% out_in    = Nx1 vector, 0/1: o inlier, 1 outlier</span>
+0016 <span class="comment">% select    = index of observed points</span>
+0017 <span class="comment">% xs        = observed true profile</span>
+0018 <span class="comment">% ys        = observed noisy profile with outliers</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% Wolfgang Förstner</span>
+0021 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function [x, y, out_in, select, xs, ys] = </a><span class="keyword">...</span>
+0024     generate_observed_AR2(N, sigma_e, sigma_n, Pout, Mout, type_out, dens)
+0025 
+0026 <span class="comment">% initiate true profiles</span>
+0027 x = zeros(N, 1);
+0028 y = zeros(N, 1);
+0029 
+0030 <span class="comment">% generate true and noisy profile</span>
+0031 <span class="keyword">for</span> n = 3:N
+0032     x(n) = 1.9998 * x(n - 1) - 0.9999 * x(n - 2) + randn(1) * sigma_e;
+0033     y(n) = x(n) + randn(1) * sigma_n;
+0034 <span class="keyword">end</span>
+0035 
+0036 <span class="comment">% enforce slope 0</span>
+0037 <span class="keyword">for</span> i = 1:N
+0038     y(i) = y(i) - (i - 1) * (x(N) - x(1)) / (N - 1);
+0039     x(i) = x(i) - (i - 1) * (x(N) - x(1)) / (N - 1);
+0040 <span class="keyword">end</span>
+0041 <span class="comment">% add ouliers and select observations</span>
+0042 out_in = zeros(N, 1);
+0043 m = 0;
+0044 <span class="keyword">for</span> i = 1:N
+0045     <span class="comment">% add outliers</span>
+0046     <span class="keyword">if</span> rand(1) &lt; Pout
+0047         out_in(i) = 1;
+0048         <span class="keyword">if</span> type_out == 0 <span class="comment">% symmetric in [-Mout,+Mout]</span>
+0049             y(i) = y(i) + 2 * (rand(1) - 0.5) * Mout;
+0050         <span class="keyword">else</span> <span class="comment">% asymmetric in [0,Mout]</span>
+0051             y(i) = y(i) + rand(1) * Mout;
+0052         <span class="keyword">end</span>
+0053     <span class="keyword">end</span>
+0054     
+0055     <span class="comment">% select observations</span>
+0056     <span class="keyword">if</span> rand(1) &lt; dens
+0057         m = m + 1;
+0058         select(m) = i;                                                      <span class="comment">%#ok&lt;*AGROW&gt;</span>
+0059         xs(m) = x(i);
+0060         ys(m) = y(i);
+0061     <span class="keyword">end</span>
+0062 <span class="keyword">end</span>
+0063 
+0064 
+0065</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

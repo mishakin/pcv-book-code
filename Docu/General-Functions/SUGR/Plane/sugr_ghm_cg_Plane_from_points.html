@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_ghm_cg_Plane_from_points</title>
+  <meta name="keywords" content="sugr_ghm_cg_Plane_from_points">
+  <meta name="description" content="% determines residuals etc. for estimating plane from points">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Plane</a> &gt; sugr_ghm_cg_Plane_from_points.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Plane&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_ghm_cg_Plane_from_points
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% determines residuals etc. for estimating plane from points</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_Plane_from_points(l,le,xe,C) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% determines residuals etc. for estimating plane from points
+ 
+ [lr,cg,Crrt,atr,btr] = sugr_ghm_cg_Plane_from_points(l,le,xe,Crro)
+
+ in spherical mode with minimal representation
+
+ * l   = 4 x 1 vector, observed point
+ * le  = 4 x 1 vector, approximated fitted point
+ * xe  = 4 x 1 vector, approximated plane
+ * Crro = 3 x 3 matrix, reduced covariance matrix of observations
+
+ * lr  = 3 x 1 vector, reduced observation
+ * cg  = scalar, residual of constraint
+ * Crrt = 3 x 3 matrix, reduced covariance matrix of transformed observations
+ * atr  = 1 x 3 vector, transposed Jacobian for xe
+ * btr  = 1 x 3 vector, transposed jacobian for le
+
+ Wolfgang Förstner 07/2012, adapted for sugr 1/2011
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>	% minimum Rotation matrix from vector a to vector b</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_estimation_ml_Plane_from_points.html" class="code" title="function [x,sigma_0,R,N_matrix,h_vector,estx0,estl] =sugr_estimation_ml_Plane_from_points(l,xa,T,maxiter)">sugr_estimation_ml_Plane_from_points</a>	% ML estiamte of plane from points</li><li><a href="sugr_estimation_ml_symmetric_Planes_from_points.html" class="code" title="function [x, estl, sigma_0, R] =sugr_estimation_ml_symmetric_Planes_from_points(XL, XR, xa, T, maxiter)">sugr_estimation_ml_symmetric_Planes_from_points</a>	% ML estiamte of plane from points</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% determines residuals etc. for estimating plane from points</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [lr,cg,Crrt,atr,btr] = sugr_ghm_cg_Plane_from_points(l,le,xe,Crro)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% in spherical mode with minimal representation</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% * l   = 4 x 1 vector, observed point</span>
+0008 <span class="comment">% * le  = 4 x 1 vector, approximated fitted point</span>
+0009 <span class="comment">% * xe  = 4 x 1 vector, approximated plane</span>
+0010 <span class="comment">% * Crro = 3 x 3 matrix, reduced covariance matrix of observations</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% * lr  = 3 x 1 vector, reduced observation</span>
+0013 <span class="comment">% * cg  = scalar, residual of constraint</span>
+0014 <span class="comment">% * Crrt = 3 x 3 matrix, reduced covariance matrix of transformed observations</span>
+0015 <span class="comment">% * atr  = 1 x 3 vector, transposed Jacobian for xe</span>
+0016 <span class="comment">% * btr  = 1 x 3 vector, transposed jacobian for le</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Wolfgang Förstner 07/2012, adapted for sugr 1/2011</span>
+0019 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0020 <span class="comment">%</span>
+0021 
+0022 <a name="_sub0" href="#_subfunctions" class="code">function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_Plane_from_points(l,le,xe,C)</a>
+0023 
+0024 <span class="comment">% Jacobian for observation</span>
+0025 Jle = null(le');
+0026 
+0027 <span class="comment">% reduced observation</span>
+0028 lr  = Jle' * l;
+0029 
+0030 <span class="comment">% Rotation from l to le</span>
+0031 R = <a href="../../../General-Functions/Geometry/calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>(le,l);
+0032 
+0033 <span class="comment">% Jacobian for Cr</span>
+0034 JR = Jle' * R' * null(l');
+0035 
+0036 <span class="comment">% reduced covariance matrix</span>
+0037 Cr = JR * C * JR';
+0038 
+0039 <span class="comment">% Jacobian for x</span>
+0040 atr = le' *  null(xe'); <span class="comment">% row 3-vector</span>
+0041 
+0042 <span class="comment">% Jacobain for l</span>
+0043 btr = xe' * Jle; <span class="comment">% row 3-vector</span>
+0044  
+0045 <span class="comment">% residual of constraint</span>
+0046 <span class="comment">%cg = - l' * xe ; % scalar</span>
+0047 cg = - le' * xe - btr * lr; 
+0048</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

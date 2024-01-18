@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_get_Euclidean_Point_3D</title>
+  <meta name="keywords" content="sugr_get_Euclidean_Point_3D">
+  <meta name="description" content="% Get Euclidean coordinates of 3D point with CovM">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Point_3D</a> &gt; sugr_get_Euclidean_Point_3D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Point_3D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_get_Euclidean_Point_3D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Get Euclidean coordinates of 3D point with CovM</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [e,Cee] = sugr_get_Euclidean_Point_3D(x) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Get Euclidean coordinates of 3D point with CovM
+
+ [e,Cee] = sugr_get_Euclidean_Point_3D(x)
+
+ if finite point:
+      e   = 3x1 Euclidean coordinates
+      Cee = 3x3 CovM of e
+
+ else zeros
+
+ Wolfgang Förstner 1/2011
+ wfoerstn@uni-bonn.de
+
+ See also <a href="sugr_Point_3D.html" class="code" title="function Point_3D = sugr_Point_3D(a1,a2,a3,a4,a5,a6)">sugr_Point_3D</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sugr_get_isfinite_Point_3D.html" class="code" title="function f = sugr_get_isfinite_Point_3D(x)">sugr_get_isfinite_Point_3D</a>	% Test whether 3D point is finite</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../13-Two-View-Geometry/Demo-E-Matrix/demo_triangulation_spherical.html" class="code" title="">demo_triangulation_spherical</a>	% demo triangulation</li><li><a href="sugr_show_Point_3D.html" class="code" title="function sugr_show_Point_3D(x, name)">sugr_show_Point_3D</a>	% Show information of 3D point on console</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Get Euclidean coordinates of 3D point with CovM</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [e,Cee] = sugr_get_Euclidean_Point_3D(x)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% if finite point:</span>
+0006 <span class="comment">%      e   = 3x1 Euclidean coordinates</span>
+0007 <span class="comment">%      Cee = 3x3 CovM of e</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% else zeros</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Wolfgang Förstner 1/2011</span>
+0012 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also sugr_Point_3D</span>
+0015 
+0016 <a name="_sub0" href="#_subfunctions" class="code">function [e,Cee] = sugr_get_Euclidean_Point_3D(x)</a>
+0017 
+0018 <span class="keyword">switch</span> <a href="sugr_get_isfinite_Point_3D.html" class="code" title="function f = sugr_get_isfinite_Point_3D(x)">sugr_get_isfinite_Point_3D</a>(x)
+0019     <span class="keyword">case</span> 0  <span class="comment">% point at infinity</span>
+0020         e   = zeros(3,1);
+0021         Cee = zeros(3);
+0022     <span class="keyword">case</span> 1  <span class="comment">% finite point</span>
+0023         e   = x.h(1:3)/x.h(4);
+0024         J   =  1/x.h(4) * [eye(3), -x.h(1:3)/x.h(4)] * null(x.h');
+0025         Cee = J * squeeze(x.Crr)  * J';
+0026 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

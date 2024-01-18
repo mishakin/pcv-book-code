@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_construct_intersection_Point_2D</title>
+  <meta name="keywords" content="sugr_construct_intersection_Point_2D">
+  <meta name="description" content="% Intersection 2D point two lines l and m">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Point_2D</a> &gt; sugr_construct_intersection_Point_2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Point_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_construct_intersection_Point_2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Intersection 2D point two lines l and m</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function Point_2D = sugr_construct_intersection_Point_2D(l,m) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Intersection 2D point two lines l and m
+
+ x = sugr_construct_interection_Point_2D(l,m)
+
+ Wolfgang Förstner 1/2011
+ wfoerstn@uni-bonn.de
+ 
+ sw 9/2016
+
+ See also <a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>, <a href="sugr_get_isfinite_Point_2D.html" class="code" title="function f = sugr_get_isfinite_Point_2D(x)">sugr_get_isfinite_Point_2D</a>, sugr_Line_2D,
+ <a href="sugr_construct_mean_Point_2D.html" class="code" title="function Point_2D = sugr_construct_mean_Point_2D(x,y)">sugr_construct_mean_Point_2D</a>, <a href="sugr_construct_midpoint_Point_2D.html" class="code" title="function Point_2D = sugr_construct_midpoint_Point_2D(x,y)">sugr_construct_midpoint_Point_2D</a>,
+ <a href="sugr_construct_footpoint_Ol_Point_2D.html" class="code" title="function Point_2D = sugr_construct_footpoint_Ol_Point_2D(l)">sugr_construct_footpoint_Ol_Point_2D</a>, <a href="sugr_construct_footpoint_xl_Point_2D.html" class="code" title="function Point_2D = sugr_construct_footpoint_xl_Point_2D(x,l)">sugr_construct_footpoint_xl_Point_2D</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>	% skew matrix of 3-vector</li><li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>	% get CovM of homogeneous vector x.h</li><li><a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Line-2D/demo_construct_Line_2D.html" class="code" title="">demo_construct_Line_2D</a>	% test_construct_Line_2D: test routine for constructing 2D lines</li><li><a href="../../../10-Uncertain-Geometry/Demo-Point-2D/demo_construct_Point_2D.html" class="code" title="">demo_construct_Point_2D</a>	demo_construct_Point_2D</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Intersection 2D point two lines l and m</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% x = sugr_construct_interection_Point_2D(l,m)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Wolfgang Förstner 1/2011</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% sw 9/2016</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% See also sugr_Point_2D, sugr_get_isfinite_Point_2D, sugr_Line_2D,</span>
+0011 <span class="comment">% sugr_construct_mean_Point_2D, sugr_construct_midpoint_Point_2D,</span>
+0012 <span class="comment">% sugr_construct_footpoint_Ol_Point_2D, sugr_construct_footpoint_xl_Point_2D</span>
+0013 
+0014 <a name="_sub0" href="#_subfunctions" class="code">function Point_2D = sugr_construct_intersection_Point_2D(l,m)</a>
+0015 
+0016 Sl = <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(l.h);
+0017 Sm = <a href="../../../General-Functions/Geometry/calc_S.html" class="code" title="function S = calc_S(x)">calc_S</a>(m.h);
+0018 h   = Sl * m.h;
+0019 Clhh = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>(l);
+0020 Cmhh = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_get_CovM_homogeneous_Vector.html" class="code" title="function Chh = sugr_get_CovM_homogeneous_Vector(x)">sugr_get_CovM_homogeneous_Vector</a>(m);
+0021 Chh = Sl * Cmhh * Sl' + Sm * Clhh * Sm';
+0022 
+0023 <span class="comment">% generate reduced parameters</span>
+0024 Point_2D = <a href="sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(h,Chh);</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

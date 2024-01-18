@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fig_16_16_plot_weight_functions_asymmetric</title>
+  <meta name="keywords" content="fig_16_16_plot_weight_functions_asymmetric">
+  <meta name="description" content="% Fig. 16.16 page 756">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="#">16-Surface-Reconstruction</a> &gt; <a href="Documentation.html">Profile-Reconstruction</a> &gt; fig_16_16_plot_weight_functions_asymmetric.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 16-Surface-Reconstruction\Profile-Reconstruction&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>fig_16_16_plot_weight_functions_asymmetric
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Fig. 16.16 page 756</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Fig. 16.16 page 756
+ compare weight functions for a/symmetric outliers
+
+ Wolfgang Förstner 08/14
+ last changes: Susanne Wenzel 09/16
+ wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Fig. 16.16 page 756</span>
+0002 <span class="comment">% compare weight functions for a/symmetric outliers</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Wolfgang Förstner 08/14</span>
+0005 <span class="comment">% last changes: Susanne Wenzel 09/16</span>
+0006 <span class="comment">% wfoerstn@uni-bonn.de, wenzel@igg.uni-bonn.de</span>
+0007 
+0008 close all
+0009 
+0010 
+0011 addpath(genpath(<span class="string">'../../General-Functions'</span>));
+0012 
+0013 <span class="comment">%% plot settings</span>
+0014 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>;
+0015 
+0016 <span class="comment">%% set parameters</span>
+0017 
+0018 <span class="comment">% resolution</span>
+0019 MK = 1000;
+0020 M = 50;
+0021 k = 1;                <span class="comment">% critical value</span>
+0022 g = 2*k;              <span class="comment">% g-parameter for Kraus (taken negative)</span>
+0023 w = 2*k;              <span class="comment">% w-parameter for Kraus</span>
+0024 
+0025 <span class="comment">% set plot range</span>
+0026 vK = -5:10/(MK-1):5;   <span class="comment">% for Kraus</span>
+0027 v =  -5:10/(M-1):5;    <span class="comment">% others</span>
+0028 
+0029 <span class="comment">%% determine Kraus' weight functions</span>
+0030 weights = zeros(MK,1);
+0031 <span class="keyword">for</span> m = 1:MK
+0032     
+0033     <span class="keyword">if</span> vK(m) &lt; g-w
+0034         weights(m) = 0;
+0035         
+0036     <span class="keyword">elseif</span> vK(m) &gt; g
+0037         weights(m) = 0.985;
+0038         
+0039     <span class="keyword">else</span>
+0040         weights(m) = 0.985/(1+(vK(m)-g)^4);
+0041         
+0042     <span class="keyword">end</span>
+0043 <span class="keyword">end</span>
+0044 w_kraus=weights;
+0045 
+0046 <span class="comment">%% determine asymmetric L_1 weight function</span>
+0047 weights = max( min( 1,1./abs(v(1:M))/k+0.0001 ),<span class="keyword">...</span>
+0048                ( (sign(v(1:M))/k)+1 )/2 <span class="keyword">...</span>
+0049            );
+0050 w_L1 = weights;
+0051 
+0052 x = vK;
+0053 y = w_kraus';
+0054 rangeX = max(x) - min(x);
+0055 rangeY = max(y) - min(y);
+0056 Q = [diff(x) / rangeX; diff(y) / rangeY];
+0057 L = [0, cumsum(sqrt(sum(Q .* Q)))];
+0058 L = (length(L) / L(end)) * L;
+0059 a = 1;  <span class="comment">% start point</span>
+0060 b = 10; <span class="comment">% gap width</span>
+0061 c = 60; <span class="comment">% gap frequency</span>
+0062 index  = rem(round(L) + a, c) &lt;= b;
+0063 
+0064 <span class="comment">%% plot</span>
+0065 figure(<span class="string">'name'</span>,<span class="string">'Fig. 16.16 Weight functions for outliers'</span>,<span class="string">'color'</span>,<span class="string">'w'</span>,<span class="keyword">...</span>
+0066     <span class="string">'Position'</span>,[0.2*ss(1),0.2*ss(2),0.4*ss(1),0.4*ss(2)]);
+0067 hold on
+0068 <span class="comment">%plot(v,w_kraus,'--r','LineWidth',4)</span>
+0069 <span class="comment">%dashline(v,w_kraus,10,2,10,2,'color','r','LineWidth',4)</span>
+0070 plot(v,w_L1,<span class="string">'-b'</span>,<span class="string">'LineWidth'</span>,6)
+0071 plot(v,min(0.985,0.95./abs(v(1:M))/k+0.0001)-0.003,<span class="string">'.k'</span>,<span class="string">'MarkerSize'</span>,20)
+0072 
+0073 yDashed = y;
+0074 yDashed(index) = NaN;
+0075 plot(x, yDashed,<span class="string">'color'</span>,<span class="string">'r'</span>,<span class="string">'LineWidth'</span>,6);
+0076 
+0077 xlim([-5,5])
+0078 ylim([-0.003,1.05])
+0079 title(<span class="string">'Fig. 16.16: weight functions for a/symmetric outliers'</span>)
+0080 xlabel(<span class="string">'$y$'</span>);ylabel(<span class="string">'$w$'</span>);
+0081</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

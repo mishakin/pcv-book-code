@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_distance_3D_point_from_triangle</title>
+  <meta name="keywords" content="calc_distance_3D_point_from_triangle">
+  <meta name="description" content="Abstand Punkt T und Dreieck D(X,Y,Z)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_distance_3D_point_from_triangle.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_distance_3D_point_from_triangle
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Abstand Punkt T und Dreieck D(X,Y,Z)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function dist = calc_distance_3D_point_from_triangle(T,X,Y,Z) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Abstand Punkt T und Dreieck D(X,Y,Z)
+
+ Usage:
+   dist = calc_distance_3D_point_from_triangle(T,X,Y,Z)
+
+   T, X, Y, Z - 3D points, euclidean
+   dist       - double, shortest distance from T to triangle X-Y-Z 
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de 
+
+ last changes
+ Susanne Wenzel 12/17
+ wenzel@igg.uni-bonn.de
+
+ See also <a href="calc_distance_3D_point_from_3D_line.html" class="code" title="function d = calc_distance_3D_point_from_3D_line(X,L)">calc_distance_3D_point_from_3D_line</a>, <a href="calc_distance_3D_point_from_linesegment.html" class="code" title="function dist = calc_distance_3D_point_from_linesegment(T,X,Y)">calc_distance_3D_point_from_linesegment</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="calc_distance_3D_point_from_linesegment.html" class="code" title="function dist = calc_distance_3D_point_from_linesegment(T,X,Y)">calc_distance_3D_point_from_linesegment</a>	% distance of a point T to line segment K(X,Y)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../05-08-Geometry/demo_3D_Points_distances.html" class="code" title="">demo_3D_Points_distances</a>	% demo distanc 3D point</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Abstand Punkt T und Dreieck D(X,Y,Z)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Usage:</span>
+0004 <span class="comment">%   dist = calc_distance_3D_point_from_triangle(T,X,Y,Z)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   T, X, Y, Z - 3D points, euclidean</span>
+0007 <span class="comment">%   dist       - double, shortest distance from T to triangle X-Y-Z</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Wolfgang Förstner</span>
+0010 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% last changes</span>
+0013 <span class="comment">% Susanne Wenzel 12/17</span>
+0014 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% See also calc_distance_3D_point_from_3D_line, calc_distance_3D_point_from_linesegment</span>
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function dist = calc_distance_3D_point_from_triangle(T,X,Y,Z)</a>
+0019 
+0020 <span class="comment">% normal of triangle</span>
+0021 V  = cross(X-Y,Z-Y);
+0022 Vu = [V;0];
+0023 
+0024 <span class="comment">% check geometric relation of given points</span>
+0025 f = det([[X;1] [Y;1] [Z;1] Vu])+eps;
+0026 u = det([[Y;1] [Z;1] [T;1] Vu])/f;
+0027 v = det([[Z;1] [X;1] [T;1] Vu])/f;
+0028 w = det([[X;1] [Y;1] [T;1] Vu])/f;
+0029 
+0030 <span class="keyword">if</span> u &gt;= 0 &amp;&amp; v &gt;= 0 &amp;&amp; w &gt;= 0
+0031     <span class="comment">% foot point of T lies inside X-Y-Z</span>
+0032     <span class="comment">% distance point plane</span>
+0033     Am = [[X;1] [Y;1] [Z;1]];
+0034     A = null(Am');
+0035     A = A(1:4,1);
+0036     dist = abs(T'*A(1:3)+A(4))/norm(A(1:3));   <span class="comment">% see PCV (7.99), given T_h = 1</span>
+0037     <span class="comment">% following PCV (7.99) it should look like</span>
+0038     <span class="comment">% dist = abs([T;1]'*A)/norm(1*A(1:3));</span>
+0039 <span class="keyword">end</span>
+0040 <span class="keyword">if</span> u &lt;= 0 &amp;&amp; v &gt;= 0 &amp;&amp; w &gt;= 0
+0041     <span class="comment">% foot point of T lies outside triangel X-Y-Z, but next to</span>
+0042     <span class="comment">% line segment Y-Z</span>
+0043     dist = <a href="calc_distance_3D_point_from_linesegment.html" class="code" title="function dist = calc_distance_3D_point_from_linesegment(T,X,Y)">calc_distance_3D_point_from_linesegment</a>(T,Y,Z);
+0044 <span class="keyword">end</span>
+0045 <span class="keyword">if</span> u &gt;= 0 &amp;&amp; v &lt;= 0 &amp;&amp; w &gt;= 0
+0046     <span class="comment">% foot point of T lies outside triangel X-Y-Z, but next to</span>
+0047     <span class="comment">% line segment X-Z</span>
+0048     dist = distanz_Punkt_Kante(T,X,Z);
+0049 <span class="keyword">end</span>
+0050 <span class="keyword">if</span> u &gt;= 0 &amp;&amp; v &gt;= 0 &amp;&amp; w &lt;= 0
+0051     <span class="comment">% foot point of T lies outside triangel X-Y-Z, but next to</span>
+0052     <span class="comment">% line segment X-Y</span>
+0053     dist = <a href="calc_distance_3D_point_from_linesegment.html" class="code" title="function dist = calc_distance_3D_point_from_linesegment(T,X,Y)">calc_distance_3D_point_from_linesegment</a>(T,X,Y);
+0054 <span class="keyword">end</span>
+0055 <span class="keyword">if</span> u &gt;= 0 &amp;&amp; v &lt;= 0 &amp;&amp; w &lt;= 0
+0056     <span class="comment">% foot point of T lies outside triangel X-Y-Z,</span>
+0057     <span class="comment">% outside linesegments</span>
+0058     <span class="comment">% but next to point X</span>
+0059     dist = norm(T-X);
+0060 <span class="keyword">end</span>
+0061 <span class="keyword">if</span> u &lt;= 0 &amp;&amp; v &gt;= 0 &amp;&amp; w &lt;= 0
+0062     <span class="comment">% foot point of T lies outside triangel X-Y-Z,</span>
+0063     <span class="comment">% outside linesegments</span>
+0064     <span class="comment">% but next to point Y</span>
+0065     dist = norm(T-Y);
+0066 <span class="keyword">end</span>
+0067 <span class="keyword">if</span> u &lt;= 0 &amp;&amp; v &lt;= 0 &amp;&amp; w &gt;= 0
+0068     <span class="comment">% foot point of T lies outside triangel X-Y-Z,</span>
+0069     <span class="comment">% outside linesegments</span>
+0070     <span class="comment">% but next to point Z</span>
+0071     dist = norm(T-Z);
+0072 <span class="keyword">end</span>
+0073</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

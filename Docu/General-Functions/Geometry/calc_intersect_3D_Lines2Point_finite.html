@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_intersect_3D_Lines2Point_finite</title>
+  <meta name="keywords" content="calc_intersect_3D_Lines2Point_finite">
+  <meta name="description" content="% intersection point X of two 3D-lines L and M">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_intersect_3D_Lines2Point_finite.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_intersect_3D_Lines2Point_finite
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% intersection point X of two 3D-lines L and M</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function X = calc_intersect_3D_Lines2Point_finite(L,M) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% intersection point X of two 3D-lines L and M 
+ precondition: L and M are not parallel, otherwise X = [0 0 0 0]'
+
+ see PCV (13.306)
+
+ Usage:
+   X = calc_intersect_3D_Lines2Point_finite(L,M)
+
+   L, M - 6x1 Plücker Lines
+   X    - 4x1 homogeneous 3D point closest to L and M
+
+ Wolfgang Förstner 7/2017
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_intersect_3D_Lines2Point.html" class="code" title="function X = calc_intersect_3D_Lines2Point(L,M)">calc_intersect_3D_Lines2Point</a>, <a href="calc_join_3D_Lines2Plane.html" class="code" title="function A = calc_join_3D_Lines2Plane(L,M)">calc_join_3D_Lines2Plane</a>,
+ <a href="calc_join_3D_Lines2Plane_finite.html" class="code" title="function A = calc_join_3D_Lines2Plane_finite(L,M)">calc_join_3D_Lines2Plane_finite</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="calc_Gamma_reduced.html" class="code" title="function [Gr , Rm] = calc_Gamma_reduced(L)">calc_Gamma_reduced</a>	% reduced Plückermatrix from Plücker vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../05-08-Geometry/demo_3D_Lines2Point.html" class="code" title="">demo_3D_Lines2Point</a>	% Demo intersection and join of 3D lines</li><li><a href="calc_join_3D_Lines2Plane_finite.html" class="code" title="function A = calc_join_3D_Lines2Plane_finite(L,M)">calc_join_3D_Lines2Plane_finite</a>	% plane parallel to and through midpoint between two 3D-lines L and M</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% intersection point X of two 3D-lines L and M</span>
+0002 <span class="comment">% precondition: L and M are not parallel, otherwise X = [0 0 0 0]'</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% see PCV (13.306)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Usage:</span>
+0007 <span class="comment">%   X = calc_intersect_3D_Lines2Point_finite(L,M)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   L, M - 6x1 Plücker Lines</span>
+0010 <span class="comment">%   X    - 4x1 homogeneous 3D point closest to L and M</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Wolfgang Förstner 7/2017</span>
+0013 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% See also calc_intersect_3D_Lines2Point, calc_join_3D_Lines2Plane,</span>
+0016 <span class="comment">% calc_join_3D_Lines2Plane_finite</span>
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function X = calc_intersect_3D_Lines2Point_finite(L,M)</a>
+0019 
+0020 <span class="comment">% take safest point at finity</span>
+0021 GL = <a href="calc_Gamma_reduced.html" class="code" title="function [Gr , Rm] = calc_Gamma_reduced(L)">calc_Gamma_reduced</a>(L);
+0022 GM = <a href="calc_Gamma_reduced.html" class="code" title="function [Gr , Rm] = calc_Gamma_reduced(L)">calc_Gamma_reduced</a>(M);
+0023 [~,il] = max(abs(GL(:,4)));
+0024 [~,ml] = max(abs(GM(:,4)));
+0025 P = GL(il,1:3)'/GL(il,4);
+0026 Q = GM(ml,1:3)'/GM(ml,4);
+0027 
+0028 <span class="comment">% directions</span>
+0029 R = L(1:3);
+0030 S = M(1:3);
+0031 
+0032 <span class="comment">% solving linear equation system</span>
+0033 RS = [R,-S];
+0034 Nm = RS'*RS;
+0035 
+0036 <span class="keyword">if</span> abs(det(Nm)) &gt; 10^(-10)
+0037     <span class="comment">% R not parallel to S: finite point</span>
+0038     lm = (Nm)\RS'*(Q-P);
+0039     <span class="comment">% take midpoint</span>
+0040     X = [(P+lm(1)*R+Q+lm(2)*S)/2;1];
+0041 <span class="keyword">else</span>
+0042     <span class="comment">% point indefinite</span>
+0043     X = zeros(4,1);
+0044 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

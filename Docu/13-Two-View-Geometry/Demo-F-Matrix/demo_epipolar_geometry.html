@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_epipolar_geometry</title>
+  <meta name="keywords" content="demo_epipolar_geometry">
+  <meta name="description" content="% Epipolar geometry">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">13-Two-View-Geometry</a> &gt; <a href="Documentation.html">Demo-F-Matrix</a> &gt; demo_epipolar_geometry.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 13-Two-View-Geometry\Demo-F-Matrix&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>demo_epipolar_geometry
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Epipolar geometry</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function demo_epipolar_geometry() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Epipolar geometry
+
+ The script allows to determine the relative orientation (F-matrix) 
+ of two images from 8 corresponding points and to show the 
+ epipolar lines of points in the right image 
+ togehter with their uncertainty.
+
+ The uncertainty of the measured points can be chosen to be 
+  1. the rounding error(appr. 1/3 pixel) or 
+  2. derived from the image content. 
+     Then the script can be used to explore 
+     the uncertainty of matching based on the sstructure tensor of
+     the image, see PCV (13.93)
+ This is controlled by the variable 'cov_im'</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../13-Two-View-Geometry/Functions/get_image_window.html" class="code" title="function [window,success] = get_image_window(Image,z,width)">get_image_window</a>	get_image_window: cuts image subwindow from large one at given position</li><li><a href="../../13-Two-View-Geometry/Functions/measure_Point.html" class="code" title="function [x] = measure_Point(f, I, N, cs)">measure_Point</a>	This function enables the user to measure points in an image</li><li><a href="../../13-Two-View-Geometry/Functions/measure_homologeous_Points.html" class="code" title="function [x1, x2] = measure_homologeous_Points(f1, f2, I1, I2, N, cs)">measure_homologeous_Points</a>	This function enables the user to measure homologous points in two</li><li><a href="../../13-Two-View-Geometry/Functions/plot_ellipse_mc.html" class="code" title="function h = plot_ellipse_mc(mu,cov,p_typ,lw)">plot_ellipse_mc</a>	plot ellipse from mean and covariance matrix</li><li><a href="../../13-Two-View-Geometry/Functions/structure_tensor.html" class="code" title="function T  = structure_tensor(im,tau,sigma)">structure_tensor</a>	% determine structure tensor from image patch</li><li><a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>	% plot_init: initialize visualization</li><li><a href="../../General-Functions/Graphics/plot_square_with_background.html" class="code" title="function plot_square_with_background(x,y,w,f1,f2)">plot_square_with_background</a>	% plot box with background</li><li><a href="../../General-Functions/SUGR/F-Matrix/sugr_estimate_F_and_epipoles_algebraically.html" class="code" title="function [F, Cff, el, Cll, er, Crr] = sugr_estimate_F_and_epipoles_algebraically(X, Cxx)">sugr_estimate_F_and_epipoles_algebraically</a>	% Algebraic estimate F-matrix and epipoles: from n > 7 points</li><li><a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>	% sugr_INIT</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_Line_2D.html" class="code" title="function Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)">sugr_Line_2D</a>	% create homogeneous 2D line</li><li><a href="../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>	% Plot uncertain 2D line with standard hyperbola</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>	% Get Euclidean coordinates with CovM</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>	% Plot 2D point with standard ellipse</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function plot_epipole(f,e,Cee,plot_params)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Epipolar geometry</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% The script allows to determine the relative orientation (F-matrix)</span>
+0004 <span class="comment">% of two images from 8 corresponding points and to show the</span>
+0005 <span class="comment">% epipolar lines of points in the right image</span>
+0006 <span class="comment">% togehter with their uncertainty.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% The uncertainty of the measured points can be chosen to be</span>
+0009 <span class="comment">%  1. the rounding error(appr. 1/3 pixel) or</span>
+0010 <span class="comment">%  2. derived from the image content.</span>
+0011 <span class="comment">%     Then the script can be used to explore</span>
+0012 <span class="comment">%     the uncertainty of matching based on the sstructure tensor of</span>
+0013 <span class="comment">%     the image, see PCV (13.93)</span>
+0014 <span class="comment">% This is controlled by the variable 'cov_im'</span>
+0015 
+0016 <span class="comment">% The uncertainty of the epipoles (if visible) and</span>
+0017 <span class="comment">% the epipolar lines is visualized.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% The 8 corresponding points and the fundamental matrix may be stored,</span>
+0020 <span class="comment">% and read in later. As soon as 8 correspoinding points are measured,</span>
+0021 <span class="comment">% the old file will be owerwritten.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% 1. Choose two corresponding images</span>
+0024 <span class="comment">%    (They are assumed to be in the folder ../Data/images)</span>
+0025 <span class="comment">%    Six image pairs are prepared, so only the number is to be chosen</span>
+0026 <span class="comment">%    (see the parameter 'image_pair')</span>
+0027 <span class="comment">% 2. Decide on whether you want to measure 8 corresponidng points or</span>
+0028 <span class="comment">%    read data from file (see the parameter 'readX')</span>
+0029 <span class="comment">%    (they are lying in the folder /Data/ObservedImageCoordinates</span>
+0030 <span class="comment">% 3. If chosen: measure the corresponding points</span>
+0031 <span class="comment">%    one after the other in the first and the second image</span>
+0032 <span class="comment">% 4. Measure individual points in the first image (now number 3)</span>
+0033 <span class="comment">%    to get the epipolar line in the second image (number 4) visualized.</span>
+0034 <span class="comment">%    In addition the expected precision of the measured</span>
+0035 <span class="comment">%    parallaxes/disparities px' and py'is shown in image 3,</span>
+0036 <span class="comment">%    and the standard deviations of px' and py' are give on the console.</span>
+0037 <span class="comment">% 5. Step 4 can be repeated until right mouse button is pressed.</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">% The folder '../Data/images' contains the original images.</span>
+0040 <span class="comment">% The folder '../Data/ObservedImageCoordinates' contains the measured points</span>
+0041 <span class="comment">% for each image pair twice</span>
+0042 <span class="comment">%    - as 'XXX.mat'-file which can be overwritten by measuring the</span>
+0043 <span class="comment">%      8 corresponding points</span>
+0044 <span class="comment">%    - as 'XXX-original.mat'-file, which contains already measured points,</span>
+0045 <span class="comment">%      which can be used to recover from wrongly measured points.</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">% Wolfgang Förstner 4/2018</span>
+0048 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">% last changes: Susanne Wenzel 05/18</span>
+0051 <span class="comment">% wenzel@igg.uni-bonn.de</span>
+0052 
+0053 <a name="_sub0" href="#_subfunctions" class="code">function demo_epipolar_geometry()</a>
+0054 
+0055 addpath(genpath(<span class="string">'../../General-Functions'</span>))
+0056 addpath(<span class="string">'../Functions'</span>)
+0057 addpath(genpath(<span class="string">'../Data'</span>))
+0058 
+0059 ss = <a href="../../General-Functions/Graphics/plot_init.html" class="code" title="function varargout = plot_init">plot_init</a>();
+0060 close all
+0061 
+0062 <span class="comment">% magnification = magnification factor for plotting</span>
+0063 plot_params.magnification_m = 300; <span class="comment">% factor for measured point</span>
+0064 plot_params.magnification   =  3; <span class="comment">% factor for epipolar geometry</span>
+0065 
+0066 <span class="comment">%% Control parameters</span>
+0067 <span class="comment">% choose number of image pair</span>
+0068 image_pair = 1;
+0069 
+0070 <span class="comment">% choose whether to measure 8 image pairs or read data from file</span>
+0071 <span class="comment">% if readX = 0 then measure image correspondencies</span>
+0072 <span class="comment">%          = 1 read them from file</span>
+0073 readX = 1;
+0074 
+0075 <span class="comment">% choose what uncertainty is shown for the expected parallaxes/disparities</span>
+0076 <span class="comment">% cov_im = 0 the uncertainty is the rounding error</span>
+0077 <span class="comment">%        ~=0 the uncertainty is derived from the local structure tensor</span>
+0078 cov_im = 1;
+0079 
+0080 <span class="comment">%%</span>
+0081 <span class="keyword">switch</span> image_pair
+0082     <span class="keyword">case</span> 1
+0083         <span class="comment">%% Cathedral baseline in viewing direction</span>
+0084         Image_name_l = <span class="string">'IMG_9473.JPG'</span>;
+0085         Image_name_r = <span class="string">'IMG_9474.JPG'</span>;
+0086         plot_params.magnification_m = 200; <span class="comment">% factor for measured point</span>
+0087         plot_params.magnification = 4;   <span class="comment">% factor for epipolar geometry</span>
+0088     <span class="keyword">case</span> 2
+0089         <span class="comment">%% Church</span>
+0090         Image_name_l = <span class="string">'008.JPG'</span>;
+0091         Image_name_r = <span class="string">'009.JPG'</span>;
+0092         plot_params.magnification_m = 100; <span class="comment">% factor for measured point</span>
+0093         plot_params.magnification = 1;  <span class="comment">% factor for epipolar geometry</span>
+0094     <span class="keyword">case</span> 3
+0095         <span class="comment">%% Upside down building</span>
+0096         Image_name_l = <span class="string">'IMG_1936.JPG'</span>;
+0097         Image_name_r = <span class="string">'IMG_1937.JPG'</span>;
+0098         plot_params.magnification_m = 300; <span class="comment">% factor for measured point</span>
+0099         plot_params.magnification = 6;   <span class="comment">% factor for epipolar geometry</span>
+0100     <span class="keyword">case</span> 4
+0101         <span class="comment">%% Cathedral b/w</span>
+0102         Image_name_l = <span class="string">'IMG_9473-bw.JPG'</span>;
+0103         Image_name_r = <span class="string">'IMG_9474-bw.JPG'</span>;
+0104         plot_params.magnification_m = 200; <span class="comment">% factor for measured point</span>
+0105         plot_params.magnification = 4;   <span class="comment">% factor for epipolar geometry</span>
+0106     <span class="keyword">case</span> 5
+0107         <span class="comment">%% corn rigth left</span>
+0108         Image_name_l = <span class="string">'1336-34.jpg'</span>;
+0109         Image_name_r = <span class="string">'1336-95.jpg'</span>;
+0110         plot_params.magnification_m = 200; <span class="comment">% factor for measured point</span>
+0111         plot_params.magnification = 2;   <span class="comment">% factor for epipolar geometry</span>
+0112     <span class="keyword">case</span> 6
+0113         <span class="comment">%% corn up/down</span>
+0114         Image_name_l=  <span class="string">'1337-1.jpg'</span>;
+0115         Image_name_r = <span class="string">'1337-2.jpg'</span>;
+0116         plot_params.magnification_m = 200; <span class="comment">% factor for measured point</span>
+0117         plot_params.magnification = 2;   <span class="comment">% factor for epipolar geometry</span>
+0118     <span class="keyword">otherwise</span>
+0119         disp(<span class="string">'wrong number of image pair'</span>)          
+0120 <span class="keyword">end</span>
+0121 
+0122 <span class="comment">%% default parameters</span>
+0123 
+0124 <span class="comment">% linewidths for plotting rectangles</span>
+0125 plot_params.f1 = 9;    <span class="comment">% black (background)</span>
+0126 plot_params.f2 = 4;    <span class="comment">% yellow (foreground)</span>
+0127 
+0128 im_path = <span class="string">'../Data/images/'</span>;
+0129 pt_path = <span class="string">'../Data/ObservedImageCoordinates/'</span>;
+0130 
+0131 <span class="comment">% control parameters for structure tensor</span>
+0132 structure_tensor_params.tau = 0.7;   <span class="comment">% differentiation scale</span>
+0133 structure_tensor_params.sigma = 3;   <span class="comment">% integration scale for structure tensor</span>
+0134 structure_tensor_params.integration_width = ceil(1.5*structure_tensor_params.sigma)*2+1;
+0135 structure_tensor_params.sigma_n = 0.03; <span class="comment">% noise standard deviation</span>
+0136 
+0137 <span class="comment">%% initiate SUGR</span>
+0138 <a href="../../General-Functions/SUGR/General/sugr_INIT.html" class="code" title="">sugr_INIT</a>
+0139 
+0140 <span class="comment">%% read images</span>
+0141 Image_l = imread(fullfile(im_path,Image_name_l));
+0142 Image_r = imread(fullfile(im_path,Image_name_r));
+0143 coordinate_name = fullfile(pt_path,Image_name_l(1:end-4));
+0144 
+0145 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0146 <span class="comment">%% show images</span>
+0147 f1 = figure(<span class="string">'name'</span>,<span class="string">'Left image'</span>);
+0148 imshow(Image_l);
+0149 set(f1,<span class="string">'Position'</span>,[0 ss(2)/2.4 ss(1)/2 ss(2)/2]);
+0150 
+0151 f2 = figure(<span class="string">'name'</span>,<span class="string">'Right image'</span>);
+0152 imshow(Image_r);
+0153 set(f2,<span class="string">'Position'</span>,[ss(1)/2 ss(2)/2.4 ss(1)/2 ss(2)/2]);
+0154 
+0155 <span class="keyword">if</span> readX == 0   <span class="comment">% measure image correspondencies</span>
+0156     
+0157     [x1, x2] = <a href="../../13-Two-View-Geometry/Functions/measure_homologeous_Points.html" class="code" title="function [x1, x2] = measure_homologeous_Points(f1, f2, I1, I2, N, cs)">measure_homologeous_Points</a>(f1, f2, Image_l, Image_r, 8);
+0158     
+0159     <span class="keyword">if</span> x1 == -1
+0160         error(<span class="string">'Not enough points. We need at least 8 homologeous points!'</span>)
+0161         <span class="keyword">return</span>                                                             <span class="comment">%#ok&lt;UNRCH&gt;</span>
+0162     <span class="keyword">end</span>
+0163 
+0164     X = [x1', x2'];
+0165     
+0166     save(coordinate_name,<span class="string">'X'</span>);
+0167     
+0168 <span class="keyword">else</span>  <span class="comment">% read measured image correspondencies from file</span>
+0169     
+0170     load(coordinate_name,<span class="string">'X'</span>);
+0171     
+0172     N = size(X,1);                                                          <span class="comment">%#ok&lt;NODEF&gt;</span>
+0173     
+0174     figure(f1)
+0175     hold on    
+0176     <span class="keyword">for</span> n = 1:N
+0177         <a href="../../General-Functions/Graphics/plot_square_with_background.html" class="code" title="function plot_square_with_background(x,y,w,f1,f2)">plot_square_with_background</a>(X(n,1),X(n,2),100,plot_params.f1,plot_params.f2);
+0178     <span class="keyword">end</span>
+0179     
+0180     figure(f2)
+0181     hold on    
+0182     <span class="keyword">for</span> n = 1:N
+0183         <a href="../../General-Functions/Graphics/plot_square_with_background.html" class="code" title="function plot_square_with_background(x,y,w,f1,f2)">plot_square_with_background</a>(X(n,3),X(n,4),100,plot_params.f1,plot_params.f2);
+0184     <span class="keyword">end</span>
+0185 <span class="keyword">end</span>
+0186 
+0187 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0188 <span class="comment">%% estimate F</span>
+0189 
+0190 <span class="comment">% Stochastic modell of observed image points</span>
+0191 Cxx = [ ones(8,1),zeros(8,4),ones(8,1),<span class="keyword">...</span>
+0192         zeros(8,4),ones(8,1),zeros(8,4),ones(8,1) ]<span class="keyword">...</span>
+0193         /12;
+0194 
+0195 <span class="comment">% estimate F from measured images coordinates</span>
+0196 [F,Cff,el,Cll,er,Crr] = <a href="../../General-Functions/SUGR/F-Matrix/sugr_estimate_F_and_epipoles_algebraically.html" class="code" title="function [F, Cff, el, Cll, er, Crr] = sugr_estimate_F_and_epipoles_algebraically(X, Cxx)">sugr_estimate_F_and_epipoles_algebraically</a>(X,Cxx);
+0197 <span class="comment">%[F,Cff,el,er] = sugr_estimate_F_and_epipoles_algebraically_n(X,Cxx);</span>
+0198 
+0199 <span class="comment">%% start showing epipolar lines in Figure 4 for point in Figure 3</span>
+0200 
+0201 <span class="comment">%% plot epipole in left image</span>
+0202 f3 = figure(<span class="string">'name'</span>,<span class="string">'Left image'</span>);
+0203 imshow(Image_l);
+0204 set(f3,<span class="string">'Position'</span>,[0 0 ss(1)/2 ss(2)/2]);
+0205 hold on
+0206 <a href="#_sub1" class="code" title="subfunction plot_epipole(f,e,Cee,plot_params)">plot_epipole</a>(f3,el,Cll,plot_params)
+0207 <span class="comment">%% plot epipole in right image</span>
+0208 f4 = figure(<span class="string">'name'</span>,<span class="string">'Right image'</span>);
+0209 imshow(Image_r);
+0210 set(f4,<span class="string">'Position'</span>,[ss(1)/2 0 ss(1)/2 ss(2)/2]);
+0211 hold on
+0212 <a href="#_sub1" class="code" title="subfunction plot_epipole(f,e,Cee,plot_params)">plot_epipole</a>(f4,er,Crr,plot_params)
+0213 
+0214 
+0215 <span class="keyword">while</span> true 
+0216     <span class="comment">%% wait until a button is pressed</span>
+0217     disp(<span class="string">'Measure point in Figure 3 to see epipolar line in Figure 4.'</span>)
+0218     disp(<span class="string">'Press right mouse button to exit'</span>)
+0219     
+0220 
+0221     <span class="comment">%% measure poin in left image</span>
+0222     x = <a href="../../13-Two-View-Geometry/Functions/measure_Point.html" class="code" title="function [x] = measure_Point(f, I, N, cs)">measure_Point</a>(f3, Image_l);
+0223     
+0224     <span class="keyword">if</span> x == -1
+0225         title(<span class="string">'Interactively stopped'</span>)
+0226         disp(<span class="string">'Interactively stopped'</span>)
+0227         <span class="keyword">break</span>
+0228     <span class="keyword">end</span>
+0229     
+0230     [im_window, success] = <a href="../../13-Two-View-Geometry/Functions/get_image_window.html" class="code" title="function [window,success] = get_image_window(Image,z,width)">get_image_window</a>(Image_l, x, structure_tensor_params.integration_width);
+0231     
+0232     <span class="keyword">if</span> success==1
+0233         
+0234         <span class="keyword">if</span> cov_im == 0
+0235             Cov = eye(2)/12;
+0236             std_xy = sqrt(diag(Cov)');
+0237         <span class="keyword">else</span>
+0238             T   = <a href="../../13-Two-View-Geometry/Functions/structure_tensor.html" class="code" title="function T  = structure_tensor(im,tau,sigma)">structure_tensor</a>(im_window,<span class="keyword">...</span>
+0239                 structure_tensor_params.tau,<span class="keyword">...</span>
+0240                 structure_tensor_params.sigma);
+0241             
+0242             Cov = structure_tensor_params.sigma_n^2 * <span class="keyword">...</span>
+0243                 inv( T * structure_tensor_params.integration_width^2 <span class="keyword">...</span>
+0244                 + eye(2)*10^(-6) );                                        <span class="comment">%#ok&lt;MINV&gt;</span>
+0245             std_xy = sqrt(diag(Cov)');
+0246         <span class="keyword">end</span>
+0247         disp([<span class="string">'standard  deviations xy in pixel: '</span>, num2str(std_xy)])        
+0248         
+0249         <span class="comment">%plot epipole into left image again</span>
+0250         <a href="#_sub1" class="code" title="subfunction plot_epipole(f,e,Cee,plot_params)">plot_epipole</a>(f3,el,Cll,plot_params)        
+0251                 
+0252         <span class="comment">%% plot ellipse in left image</span>
+0253         <a href="../../13-Two-View-Geometry/Functions/plot_ellipse_mc.html" class="code" title="function h = plot_ellipse_mc(mu,cov,p_typ,lw)">plot_ellipse_mc</a>(x, Cov*plot_params.magnification_m^2,<span class="string">'-k'</span>,plot_params.f1);
+0254         <a href="../../13-Two-View-Geometry/Functions/plot_ellipse_mc.html" class="code" title="function h = plot_ellipse_mc(mu,cov,p_typ,lw)">plot_ellipse_mc</a>(x, Cov*plot_params.magnification_m^2,<span class="string">'-y'</span>,plot_params.f2);
+0255         <span class="comment">%hold off</span>
+0256 
+0257         <span class="comment">%% refresh image right</span>
+0258         figure(f4)
+0259         imshow(Image_r);
+0260         hold on
+0261         
+0262         
+0263         <span class="comment">% epipolar line</span>
+0264         lss =  F'*[x;1];
+0265         
+0266         <span class="comment">% covariance matrix of lss due to uncertainty of F and point</span>
+0267         J = kron(eye(3),[x;1]');
+0268         Cllh = J*Cff*J' + F'*[Cov,zeros(2,1);zeros(1,3)]*F;
+0269         
+0270         <span class="comment">% plot epipolar line into right image</span>
+0271         epi = <a href="../../General-Functions/SUGR/Line_2D/sugr_Line_2D.html" class="code" title="function Line_2D = sugr_Line_2D(a1,a2,a3,a4,a5)">sugr_Line_2D</a>(lss,Cllh);
+0272         <a href="../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>(epi,<span class="string">'-k'</span>,<span class="string">'-k'</span>,plot_params.f1,plot_params.magnification);
+0273         <a href="../../General-Functions/SUGR/Line_2D/sugr_plot_Line_2D.html" class="code" title="function sugr_plot_Line_2D(l,center_type,bound_type,lw,factor,se)">sugr_plot_Line_2D</a>(epi,<span class="string">'-y'</span>,<span class="string">'-y'</span>,plot_params.f2,plot_params.magnification);
+0274         
+0275         <span class="comment">% plot epipole into right image again</span>
+0276         <a href="#_sub1" class="code" title="subfunction plot_epipole(f,e,Cee,plot_params)">plot_epipole</a>(f4,er,Crr,plot_params)
+0277         <span class="comment">%sugr_plot_Point_2D(er,'.k','-m',3,plot_params.magnification);</span>
+0278         
+0279         hold off     
+0280 
+0281     <span class="keyword">end</span>
+0282 <span class="keyword">end</span>
+0283 
+0284 <span class="keyword">return</span>
+0285 
+0286 
+0287 <a name="_sub1" href="#_subfunctions" class="code">function plot_epipole(f,e,Cee,plot_params)</a>
+0288 
+0289 figure(f)
+0290 
+0291 <span class="keyword">if</span> abs(e(3)) &gt; 0.0001
+0292     
+0293     <span class="comment">% Plot standard ellipse of epipole</span>
+0294     ers=<a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(e,Cee);
+0295     
+0296     <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(ers,<span class="string">'.k'</span>,<span class="string">'-w'</span>,plot_params.f1,plot_params.magnification)
+0297     <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(ers,<span class="string">'.k'</span>,<span class="string">'-m'</span>,plot_params.f2,plot_params.magnification)
+0298     
+0299     <span class="comment">% plot text</span>
+0300     [e_E,C_EE]=<a href="../../General-Functions/SUGR/Point_2D/sugr_get_Euclidean_Point_2D.html" class="code" title="function [e,Cee] = sugr_get_Euclidean_Point_2D(x)">sugr_get_Euclidean_Point_2D</a>(ers);   
+0301     text(e_E(1)+ 2*sqrt(C_EE(1,1))*plot_params.magnification,<span class="keyword">...</span>
+0302          e_E(2)+ 2*sqrt(C_EE(2,2))*plot_params.magnification,<span class="keyword">...</span>
+0303         <span class="string">'Epipole'</span>,<span class="string">'FontSize'</span>,14,<span class="string">'FontWeight'</span>,<span class="string">'bold'</span>,<span class="string">'Color'</span>,<span class="string">'m'</span>)
+0304     
+0305 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of h_transfer_points</title>
+  <meta name="keywords" content="h_transfer_points">
+  <meta name="description" content="demo_h_transfer_points: transfer point in demo_homography">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">10-Uncertain-Geometry</a> &gt; <a href="Documentation.html">Functions</a> &gt; h_transfer_points.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for 10-Uncertain-Geometry\Functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>h_transfer_points
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>demo_h_transfer_points: transfer point in demo_homography</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function h_transfer_points(H,CP,Image_l,Image_r,magnification) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> demo_h_transfer_points: transfer point in demo_homography
+
+ Wolfgang Förstner 3/2011
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="h_plot_CP.html" class="code" title="function h_plot_CP(X,fi)">h_plot_CP</a>	plot control points</li><li><a href="../../General-Functions/Graphics/plot_square_with_background.html" class="code" title="function plot_square_with_background(x,y,w,f1,f2)">plot_square_with_background</a>	% plot box with background</li><li><a href="../../General-Functions/SUGR/Homography_2D/sugr_transform_with_Homography_2D.html" class="code" title="function y = sugr_transform_with_Homography_2D(H,x)">sugr_transform_with_Homography_2D</a>	% transform uncertain elements using a projective mapping</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>	% Create 2D point</li><li><a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>	% Plot 2D point with standard ellipse</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../10-Uncertain-Geometry/Demo-Homography/demo_homography_from_two_images.html" class="code" title="">demo_homography_from_two_images</a>	% demo_function_homography_from_two_images:</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% demo_h_transfer_points: transfer point in demo_homography</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Wolfgang Förstner 3/2011</span>
+0004 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0005 
+0006 <a name="_sub0" href="#_subfunctions" class="code">function h_transfer_points(H,CP,Image_l,Image_r,magnification)</a>
+0007 
+0008 figure(1)
+0009 imshow(Image_l);
+0010 hold on
+0011 <a href="h_plot_CP.html" class="code" title="function h_plot_CP(X,fi)">h_plot_CP</a>(CP,1);
+0012 
+0013 <span class="keyword">while</span> true
+0014     <span class="comment">%% wait until a button is pressed</span>
+0015     figure(1)
+0016     disp(<span class="string">'grab point with mouse in image 1 or press keyboard for stop'</span>)
+0017     title(<span class="string">'grab point with mouse or press keyboard for stop'</span>)
+0018     keydown = waitforbuttonpress;    
+0019     <span class="comment">% if a keyboard button was pressed, stop cycle</span>
+0020     
+0021     <span class="keyword">if</span> keydown == 1
+0022         <span class="keyword">break</span>
+0023     <span class="keyword">end</span>
+0024     <span class="comment">%% grab mouse position</span>
+0025     figure(1)
+0026     imshow(Image_l);
+0027     hold on
+0028     <a href="h_plot_CP.html" class="code" title="function h_plot_CP(X,fi)">h_plot_CP</a>(CP,1);
+0029     X=get(gca,<span class="string">'currentPoint'</span>);
+0030     
+0031     <span class="comment">%% refresh image left</span>
+0032     <span class="comment">% save only coordinates</span>
+0033     z = X(1,1:2)';
+0034     
+0035     <span class="comment">%% plot ellipse in left image</span>
+0036     <a href="../../General-Functions/Graphics/plot_square_with_background.html" class="code" title="function plot_square_with_background(x,y,w,f1,f2)">plot_square_with_background</a>(z(1),z(2),10);
+0037     hold on
+0038     xl = <a href="../../General-Functions/SUGR/Point_2D/sugr_Point_2D.html" class="code" title="function Point_2D = sugr_Point_2D(a1,a2,a3,a4)">sugr_Point_2D</a>(z,10^(-4)*eye(2));
+0039     
+0040     <span class="comment">%% refresh image right</span>
+0041     <span class="comment">%</span>
+0042     figure(2)
+0043     imshow(Image_r);
+0044     hold on
+0045     <a href="h_plot_CP.html" class="code" title="function h_plot_CP(X,fi)">h_plot_CP</a>(CP,2);
+0046     <span class="comment">% transferred point</span>
+0047     
+0048     xr = <a href="../../General-Functions/SUGR/Homography_2D/sugr_transform_with_Homography_2D.html" class="code" title="function y = sugr_transform_with_Homography_2D(H,x)">sugr_transform_with_Homography_2D</a>(H,xl);
+0049     
+0050     <span class="comment">%% plot ellipse in right image</span>
+0051     <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(xr,<span class="string">'.y'</span>,<span class="string">'-y'</span>,3,magnification);
+0052     <a href="../../General-Functions/SUGR/Point_2D/sugr_plot_Point_2D.html" class="code" title="function sugr_plot_Point_2D(x,center_type,bound_type,lw,factor)">sugr_plot_Point_2D</a>(xr,<span class="string">'ok'</span>,<span class="string">'-k'</span>,1,magnification);
+0053     hold off
+0054 <span class="keyword">end</span>
+0055</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

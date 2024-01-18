@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_Rot_rod</title>
+  <meta name="keywords" content="calc_Rot_rod">
+  <meta name="description" content="% Rotation matrix according to Rodriguez">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../Documentation.html">Home</a> &gt;  <a href="../Documentation.html">General-Functions</a> &gt; <a href="Documentation.html">Geometry</a> &gt; calc_Rot_rod.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../Documentation.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\Geometry&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_Rot_rod
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% Rotation matrix according to Rodriguez</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function R = calc_Rot_rod(q) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Rotation matrix according to Rodriguez
+ see PCV (8.60)
+ 
+ Usage:
+   R = calc_Rot_rod(q)
+ 
+   q - double 3x1, Rodriguez representation
+   R - double 3x3, 3D rotation matrix
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de 
+
+ See also <a href="calc_R_from_opq_kraus.html" class="code" title="function R = calc_R_from_opq_kraus(omega,phi,kappa)">calc_R_from_opq_kraus</a>, <a href="calc_r_phi_from_R.html" class="code" title="function [r,p]= calc_r_phi_from_R(R)">calc_r_phi_from_R</a>, <a href="calc_Rot_ab.html" class="code" title="function R = calc_Rot_ab(a,b)">calc_Rot_ab</a>,
+ <a href="calc_Rot_q.html" class="code" title="function R = calc_Rot_q(q)">calc_Rot_q</a>, <a href="calc_Rot_r.html" class="code" title="function R = calc_Rot_r(r)">calc_Rot_r</a>, <a href="calc_Rot_rp.html" class="code" title="function R = calc_Rot_rp(r,p)">calc_Rot_rp</a>, <a href="calc_Mq.html" class="code" title="function M = calc_Mq(q)">calc_Mq</a>, <a href="calc_Mq_comm.html" class="code" title="function M=calc_Mq_comm(q)">calc_Mq_comm</a>, <a href="calc_opq_from_R_Kraus.html" class="code" title="function [o,p,q] = calc_opq_from_R_Kraus(R)">calc_opq_from_R_Kraus</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../12-Single-View-Geometry/Demo_Projection/demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs.html" class="code" title="">demo_ALG_17_estimate_Projection_3D_2D_from_point_pairs</a>	% Demo estimate 3D projection from 2D point pairs, ALG 17</li><li><a href="../../12-Single-View-Geometry/Demo_Projection/demo_estimate_Projection_3D_2D_from_point_pairs_single.html" class="code" title="">demo_estimate_Projection_3D_2D_from_point_pairs_single</a>	% Demo estimate 3D projection from 2D point pairs</li><li><a href="../../13-Two-View-Geometry/Functions/generate_point_pair.html" class="code" title="function [u,v] = generate_point_pair(X,b,Rot,sigma)">generate_point_pair</a>	% generate_point_pair</li><li><a href="../../13-Two-View-Geometry/example_p_579_relative_orientation_mirror.html" class="code" title="">example_p_579_relative_orientation_mirror</a>	% test mirror image</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Rotation matrix according to Rodriguez</span>
+0002 <span class="comment">% see PCV (8.60)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Usage:</span>
+0005 <span class="comment">%   R = calc_Rot_rod(q)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   q - double 3x1, Rodriguez representation</span>
+0008 <span class="comment">%   R - double 3x3, 3D rotation matrix</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Wolfgang Förstner</span>
+0011 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See also calc_R_from_opq_kraus, calc_r_phi_from_R, calc_Rot_ab,</span>
+0014 <span class="comment">% calc_Rot_q, calc_Rot_r, calc_Rot_rp, calc_Mq, calc_Mq_comm, calc_opq_from_R_Kraus</span>
+0015 
+0016 <a name="_sub0" href="#_subfunctions" class="code">function R = calc_Rot_rod(q)</a>
+0017 
+0018 q1 = q(1)/2;
+0019 q2 = q(2)/2;
+0020 q3 = q(3)/2;
+0021 
+0022 R = [
+0023     1+q1^2-q2^2-q3^2  2*(q1*q2-q3)  2*(q1*q3+q2); <span class="keyword">...</span><span class="comment"> </span>
+0024     2*(q1*q2+q3)  1-q1^2+q2^2-q3^2  2*(q2*q3-q1); <span class="keyword">...</span>
+0025     2*(q1*q3-q2)  2*(q2*q3+q1) 1-q1^2-q2^2+q3^2 <span class="keyword">...</span>
+0026     ] <span class="keyword">...</span>
+0027     /(1+q1^2+q2^2+q3^2);
+0028 
+0029</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

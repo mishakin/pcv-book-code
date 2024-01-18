@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sugr_estimation_ml_Homography_2D_from_point_pairs</title>
+  <meta name="keywords" content="sugr_estimation_ml_Homography_2D_from_point_pairs">
+  <meta name="description" content="% ML estimate of 2D homography from point pairs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../Documentation.html">Home</a> &gt;  <a href="../../Documentation.html">General-Functions</a> &gt; <a href="#">SUGR</a> &gt; <a href="Documentation.html">Homography_2D</a> &gt; sugr_estimation_ml_Homography_2D_from_point_pairs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../Documentation.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="Documentation.html">Index for General-Functions\SUGR\Homography_2D&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sugr_estimation_ml_Homography_2D_from_point_pairs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% ML estimate of 2D homography from point pairs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [H, sigma_0, R] = sugr_estimation_ml_Homography_2D_from_point_pairs(l, xa, T, maxiter) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% ML estimate of 2D homography from point pairs
+
+ [H,sigma_0,R] = sugr_estimate_ml_Homography_2D_from_point_pairs(l,xa,T,maxiter)
+
+ * l    = struct of point paris
+ * xa   = struct/3x3-matrix, approximate value
+ * T    = threshold for iteration
+ * maxiter = maximal iteration
+
+ * H = struct estimated homography
+ * sigma0 = estimated sigma0
+ * R = redundancy
+
+ Wolfgang Förstner
+ wfoerstn@uni-bonn.de</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_homography.html" class="code" title="function Hu = sugr_ghm_update_homography(Ha,k)">sugr_ghm_update_homography</a>	% GHM update spectrally normalized homography</li><li><a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>	% GHM update spherically normalized vector</li><li><a href="sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>	% create 2D homography</li><li><a href="sugr_get_CovM_homogeneous_Homography_2D.html" class="code" title="function [Chh,Jrh] = sugr_get_CovM_homogeneous_Homography_2D(H)">sugr_get_CovM_homogeneous_Homography_2D</a>	% Covariance matrix of homogeneous homography,</li><li><a href="sugr_ghm_cg_2D_homography_from_point_pairs.html" class="code" title="function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_2D_homography_from_point_pairs(l,le,xe,C)">sugr_ghm_cg_2D_homography_from_point_pairs</a>	% determines residuals etc. for 2D homography from point pairs</li><li><a href="sugr_minimal_Homography_2D.html" class="code" title="function [H,Jrh] = sugr_minimal_Homography_2D(Ha,Chh)">sugr_minimal_Homography_2D</a>	% minimal representation of homography</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../10-Uncertain-Geometry/Demo-Homography/demo_estimate_2D_homography_from_point_pairs.html" class="code" title="">demo_estimate_2D_homography_from_point_pairs</a>	% demo_estimate_2D_homography_from_point_pairs</li><li><a href="../../../10-Uncertain-Geometry/Functions/determine_Homography_2D_from_two_images.html" class="code" title="function [H,X] = determine_Homography_2D_from_two_images(Image_l,Image_r,readX)">determine_Homography_2D_from_two_images</a>	demo_h_determine_homography_from_two_images: read/interactively determine homography</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% ML estimate of 2D homography from point pairs</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% [H,sigma_0,R] = sugr_estimate_ml_Homography_2D_from_point_pairs(l,xa,T,maxiter)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% * l    = struct of point paris</span>
+0006 <span class="comment">% * xa   = struct/3x3-matrix, approximate value</span>
+0007 <span class="comment">% * T    = threshold for iteration</span>
+0008 <span class="comment">% * maxiter = maximal iteration</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% * H = struct estimated homography</span>
+0011 <span class="comment">% * sigma0 = estimated sigma0</span>
+0012 <span class="comment">% * R = redundancy</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Wolfgang Förstner</span>
+0015 <span class="comment">% wfoerstn@uni-bonn.de</span>
+0016 <span class="comment">%</span>
+0017 
+0018 <a name="_sub0" href="#_subfunctions" class="code">function [H, sigma_0, R] = sugr_estimation_ml_Homography_2D_from_point_pairs(l, xa, T, maxiter)</a>
+0019 
+0020 <span class="keyword">global</span> print_option_estimation
+0021 
+0022 <span class="comment">%% Initialization</span>
+0023 U = 8; <span class="comment">% number of unknown parameters</span>
+0024 Nlr = 4; <span class="comment">% number of reduced parameters per observational group</span>
+0025 Gc = 2; <span class="comment">% number of constraints per observational group</span>
+0026 
+0027 lh = l.h;
+0028 lCrr = l.Crr;
+0029 Nc = size(lh, 1); <span class="comment">% number of pairs</span>
+0030 
+0031 G = Nc * Gc; <span class="comment">% number of constraints</span>
+0032 R = G - U; <span class="comment">% redundancy</span>
+0033 <span class="keyword">if</span> R &lt; 0
+0034     <span class="keyword">return</span>
+0035 <span class="keyword">end</span>
+0036 
+0037 estl = lh; <span class="comment">% initialize estimated observations</span>
+0038 w_f = ones(Nc, 1); <span class="comment">% initial weights for robust estimate</span>
+0039 
+0040 <span class="keyword">if</span> isstruct(xa) <span class="comment">% initiate estx, estimated unknowns</span>
+0041     estx = xa.H;
+0042 <span class="keyword">else</span>
+0043     estx = xa;
+0044 <span class="keyword">end</span>
+0045 
+0046 s = 0; <span class="comment">% control variable for iterations</span>
+0047 residuals = zeros(Nc, 2); <span class="comment">% intial residuals</span>
+0048 
+0049 <span class="comment">%% Start iteration -------------------------------------</span>
+0050 <span class="keyword">for</span> nu = 1:maxiter
+0051     <span class="keyword">if</span> print_option_estimation &gt; 0
+0052         sprintf(<span class="string">'nu = %2'</span>, nu);
+0053     <span class="keyword">end</span>
+0054     Cr = zeros(Nc, Nlr, Nlr); <span class="comment">% reduced covariance matrices</span>
+0055     v_r = zeros(Nc, Nlr); <span class="comment">% reduced residuals</span>
+0056     A = zeros(Nc, Gc, U); <span class="comment">% Jacobians c -&gt; x</span>
+0057     B = zeros(Nc, Gc, Nlr); <span class="comment">% Jacobians c -&gt; l</span>
+0058     W = zeros(Nc, Gc, Gc); <span class="comment">% Weights of constraints</span>
+0059     cg = zeros(Nc, Gc); <span class="comment">% constraint's residuals</span>
+0060     
+0061     N_matrix = zeros(U); <span class="comment">% normal equation matrix</span>
+0062     h_vector = zeros(U, 1); <span class="comment">% right hand sides</span>
+0063     
+0064     <span class="comment">%% Build design matrices</span>
+0065     <span class="keyword">for</span> n = 1:Nc
+0066         estl_n = estl(n, :)';                 <span class="comment">% get estl</span>
+0067         l_n = lh(n, :)';                   <span class="comment">% get l</span>
+0068         Crr_n = squeeze(lCrr(n, :, :));
+0069         <span class="comment">% determine cg and Jacobians (checked)</span>
+0070         [lr_n, Cr_n, cg_n, atr_n, btr_n] = <a href="sugr_ghm_cg_2D_homography_from_point_pairs.html" class="code" title="function [lr,Cr,cg,atr,btr] = sugr_ghm_cg_2D_homography_from_point_pairs(l,le,xe,C)">sugr_ghm_cg_2D_homography_from_point_pairs</a>(l_n, estl_n, estx, Crr_n);
+0071         <span class="comment">% Store these</span>
+0072         A(n, :, :) = atr_n; <span class="comment">% Gc x U</span>
+0073         B(n, :, :) = btr_n; <span class="comment">% Gc x Nlr</span>
+0074         Cr(n, :, :) = Cr_n; <span class="comment">% Nlr x Nlr</span>
+0075         v_r(n, :) = - lr_n';                <span class="comment">% 1 x Nlr</span>
+0076         cg(n, :) = cg_n';                 <span class="comment">% 1 x Gc</span>
+0077         
+0078         <span class="comment">% weight of contraint</span>
+0079         bCovb_n = btr_n * Cr_n * btr_n';      <span class="comment">% Gc x Gc</span>
+0080         W(n, :, :) = inv(bCovb_n) * w_f(n); <span class="comment">%#ok&lt;MINV&gt; % Gc x Gc</span>
+0081         aW = atr_n' * squeeze(W(n,:,:)); <span class="comment">% U x Gc</span>
+0082         
+0083         N_matrix = N_matrix + aW * atr_n; <span class="comment">% U x U</span>
+0084         h_vector = h_vector + aW * cg_n; <span class="comment">% U x 1</span>
+0085         
+0086     <span class="keyword">end</span>
+0087     
+0088     <span class="comment">%     det(N_matrix);</span>
+0089     <span class="comment">%% Solve</span>
+0090     Cxrxr = inv(N_matrix);
+0091     estx_r = Cxrxr * h_vector; <span class="comment">%#ok&lt;MINV&gt;</span>
+0092     
+0093     <span class="keyword">if</span> print_option_estimation &gt; 0
+0094         disp([<span class="string">'Result of estimation in iteration: '</span>, num2str(nu)]);
+0095         disp(estx_r);
+0096     <span class="keyword">end</span>
+0097     
+0098     <span class="comment">%     max(abs(estx_r)./sqrt(diag(Cxrxr)));</span>
+0099     <span class="keyword">if</span> max(abs(estx_r) ./ sqrt(diag(Cxrxr))) &lt; T
+0100         s = 2;
+0101     <span class="keyword">end</span>
+0102     
+0103     <span class="comment">%% Determine Updates</span>
+0104     Omega = 0;
+0105     check = zeros(Gc, 1);
+0106     <span class="keyword">for</span> n = 1:Nc
+0107         <span class="comment">% covariance matrix of observations (normalized)</span>
+0108         Clrlr = squeeze(Cr(n, :, :));
+0109         
+0110         <span class="comment">% corrections of reduced observations</span>
+0111         delta_l_r = Clrlr * squeeze(B(n, :, :))' * squeeze(W(n,:,:)) * (cg(n,:)' - squeeze(A(n, :, :)) * estx_r) - v_r(n, :)';
+0112         ver_r = v_r(n, :)' + delta_l_r;
+0113         
+0114         <span class="comment">% sum of squared residuals</span>
+0115         <span class="keyword">if</span> w_f(n) &gt; 0
+0116             vvp_r = ver_r' * inv(Clrlr) * ver_r;                           <span class="comment">%#ok&lt;MINV&gt;</span>
+0117             Omega = Omega + vvp_r;
+0118             residuals(n) = vvp_r;
+0119             
+0120             <span class="comment">% eliminate obsservation by setting w_f=0</span>
+0121             <span class="keyword">if</span> vvp_r &gt; 10
+0122                 w_f(n) = 0;
+0123             <span class="keyword">end</span>
+0124         <span class="keyword">end</span>
+0125         <span class="comment">% updated estimates of both points</span>
+0126         estl(n, 1:3) = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>(estl(n, 1:3)',delta_l_r(1:2))';
+0127         estl(n, 4:6) = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_vector.html" class="code" title="function xu = sugr_ghm_update_vector(x,p)">sugr_ghm_update_vector</a>(estl(n, 4:6)',delta_l_r(3:4))';
+0128         
+0129     <span class="keyword">end</span>
+0130     sigma_0 = 1;
+0131     <span class="keyword">if</span> R &gt; 0
+0132         sigma_0 = sqrt(Omega / R);
+0133     <span class="keyword">end</span>
+0134     <span class="keyword">if</span> print_option_estimation &gt; 0
+0135         disp(sigma_0)
+0136     <span class="keyword">end</span>
+0137     <span class="keyword">if</span> print_option_estimation &gt; 1
+0138         disp(check')
+0139     <span class="keyword">end</span>
+0140     
+0141     <span class="comment">% update estimate of x</span>
+0142     <span class="keyword">if</span> print_option_estimation &gt; 1
+0143         disp(estx)
+0144     <span class="keyword">end</span>
+0145     
+0146     estx = <a href="../../../General-Functions/SUGR/General/Estimation/sugr_ghm_update_homography.html" class="code" title="function Hu = sugr_ghm_update_homography(Ha,k)">sugr_ghm_update_homography</a>(estx, estx_r);
+0147     <span class="keyword">for</span> n = 1:Nc
+0148         Jl = [null(estl(n, 1:3)) zeros(3, 2); zeros(3, 2) null(estl(n, 4:6))];
+0149         [~, Jhr] = <a href="sugr_minimal_Homography_2D.html" class="code" title="function [H,Jrh] = sugr_minimal_Homography_2D(Ha,Chh)">sugr_minimal_Homography_2D</a>(estx, zeros(9));
+0150         check = check <span class="keyword">...</span>
+0151             + squeeze(A(n, :, :)) * Jhr * estx(:) <span class="keyword">...</span>
+0152             + squeeze(B(n, :, :)) * Jl'*estl(n,:)';
+0153     <span class="keyword">end</span>
+0154     <span class="keyword">if</span> print_option_estimation &gt; 1
+0155         disp(check)
+0156     <span class="keyword">end</span>
+0157     
+0158     <span class="comment">%% Stop iteration</span>
+0159     <span class="keyword">if</span> s == 2
+0160         <span class="keyword">break</span>
+0161     <span class="keyword">end</span>
+0162     
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="comment">%% Evaluation of result ------------------------------</span>
+0166 <span class="comment">% determine Cxx</span>
+0167 
+0168 [~, Jrh] = <a href="sugr_get_CovM_homogeneous_Homography_2D.html" class="code" title="function [Chh,Jrh] = sugr_get_CovM_homogeneous_Homography_2D(H)">sugr_get_CovM_homogeneous_Homography_2D</a>(<a href="sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>(estx, zeros(9)));
+0169 Cxx = Jrh * Cxrxr * Jrh';                                                  <span class="comment">%#ok&lt;MINV&gt;</span>
+0170 
+0171 <span class="comment">% determine sigma_0</span>
+0172 <span class="keyword">if</span> R &gt; 0
+0173     sigma_0 = sqrt(Omega / R);
+0174 <span class="keyword">else</span>
+0175     sigma_0 = 1;
+0176 <span class="keyword">end</span>
+0177 <span class="keyword">if</span> print_option_estimation &gt; 1
+0178     disp(residuals');
+0179 <span class="keyword">end</span>
+0180 
+0181 <span class="comment">% % choose factor</span>
+0182 <span class="comment">% f = 1;</span>
+0183 <span class="comment">% if R &gt; min_redundancy</span>
+0184 <span class="comment">%     f = sigma_0;</span>
+0185 <span class="comment">% end</span>
+0186 
+0187 <span class="comment">% set output</span>
+0188 H = <a href="sugr_Homography_2D.html" class="code" title="function Homography_2D = sugr_Homography_2D(a1,a2)">sugr_Homography_2D</a>(estx, Cxx);
+0189 
+0190</pre></div>
+<hr><address>Generated on Sat 21-Jul-2018 20:56:10 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
